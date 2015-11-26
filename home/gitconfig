@@ -1,0 +1,5 @@
+[user]
+	email = Jomik@noreply.users.github.com
+	name = Jonas Damtoft
+[push]
+	default = simple
