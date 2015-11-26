@@ -1,4 +1,6 @@
 #!/run/current-system/sw/bin/fish
+# The above is for NixOS.
+# Use '#!/bin/fish' on "normal" distros.
 
 set dotfiles ~/.dotfiles
 
