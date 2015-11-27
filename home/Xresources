@@ -9,7 +9,7 @@ URxvt.url-launcher: /run/current-system/sw/bin/chromium
 URxvt.matcher.button: 1
 URxvt.matcher.rend.0: Uline Bold
 
-! Solarized color scheme for the X Window System
+! Solarized color scheme for the X Window System {{{
 !
 ! http://ethanschoonover.com/solarized
 
@@ -79,3 +79,4 @@ URxvt.matcher.rend.0: Uline Bold
 *color13:                 S_violet
 *color14:                 S_base1
 *color15:                 S_base3
+}}}
