@@ -28,6 +28,7 @@ call plug#end()
 
 filetype plugin indent on
 syntax enable
+set title
 
 " Backups {{{
 
@@ -48,6 +49,8 @@ endif
 " Line number and indicators
 set relativenumber number
 set cursorcolumn cursorline
+
+set backspace=indent,eol,start
 
 " Text width
 set textwidth=80

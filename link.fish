@@ -13,32 +13,30 @@ function message
     set_color normal
 end
 
-# linkFiles $src $dist $depth $filter $prefix
+# linkFiles $src $dist $prefix $strip $depth [$filter]
 # $src Decides the relative source to $dotfiles.
 # $dist is the root folder to create links to.
-# $depth is the depth to use with find, 1 is only the $src folder.
-# $filter is the filter to use when selecting files to source. Useful if some
-# files should be ignored.
 # $prefix is the prefix to prepend on every symlinked file. Let's us keep repo
 # files without the dot.
 # $strip is used to strip a suffix from a file, useful together with filter.
+# $depth is the depth to use with find, 1 is only the $src folder.
+# $filter is the filter to use when selecting files to source. Useful if some
+# files should be ignored. Ex. -name "*.symlink"
 #
-# Example:
-# linkFiles $dotfiles/home ~ 1 "*.symlink" "." ".symlink"
-# Only select files in home that is appended with symlink, then strip it from
-# them and prepend a dot when linking.
+# Examples:
+#linkFiles $dotfiles/home ~ "." "*.symlink" 1 -name "*.symlink"
+#linkFiles $dotfiles/Xresources ~ "." "" 1 -name "Xresources"
+#linkFiles $dotfiles/Xresources ~/.Xresources.d "" "" 1 ! -name "Xresources"
 function linkFiles
     set -l src $argv[1]
     set -l dist $argv[2]/
-    set -l depth $argv[3]
-    set -l filter $argv[4]
-    set -l prefix $argv[5]
-    set -l strip $argv[6]
+    set -l prefix $argv[3]
+    set -l strip $argv[4]
 
     message "\nCreating symlinks for $dist" blue
     message "==================================================" blue
 
-    for file in (find -H $src -maxdepth $depth -name $filter)
+    for file in (find -H $src -maxdepth $argv[5..-1])
         # Test if it is a file.
         if test -f $file
             # Strip the path and prepend our prefix.
@@ -91,9 +89,10 @@ function linkFiles
     end
 end
 
-linkFiles $dotfiles/home ~ 1 "*" "." ""
-linkFiles $dotfiles/i3 ~/.config/i3 1 "*" "" ""
-linkFiles $dotfiles/fish ~/.config/fish 1 "*" "" ""
-linkFiles $dotfiles/vim ~/.vim 2 "*" "" ""
-linkFiles $dotfiles/xmonad ~/.xmonad 1 "*" "" ""
-linkFiles $dotfiles/weechat ~/.weechat 3 "*" "" ""
+linkFiles $dotfiles/home ~ "." "" 1
+linkFiles $dotfiles/i3 ~/.config/i3 "" "" 1
+linkFiles $dotfiles/xmonad ~/.xmonad "" "" 1
+linkFiles $dotfiles/fish ~/.config/fish "" "" 1
+linkFiles $dotfiles/vim ~/.vim "" "" 2
+linkFiles $dotfiles/nvim ~/.config/nvim "" "" 2
+linkFiles $dotfiles/weechat ~/.weechat "" "" 3
