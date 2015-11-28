@@ -1,38 +1,47 @@
 if &shell =~# 'fish$'
     set shell=bash
 endif
-
 set nocompatible
-call plug#begin('~/.config/nvim/')
 
-" Appearance
+" Plugin installation {{{
+function! UpdateRPlugin(info) " {{{
+    if has('nvim')
+        silent UpdateRemotePlugins
+        echomsg 'rplugin updated: ' . a:info['name'] . ', restart vim for changes.'
+    endif
+endfunction
+" }}}
+
+call plug#begin('~/.config/nvim/plugged')
+
 Plug 'altercation/vim-colors-solarized'
-Plug 'majutsushi/tagbar'
-" Plug 'itchyny/lightline.vim'
+Plug 'itchyny/lightline.vim'
 
-" General niceness
+Plug 'majutsushi/tagbar'
+
+" Text objects
+Plug 'kana/vim-textobj-user'
+Plug 'glts/vim-textobj-comment'
+
+Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+
 Plug 'junegunn/limelight.vim'
 
-" Git
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+Plug 'floobits/floobits-neovim', { 'do': function('UpdateRPlugin') }
 
-" LaTeX
-Plug 'lervag/vimtex'
-
-" Syntax
 Plug 'dag/vim-fish'
+Plug 'lervag/vimtex', { 'for': 'tex' }
 
 call plug#end()
-
 filetype plugin indent on
 syntax enable
-set title
-set mouse=""
+" }}}
 
 " Backups {{{
-
 set backup
 set noswapfile
 
@@ -47,62 +56,83 @@ if !isdirectory(expand(&backupdir))
 endif
 " }}}
 
-" Line number and indicators
+" Settings {{{
+set title
+set mouse=""
+
+" Line number and indicators {{{
 set relativenumber number
 set cursorcolumn cursorline
+" }}}
 
-" Text width
+" Text width {{{
 set textwidth=80
 set formatoptions+=t
 set wrap linebreak
+" }}}
 
-" Search options
+" Search options {{{
 set showmatch
-set hlsearch
-set incsearch
+set hlsearch incsearch
 set ignorecase
-set gdefault
+" }}}
 
-" Indent using 4 spaces instead of tab
-set tabstop=4
-set shiftwidth=4
+" Indentation {{{
+" Use 4 spaces instead of tab
+set tabstop=4 shiftwidth=4
 set expandtab
-set smarttab
 set autoindent
+" }}}
 
-" Logic window splitting
-set splitbelow
-set splitright
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+" Window splitting {{{
+" Make it more logic by splitting below and to the right
+set splitbelow splitright
+" Let us simply use CTRL+movement to move between windows.
+nnoremap <C-J> <C-W>j
+nnoremap <C-K> <C-W>k
+nnoremap <C-L> <C-W>l
+nnoremap <C-H> <C-W>h
+" }}}
 
+" Folding {{{
+set foldenable foldmethod=marker
+set foldlevel=0
+" }}}
+" }}}
+
+" Mappings {{{
 let mapleader=","
-let maplocalleader="//"
+let maplocalleader="/"
 
-noremap <Leader>w :w<CR>
-noremap <silent> <Leader><Leader> :nohlsearch<CR>
+" Quick init.vim edit {{{
+nnoremap <Leader>ev :vsplit $MYVIMRC<CR>
+nnoremap <Leader>sv :source $MYVIMRC<CR>
+" }}}
 
-" Only go down to the next row, not next line, for wrapped lines.
-noremap j gj
-noremap k gk
-
-" Persistent cursor when joining lines
-nnoremap J mzJ`z
-" Split line
-nnoremap S i<cr><esc>^mwgk:silent! s/\v +$//<cr>:noh<cr>`w
-
-" Avoid having to bullseye my esc button.
-inoremap jk <esc>
-vnoremap jk <esc>
-
-" Get forced into the habits
+" Disable useless keys {{{
 inoremap <Esc> <nop>
 nnoremap <Left> <nop>
 nnoremap <Right> <nop>
 nnoremap <Up> <nop>
 nnoremap <Down> <nop>
+" }}}
+
+" Temporarily disable search highlight
+noremap <silent> <Leader><Leader> :nohlsearch<CR>
+
+" Sane movement on wrapped lines
+noremap j gj
+noremap k gk
+
+" Avoid having to bullseye my esc button
+inoremap jk <esc>
+
+" [J]oin and [S]plit {{{
+" Persistent cursor when joining lines
+nnoremap J mzJ`z
+" Split line
+nnoremap S i<cr><esc>^mwgk:silent! s/\v +$//<cr>:noh<cr>`w
+" }}}
 
 " Uppercase word
 inoremap <C-U> <Esc>mzgUiw`za
@@ -112,90 +142,82 @@ nnoremap <F7> mzgg=G`z
 
 " Panic button
 nnoremap <F9> mzggg?G`z
+" }}}
 
-" Zoom to head level
-nnoremap zh mzzt10<C-U>`z
+" Plugin setup {{{
 
-" Substitute
-nnoremap <C-S> :%s/
-
-" Quick .vimrc edit
-nnoremap <Leader>ev :vsplit $MYVIMRC<CR>
-nnoremap <Leader>sv :source $MYVIMRC<CR>
-
-" Foldmethod
-set foldenable
-set foldmethod=marker
-set foldlevel=0
-
-" Statusline
-set laststatus=2
-set statusline=%.20F
-set statusline+='\ -\ '
-set statusline+='FileType:\ '
-set statusline+=%y
-set statusline+=%=
-set statusline+=[%04l
-set statusline+=/
-set statusline+=%04L]
-
-" Solarized
+" Solarized {{{
 let g:solarized_termcolors=16
 colorscheme solarized
 set background=dark
+" }}}
+
+" LightLine {{{
+set laststatus=2
+set noshowmode
+let g:lightline = { 'colorscheme': 'solarized',
+            \ 'separator': { 'left': '', 'right': '' },
+            \ 'subseparator': { 'left': '', 'right': '' },
+            \
+            \ 'active': {
+            \   'left': [
+            \       [ 'mode', 'paste'],
+            \       [ 'fugitive', 'readonly', 'filename', 'modified' ]]
+            \ },
+            \ 'component_function': {
+            \   'modified': 'LightLineModified',
+            \   'readonly': 'LightLineReadOnly',
+            \   'fugitive': 'LightLineFugitive'
+            \ }
+            \ }
+
+" LightLine functions {{{
+function! LightLineModified() " {{{
+    if &filetype == "help"
+        return ""
+    elseif &modified
+        return "+"
+    elseif &modifiable
+        return ""
+    else
+        return "-"
+    endif
+endfunction
+" }}}
+
+function! LightLineReadOnly() " {{{
+    if &filetype == "help"
+        return ""
+    elseif &readonly
+        return ""
+    else
+        return ""
+    endif
+endfunction
+" }}}
+
+function! LightLineFugitive() " {{{
+    if exists('*fugitive#head')
+        let h = fugitive#head()
+        return strlen(h) ? " " . fugitive#head() : ""
+    else
+        return ""
+    endif
+endfunction
+" }}}
+" }}}
+" }}}
 
 " Limelight {{{
-nnoremap <Leader>l :Limelight!!<CR>
+nnoremap <Leader>f :Limelight!!<CR>
 let g:limelight_conceal_ctermfg = 'gray'
 " }}}
 
-" Highlight Word {{{
-"
-" This mini-plugin provides a few mappings for highlighting words temporarily.
-"
-" Sometimes you're looking at a hairy piece of code and would like a certain
-" word or two to stand out temporarily.  You can search for it, but that only
-" gives you one color of highlighting.  Now you can use <leader>N where N is
-" a number from 1-6 to highlight the current word in a specific color.
-
-function! HiInterestingWord(n) " {{{
-    " Save our location.
-    normal! mz
-
-    " Yank the current word into the z register.
-    normal! "zyiw
-
-    " Calculate an arbitrary match ID.  Hopefully nothing else is using it.
-    let mid = 86750 + a:n
-
-    " Clear existing matches, but don't worry if they don't exist.
-    silent! call matchdelete(mid)
-
-    " Construct a literal pattern that has to match at boundaries.
-    let pat = '\V\<' . escape(@z, '\') .  '\>'
-
-    " Actually match the words.
-    call matchadd("InterestingWord" .  a:n, pat, 1, mid)
-
-    " Move back to our original location.
-    normal! `z
-endfunction " }}}
-
-" Mappings {{{
-nnoremap <silent> <leader>1 :call HiInterestingWord(1)<cr>
-nnoremap <silent> <leader>2 :call HiInterestingWord(2)<cr>
-nnoremap <silent> <leader>3 :call HiInterestingWord(3)<cr>
-nnoremap <silent> <leader>4 :call HiInterestingWord(4)<cr>
-nnoremap <silent> <leader>5 :call HiInterestingWord(5)<cr>
-nnoremap <silent> <leader>6 :call HiInterestingWord(6)<cr>
+" LaTeX {{{
+let g:tex_flavor = "tex"
 " }}}
 
-" Default Highlights {{{
-hi def InterestingWord1 guifg=#000000 ctermfg=16 guibg=#ffa724 ctermbg=214
-hi def InterestingWord2 guifg=#000000 ctermfg=16 guibg=#aeee00 ctermbg=154
-hi def InterestingWord3 guifg=#000000 ctermfg=16 guibg=#8cffba ctermbg=121
-hi def InterestingWord4 guifg=#000000 ctermfg=16 guibg=#b88853 ctermbg=137
-hi def InterestingWord5 guifg=#000000 ctermfg=16 guibg=#ff9eb8 ctermbg=211
-hi def InterestingWord6 guifg=#000000 ctermfg=16 guibg=#ff2c4b ctermbg=195
+" Commentary {{{
+let g:commentary_map_backslash=0
 " }}}
 " }}}

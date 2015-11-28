@@ -1,4 +1,4 @@
-URxvt.font:xft:source code pro:size=11
+URxvt.font:xft:Source Code Pro for Powerline:size=11
 
 URxvt.scrollBar: false
 URxvt.secondaryScreen: 1
