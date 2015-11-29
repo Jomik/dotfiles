@@ -91,7 +91,6 @@ end
 
 linkFiles $dotfiles/home ~ "." "" 1
 linkFiles $dotfiles/i3 ~/.config/i3 "" "" 1
-linkFiles $dotfiles/xmonad ~/.xmonad "" "" 1
 linkFiles $dotfiles/fish ~/.config/fish "" "" 1
 linkFiles $dotfiles/vim ~/.vim "" "" 2
 linkFiles $dotfiles/nvim ~/.config/nvim "" "" 2
