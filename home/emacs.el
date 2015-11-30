@@ -11,6 +11,10 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
+(use-package use-package-chords
+  :ensure t
+  :config
+  (key-chord-mode 1))
 
 ;; Global settings
 ;(menu-bar-mode -1)
