@@ -49,28 +49,55 @@
   :ensure t
   :config (load-theme 'solarized-light t))
 
-;; Better M-x
-(use-package smex
+(use-package helm-config
+  :ensure helm
+  :bind (("C-x C-f" . helm-find-files)
+	 ("C-x b" . helm-mini)
+	 ("M-x" . helm-M-x))
+  :config (helm-mode 1))
+
+(use-package company
   :ensure t
-  :config
-  (smex-initialize)
-  :bind (("M-x" . smex)
-    ("M-X" . smex-major-mode-commands)
-    ("C-c C-c M-x" . execute.extended-command)))
+  :config (progn
+	    (global-company-mode)
+	    (use-package company-auctex
+	      :ensure t
+	      :config (company-auctex-init))))
+
+(use-package magit
+  :ensure t
+  :bind ("C-x g" . magit-status))
+
+(use-package floobits
+  :ensure t)
+
+(use-package which-key
+  :ensure t
+ :config (which-key-mode))
 
 (use-package org
   :ensure t
-  :config (add-to-list 'auto-mode-alist '("\\.org$" . org-mode)))
+  :mode ("\\.org$" . org-mode))
 
 (use-package evil
   :ensure t
+  :chords ("jk" . evil-normal-state)
   :init (progn
     (use-package evil-leader
       :ensure t
-      :init
-      (setq evil-default-cursor t)
-      :config
-      (evil-leader/set-leader ",")
-      (global-evil-leader-mode))
-    (evil-mode t))
-  :chords ("jk" . evil-normal-state))
+      :init (setq evil-default-cursor t)
+      :config (progn
+		(evil-leader/set-leader ",")
+		(global-evil-leader-mode)))
+      (evil-mode 1)))
+
+(use-package tex-site
+  :ensure auctex
+  :init (progn
+	  (setq TeX-auto-save t)
+	  (setq TeX-parse-self t)
+	  (setq TeX-PDF-mode t)
+	  (setq TeX-save-query nil))
+  :config (progn
+	    (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+	    (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)))
