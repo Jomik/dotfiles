@@ -38,7 +38,6 @@ bindsym $mod+Shift+q kill
 # start dmenu (a program launcher)
 #bindsym $mod+d exec dmenu_run
 bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
-bindsym $mod+x exec emacsclient -c
 
 # change focus
 bindsym $mod+h focus left

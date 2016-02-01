@@ -16,9 +16,10 @@
   :config (key-chord-mode 1))
 
 ;; Global settings
-;(menu-bar-mode -1)
-;(tool-bar-mode -1)
-;(scroll-bar-mode -1)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(global-linum-mode 1)
 
 (set-default-font "Knack 10")
 
@@ -45,12 +46,17 @@
 (setq-default save-place t)
 (setq save-place-file "~/.emacs.d/etc/saveplace")
 
+;; Replace yes-or-no with y-or-n.
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 (use-package solarized-theme
   :ensure t
   :config (load-theme 'solarized-light t))
 
 (use-package helm-config
   :ensure helm
+  :demand
+  :diminish helm-mode
   :bind (("C-x C-f" . helm-find-files)
 	 ("C-x b" . helm-mini)
 	 ("M-x" . helm-M-x))
@@ -68,18 +74,21 @@
   :ensure t
   :bind ("C-x g" . magit-status))
 
-(use-package floobits
-  :ensure t)
-
 (use-package which-key
   :ensure t
- :config (which-key-mode))
+  :diminish ""
+  :config (which-key-mode))
 
 (use-package org
   :ensure t
-  :mode ("\\.org$" . org-mode))
+  :mode ("\\.org\\'" . org-mode))
+
+(use-package asm-mode
+  :ensure t
+  :mode ("\\.j\\'" . asm-mode))
 
 (use-package evil
+  :disabled t
   :ensure t
   :chords ("jk" . evil-normal-state)
   :init (progn
@@ -89,7 +98,11 @@
       :config (progn
 		(evil-leader/set-leader ",")
 		(global-evil-leader-mode)))
-      (evil-mode 1)))
+    (evil-mode 1))
+  :config (progn
+	    (use-package evil-surround
+	      :ensure t
+		:config (global-evil-surround-mode 1))))
 
 (use-package tex-site
   :ensure auctex
