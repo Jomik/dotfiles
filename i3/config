@@ -15,7 +15,7 @@ set $mod Mod4
 # is used in the bar {} block below.
 font pango:source code pro 8
 
-exec feh  --bg-fill '/home/jomik/.background' 
+exec --no-startup-id feh --bg-fill '/home/jomik/.background' 
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).

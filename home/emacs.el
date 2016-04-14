@@ -50,7 +50,7 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (use-package solarized-theme
-  :ensure t
+  :if window-system
   :config (load-theme 'solarized-light t))
 
 (use-package helm-config
@@ -92,17 +92,17 @@
   :ensure t
   :chords ("jk" . evil-normal-state)
   :init (progn
-    (use-package evil-leader
-      :ensure t
-      :init (setq evil-default-cursor t)
-      :config (progn
-		(evil-leader/set-leader ",")
-		(global-evil-leader-mode)))
-    (evil-mode 1))
+	  (use-package evil-leader
+	    :ensure t
+	    :init (setq evil-default-cursor t)
+	    :config (progn
+		      (evil-leader/set-leader ",")
+		      (global-evil-leader-mode)))
+	  (evil-mode 1))
   :config (progn
 	    (use-package evil-surround
 	      :ensure t
-		:config (global-evil-surround-mode 1))))
+	      :config (global-evil-surround-mode 1))))
 
 (use-package tex-site
   :ensure auctex
