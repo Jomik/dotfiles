@@ -220,12 +220,10 @@
   (use-package org-bullets
     :config (add-hook 'org-mode-hook 'org-bullets-mode 1)))
 
-(use-package asm-mode
-  :mode ("\\.j\\'"))
-
 (use-package scheme
-  :config (setq scheme-program-name "petite")
-  :mode ("\\.scm\\'" . scheme-mode))
+  :ensure nil
+  :mode ("\\.scm\\'" . scheme-mode)
+  :config (setq scheme-program-name "petite"))
 
 ;; Tool for writing LaTeX
 (use-package tex-site
