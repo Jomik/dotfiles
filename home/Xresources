@@ -1,13 +1,7 @@
-URxvt.font:xft:Knack:size=10
-
+URxvt.font: xft:source code pro:size=11
 URxvt.scrollBar: false
 URxvt.secondaryScreen: 1
 URxvt.secondaryScroll: 0
-
-URxvt.perl-ext-common: default,matcher
-URxvt.url-launcher: /run/current-system/sw/bin/chromium
-URxvt.matcher.button: 1
-URxvt.matcher.rend.0: Uline Bold
 
 ! Solarized color scheme for the X Window System {{{
 !

@@ -15,14 +15,14 @@ set $mod Mod4
 # is used in the bar {} block below.
 font pango:source code pro 8
 
-exec --no-startup-id feh --bg-fill '/home/jomik/.background' 
+#exec --no-startup-id feh --bg-fill '/home/jomik/.background' 
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
 
-bindsym XF86AudioRaiseVolume exec amixer set Master 2%+
-bindsym XF86AudioLowerVolume exec amixer set Master 2%-
+bindsym XF86AudioRaiseVolume exec amixer set Master 2%+ unmute
+bindsym XF86AudioLowerVolume exec amixer set Master 2%- unmute
 bindsym XF86AudioMute exec amixer set Master toggle
 
 bindsym XF86MonBrightnessUp exec light -A 10
