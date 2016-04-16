@@ -21,10 +21,12 @@
   (package-install 'use-package))
 (require 'use-package)
 (use-package use-package-chords
+  :ensure t
   :config (key-chord-mode 1))
 
 ;; ---------------------- Global settings -----------------------------
-(set-face-attribute 'default nil ;; Set font
+;; Set font
+(set-face-attribute 'default nil
                     :family "Source Code Pro"
                     :height 105
                     :weight 'normal
@@ -35,8 +37,7 @@
               tab-width 2                       ; Set tab-width
               truncate-lines 1)	                ; Disables word-wrap
 
-(setq use-package-always-ensure t 	; Always try to download the package if not installed
-      initial-major-mode 'org-mode      ; Sets the *scratch* to org mode as default
+(setq initial-major-mode 'org-mode      ; Sets the *scratch* to org mode as default
       initial-scratch-message nil       ; Sets the *scratch* message
       inhibit-splash-screen t           ; Prevents the Emacs Startup menu
       dired-omit-mode t                 ; Hides uninteresting files
@@ -52,7 +53,6 @@
       password-cache-expiry (* 60 15) ; Time before asking for su pass again
       use-dialog-box nil)             ; Prevent emacs from showing GUI-dialogs
 
-(server-start)
 (blink-cursor-mode -1)                ; No blinking!
 (mouse-avoidance-mode 'animate)       ; Move mouse away from cursor
 (global-hl-line-mode 1)               ; Highlight current line
@@ -63,13 +63,8 @@
 (unbind-key "C-z")
 (unbind-key "C-x C-z")
 
-;; ---------------------- Packages -----------------------------
-(use-package solarized-theme
-  :if window-system
-  :config (load-theme 'solarized-light t))
-
+;; ---------------------- Built-in packages -----------------------------
 (use-package simple
-	:ensure nil
 	:demand
 	:bind (("M-J" . join-line)
          ("M-j" . join-with-next-line))
@@ -80,33 +75,27 @@
 
 ;; Mouse wheel support
 (use-package mwheel
-  :ensure nil
   :config
   (setq mouse-wheel-progressive-speed nil
         mouse-wheel-scroll-amount '(1 ((shift) . 1))
         mouse-wheel-follow-mouse t))
 
 (use-package subword
-  :ensure nil
   :diminish ""
   :config (global-subword-mode 1))
 
 ;; Highlight parens and brackets
 (use-package paren
-  :ensure nil
   :config
   (setq show-paren-delay 0)
   (show-paren-mode))
 
-;; Draws vertical indent lines between brackets
-(use-package indent-guide
+;; ---------------------- Melpa packages -----------------------------
+(setq use-package-always-ensure t)
+
+(use-package solarized-theme
   :if window-system
-  :disabled t
-  :diminish indent-guide-mode
-  :defer 1
-  :config
-  (setq indent-guide-recursive t)
-  (indent-guide-global-mode 1))
+  :config (load-theme 'solarized-light t))
 
 ;; Autoindent all the time
 (use-package aggressive-indent
@@ -127,15 +116,6 @@
         sublimity-scroll-drift-length 10)
   (require 'sublimity-scroll)
   (sublimity-mode 1))
-
-;; Auto-resize the focused windows 
-(use-package golden-ratio
-  :diminish ""
-  :config
-  (setq golden-ratio-auto-scale t)
-  (add-to-list 'golden-ratio-exclude-buffer-names "*helm M-x*")
-  (add-to-list 'golden-ratio-extra-commands 'ace-window)  
-  (golden-ratio-mode 1))
 
 (use-package helm-config
   :ensure helm
@@ -213,21 +193,14 @@
   :defer 1
   :config (global-whitespace-cleanup-mode 1))
 
-;; Codefolding
-(use-package fold-dwim
-  :diminish hs-minor-mode
-  :demand
-  :bind ("C-," . fold-dwim-toggle)
-  :config
-  (setq hs-isearch-open 't)
-  (add-hook 'prog-mode-hook 'hs-minor-mode)
-  (add-hook 'hs-minor-mode-hook (lambda () (interactive) (diminish 'hs-minor-mode))))
-
 ;; Move lines and regions up or down
 (use-package move-text
   :bind
   ("M-P" . move-text-up)
   ("M-N" . move-text-down))
+
+(use-package origami
+  :disabled t)
 
 ;; ---------------------- Language settings -----------------------------
 
@@ -252,7 +225,7 @@
 
 (use-package scheme
   :config (setq scheme-program-name "petite")
-  :mode ("\\scm\\'" . scheme-mode))
+  :mode ("\\.scm\\'" . scheme-mode))
 
 ;; Tool for writing LaTeX
 (use-package tex-site
