@@ -175,17 +175,11 @@
   :defer t)
 
 ;; Realtime spell-checking
-(use-package flyspell 
-  :bind ("<f8>" . flyspell-switch-dictionary)
+(use-package flyspell
+  :defer t
   :config
   (setq ispell-program-name "aspell"
-        ispell-dictionary "english")
-  (defun flyspell-switch-dictionary()
-    (interactive)
-    (let* ((dic ispell-current-dictionary)
-           (change (if (string= dic "dansk") "english" "dansk")))
-      (ispell-change-dictionary change)
-      (message "Dictionary switched from %s to %s" dic change))))
+        ispell-dictionary "english"))
 
 ;; Clean whitespace trailing on save
 (use-package whitespace-cleanup-mode
@@ -238,7 +232,5 @@
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
   (add-hook 'LaTeX-mode-hook 'flyspell-mode)
   (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
-  (add-hook 'LaTeX-mode-hook '(lambda () (interactive) (ispell-change-dictionary "english")))
-  ;; Autocomplete in latex
   (use-package company-auctex
     :config (company-auctex-init)))
