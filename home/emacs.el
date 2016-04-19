@@ -124,7 +124,11 @@
   :bind (("C-x C-f" . helm-find-files)
          ("C-x b" . helm-mini)
          ("M-x" . helm-M-x))
-  :config (helm-mode 1))
+  :config
+  (use-package helm-descbinds
+    :bind ("C-h b" . helm-descbinds)
+    :config (helm-descbinds-mode))
+  (helm-mode 1))
 
 (use-package company
   :diminish ""
