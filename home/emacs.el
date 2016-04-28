@@ -3,7 +3,6 @@
 
 ;; ---------------------- Window settings -----------------------------
 (menu-bar-mode -1)
-(global-linum-mode 1)
 (when window-system
   (tool-bar-mode -1)
   (tooltip-mode -1)
@@ -70,8 +69,8 @@
          ("M-j" . join-with-next-line))
 	:config
 	(defun join-with-next-line () (interactive) (join-line -1))
-	(line-number-mode 1)
-	(column-number-mode 1))
+	(line-number-mode)
+	(column-number-mode))
 
 ;; Mouse wheel support
 (use-package mwheel
@@ -82,7 +81,7 @@
 
 (use-package subword
   :diminish ""
-  :config (global-subword-mode 1))
+  :config (global-subword-mode))
 
 ;; Highlight parens and brackets
 (use-package paren
@@ -93,21 +92,24 @@
 ;; ---------------------- Melpa packages -----------------------------
 (setq use-package-always-ensure t)
 
-(use-package solarized-theme
+(use-package zenburn-theme
   :if window-system
-  :config (load-theme 'solarized-light t))
+  :config (load-theme 'zenburn t))
 
 ;; Autoindent all the time
 (use-package aggressive-indent
   :diminish ""
   :config
   (add-hook 'nix-mode-hook (lambda () (aggressive-indent-mode -1)))
-  (global-aggressive-indent-mode 1))
+  (global-aggressive-indent-mode))
 
 ;; Colors the parenteses in pairs
 (use-package rainbow-delimiters
   :defer 1
   :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+(use-package nlinum
+  :config (global-nlinum-mode))
 
 ;; Smooth Scrolling
 (use-package sublimity
@@ -115,7 +117,7 @@
   (setq sublimity-scroll-weight 20
         sublimity-scroll-drift-length 10)
   (require 'sublimity-scroll)
-  (sublimity-mode 1))
+  (sublimity-mode))
 
 (use-package helm-config
   :ensure helm
@@ -128,7 +130,7 @@
   (use-package helm-descbinds
     :bind ("C-h b" . helm-descbinds)
     :config (helm-descbinds-mode))
-  (helm-mode 1))
+  (helm-mode))
 
 (use-package company
   :diminish ""
@@ -158,7 +160,7 @@
 ;; Highlights changed text after some commands
 (use-package volatile-highlights
   :diminish volatile-highlights-mode
-  :config (volatile-highlights-mode t))
+  :config (volatile-highlights-mode))
 
 ;; Auto pair brackets
 (use-package smartparens-config
@@ -183,7 +185,8 @@
   :defer t
   :config
   (setq ispell-program-name "aspell"
-        ispell-dictionary "english"))
+        ispell-dictionary "english")
+  (add-hook 'flyspell-mode-hook 'flyspell-buffer))
 
 ;; Clean whitespace trailing on save
 (use-package whitespace-cleanup-mode
@@ -214,14 +217,15 @@
         org-refile-targets '((org-agenda-files . (:maxlevel . 6)))
         org-todo-keywords '((sequence "TODO" "INPROGRESS" "DONE"))
         org-todo-keyword-faces '(("INPROGRESS" . (:foreground "blue" :weight bold))))
+  (add-hook 'org-mode-hook 'flyspell-mode)
   (defun org-open-main-file () (interactive) (find-file "~/organizer.org"))
   (use-package org-bullets
     :config (add-hook 'org-mode-hook 'org-bullets-mode 1)))
 
 (use-package scheme
   :ensure nil
-  :mode ("\\.scm\\'" . scheme-mode)
-  :config (setq scheme-program-name "petite"))
+  :config
+  (setq scheme-program-name "petite")) 
 
 ;; Tool for writing LaTeX
 (use-package tex-site
@@ -235,6 +239,5 @@
   (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
   (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
   (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
   (use-package company-auctex
     :config (company-auctex-init)))
