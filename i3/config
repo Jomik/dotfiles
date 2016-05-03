@@ -152,8 +152,6 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
     position top
-    mode hide
-    hidden_state hide
     status_command i3status --config ~/.config/i3/i3status.conf
     tray_output primary
 }
