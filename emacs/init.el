@@ -21,6 +21,7 @@
 (require 'use-package)
 (use-package use-package-chords
   :ensure t
+  :disabled t
   :config (key-chord-mode 1))
 
 ;; ---------------------- Global settings -----------------------------
@@ -34,13 +35,14 @@
 (setq-default indent-tabs-mode nil              ; Use spaces instead of tabs
               fill-column 80                    ;
               tab-width 2                       ; Set tab-width
-              truncate-lines 1)	                ; Disables word-wrap
+              truncate-lines 1)               ; Disables word wrap
 
 (setq initial-major-mode 'org-mode      ; Sets the *scratch* to org mode as default
       initial-scratch-message nil       ; Sets the *scratch* message
       inhibit-splash-screen t           ; Prevents the Emacs Startup menu
       dired-omit-mode t                 ; Hides uninteresting files
       standard-indent 2                 ; Indentation setting
+      c-basic-offset 2
       tab-stop-list (number-sequence 2 120 2) ; Set the amount of spaces on identation
       gc-cons-threshold 104857600             ; Set garbage-collecter to run at 100 MB
       frame-title-format '("Emacs @ " system-name ": %b %+%+ %f")          ; Sets the window title to more useful
@@ -57,6 +59,7 @@
 (global-hl-line-mode 1)               ; Highlight current line
 (global-prettify-symbols-mode 1)      ; Text to symbols
 (defalias 'yes-or-no-p 'y-or-n-p)     ; y for yes, n for no. No confirmation
+
 
 ;; Unbind suspend-frame keys
 (unbind-key "C-z")
@@ -132,14 +135,25 @@
     :config (helm-descbinds-mode))
   (helm-mode))
 
+;; Tools to manage and navigate projects
+(use-package projectile
+  :demand t
+  :config 
+  ;; Adds Helm support to manage projects
+  (use-package helm-projectile
+    :config
+    (setq projectile-completion-system 'helm
+          projectile-switch-project-action 'helm-projectile)
+    (projectile-global-mode)
+    (helm-projectile-on)))
+
 (use-package company
   :diminish ""
   :config (global-company-mode))
 
 ;; Git integration
 (use-package magit
-  :bind ("C-x g s" . magit-status)
-  :config (magit-auto-revert-mode -1))
+  :bind ("C-x g s" . magit-status))
 
 ;; Show git differences in buffers
 (use-package git-gutter+
@@ -176,7 +190,7 @@
 (use-package smart-comment
   :bind ("M-;" . smart-comment))
 
-;; Realtime syntaks checking
+;; Realtime syntax checking
 (use-package flycheck
   :defer t)
 
@@ -196,6 +210,7 @@
 
 ;; Move lines and regions up or down
 (use-package move-text
+  :disabled t ;; move-text-down doesn't errors
   :bind
   ("M-P" . move-text-up)
   ("M-N" . move-text-down))
@@ -281,3 +296,12 @@
   (add-hook 'LaTeX-mode-hook 'flyspell-mode)
   (use-package company-auctex
     :config (company-auctex-init)))
+
+(use-package jdee
+  :ensure t
+  :mode ("\\.java\\'" . jdee-mode)
+  :config
+  (setq jdee-server-dir "/home/jomik/dev/jdee-server/target"))
+
+(use-package ess
+  :mode ("\\.R\\'" . R-mode))

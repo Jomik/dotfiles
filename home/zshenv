@@ -1,0 +1,5 @@
+export ZPLUG_HOME=~/.zplug
+export EDITOR='vi'
+export VISUAL='emacs -nw'
+export BROWSER='firefox'
+export JAVA_HOME=/usr/lib64/jvm/java
