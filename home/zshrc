@@ -18,16 +18,16 @@ fi
 
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 
+# Theme
+zplug "mafredri/zsh-async", defer:0
+zplug "sindresorhus/pure", use:pure.zsh, as:theme
+
 # Plugins
+zplug "oz/safe-paste"
+
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-syntax-highlighting'
 zplug 'zsh-users/zsh-history-substring-search'
-
-zplug "oz/safe-paste"
-
-# Theme
-zplug "frmendes/geometry"
-export PROMPT_GEOMETRY_EXEC_TIME=true
 
 # Execute
 zplug check || zplug install
