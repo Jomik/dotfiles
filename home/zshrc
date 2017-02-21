@@ -25,6 +25,7 @@ zplug "sindresorhus/pure", use:pure.zsh, as:theme
 
 # Plugins
 zplug "oz/safe-paste"
+zplug "knu/zsh-manydots-magic", use:manydots-magic
 
 zplug 'zsh-users/zsh-autosuggestions'
 zplug 'zsh-users/zsh-syntax-highlighting'
@@ -39,27 +40,3 @@ bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 bindkey -M emacs '^P' history-substring-search-up
 bindkey -M emacs '^N' history-substring-search-down
-
-# From https://github.com/parkercoates/dotfiles/blob/master/.zsh/expand-multiple-dots.zsh
-function expand-multiple-dots() {
-    local MATCH
-    if [[ $LBUFFER =~ '(^| )\.\.\.+' ]]; then
-        LBUFFER=$LBUFFER:fs%\.\.\.%../..%
-    fi
-}
-
-function expand-multiple-dots-then-expand-or-complete() {
-    zle expand-multiple-dots
-    zle expand-or-complete
-}
-
-function expand-multiple-dots-then-accept-line() {
-    zle expand-multiple-dots
-    zle accept-line
-}
-
-zle -N expand-multiple-dots
-zle -N expand-multiple-dots-then-expand-or-complete
-zle -N expand-multiple-dots-then-accept-line
-bindkey '^I' expand-multiple-dots-then-expand-or-complete
-bindkey '^M' expand-multiple-dots-then-accept-line
