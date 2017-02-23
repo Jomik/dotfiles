@@ -5,3 +5,5 @@
 	default = simple
 [core]
 	autocrlf = input
+[users]
+	email = Jomik@users.noreply.github.com

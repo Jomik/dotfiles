@@ -17,13 +17,22 @@ if [[ -d $ZPLUG_HOME ]]; then
     source $ZPLUG_HOME/init.zsh
 fi
 
+if [[ ! -d $ZSH ]]; then
+    mkdir -p $ZSH
+fi
+
+if [[ ! -d $ZSH_CACHE ]]; then
+    mkdir -p $ZSH_CACHE
+fi
+
 zplug 'zplug/zplug', hook-build:'zplug --self-manage'
 
 # Theme
 zplug "mafredri/zsh-async", defer:0
-zplug "sindresorhus/pure", use:pure.zsh, as:theme
+zplug "sindresorhus/pure", use:"pure.zsh", as:theme
 
 # Plugins
+zplug "$ZSH", from:local, use:"*.zsh"
 zplug "oz/safe-paste"
 zplug "knu/zsh-manydots-magic", use:manydots-magic
 
