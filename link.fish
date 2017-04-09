@@ -1,6 +1,4 @@
-#!/run/current-system/sw/bin/fish
-# The above is for NixOS.
-# Use '#!/bin/fish' on "normal" distros.
+#!/bin/fish
 
 set dotfiles ~/.dotfiles
 
@@ -90,10 +88,10 @@ function linkFiles
 end
 
 linkFiles $dotfiles/home ~ "." "" 1
-linkFiles $dotfiles/zsh ~/.zsh "" "" 1
+#linkFiles $dotfiles/zsh ~/.zsh "" "" 1
 linkFiles $dotfiles/emacs ~/.emacs.d "" "" 1
-linkFiles $dotfiles/i3 ~/.config/i3 "" "" 1
+#linkFiles $dotfiles/i3 ~/.config/i3 "" "" 1
 linkFiles $dotfiles/fish ~/.config/fish "" "" 1
-linkFiles $dotfiles/vim ~/.vim "" "" 2
-linkFiles $dotfiles/nvim ~/.config/nvim "" "" 2
-linkFiles $dotfiles/weechat ~/.weechat "" "" 3
+#linkFiles $dotfiles/vim ~/.vim "" "" 2
+#linkFiles $dotfiles/nvim ~/.config/nvim "" "" 2
+#linkFiles $dotfiles/weechat ~/.weechat "" "" 3
