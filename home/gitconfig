@@ -5,5 +5,6 @@
 	default = simple
 [core]
 	autocrlf = input
+	askpass = /usr/bin/ksshaskpass
 [users]
 	email = Jomik@users.noreply.github.com
