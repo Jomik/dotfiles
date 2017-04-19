@@ -103,7 +103,7 @@
 (use-package aggressive-indent
   :diminish ""
   :config
-  (add-hook 'nix-mode-hook (lambda () (aggressive-indent-mode -1)))
+  (add-to-list 'aggressive-indent-excluded-modes 'fish-mode)
   (global-aggressive-indent-mode))
 
 ;; Colors the parenteses in pairs
@@ -220,6 +220,12 @@
 
 ;; ---------------------- Language settings -----------------------------
 
+(use-package fish-mode
+  :mode ("\\.fish\\'" . fish-mode))
+
+(use-package intero
+  :mode ("\\.hs\\'" . intero-mode))
+
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :bind
@@ -297,11 +303,19 @@
   (use-package company-auctex
     :config (company-auctex-init)))
 
-(use-package jdee
-  :ensure t
-  :mode ("\\.java\\'" . jdee-mode)
-  :config
-  (setq jdee-server-dir "/home/jomik/dev/jdee-server/target"))
-
 (use-package ess
   :mode ("\\.R\\'" . R-mode))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (zenburn-theme whitespace-cleanup-mode which-key volatile-highlights use-package sublimity smartparens smart-comment rainbow-delimiters org-bullets nlinum magit helm-projectile helm-descbinds git-gutter-fringe+ flycheck fish-mode ess company-auctex aggressive-indent))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
