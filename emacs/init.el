@@ -223,8 +223,13 @@
 (use-package fish-mode
   :mode ("\\.fish\\'" . fish-mode))
 
-(use-package intero
-  :mode ("\\.hs\\'" . intero-mode))
+(use-package haskell-mode
+  :config
+  (progn
+    (use-package intero
+      :config
+      (progn 
+        (add-hook 'haskell-mode-hook 'intero-mode)))))
 
 (use-package org
   :mode ("\\.org\\'" . org-mode)
