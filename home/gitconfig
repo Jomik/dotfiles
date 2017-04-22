@@ -7,3 +7,5 @@
 	autocrlf = input
 [users]
 	email = Jomik@users.noreply.github.com
+[credential]
+	helper = /usr/lib/git-core/git-credential-gnome-keyring

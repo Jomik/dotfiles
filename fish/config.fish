@@ -1,2 +1,1 @@
-set -x EDITOR vim
-
+set -x EDITOR vi
