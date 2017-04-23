@@ -1,0 +1,6 @@
+// Place your settings in this file to overwrite the default settings
+{
+    "editor.fontFamily": "Fira Code",
+    "editor.tabSize": 2,
+    "editor.fontLigatures": true
+}

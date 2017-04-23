@@ -95,3 +95,4 @@ linkFiles $dotfiles/fish ~/.config/fish "" "" 1
 #linkFiles $dotfiles/vim ~/.vim "" "" 2
 #linkFiles $dotfiles/nvim ~/.config/nvim "" "" 2
 #linkFiles $dotfiles/weechat ~/.weechat "" "" 3
+linkFiles $dotfiles/Code ~/.config/Code "" "" 2
