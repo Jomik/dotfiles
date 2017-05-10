@@ -244,6 +244,7 @@
         org-todo-keywords '((sequence "TODO" "INPROGRESS" "DONE"))
         org-todo-keyword-faces '(("INPROGRESS" . (:foreground "blue" :weight bold))))
   (add-hook 'org-mode-hook 'flyspell-mode)
+  (add-hook 'org-mode-hook 'auto-fill-mode)
   (defun org-open-main-file () (interactive) (find-file "~/organizer.org"))
   (use-package org-bullets
     :config (add-hook 'org-mode-hook 'org-bullets-mode 1)))
