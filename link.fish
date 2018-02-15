@@ -89,7 +89,7 @@ end
 
 linkFiles $dotfiles/home ~ "." "" 1
 #linkFiles $dotfiles/zsh ~/.zsh "" "" 1
-linkFiles $dotfiles/emacs ~/.emacs.d "" "" 1
+#linkFiles $dotfiles/emacs ~/.emacs.d "" "" 1
 #linkFiles $dotfiles/i3 ~/.config/i3 "" "" 1
 linkFiles $dotfiles/fish ~/.config/fish "" "" 1
 #linkFiles $dotfiles/vim ~/.vim "" "" 2

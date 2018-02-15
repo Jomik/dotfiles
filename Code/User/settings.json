@@ -1,6 +1,40 @@
 // Place your settings in this file to overwrite the default settings
 {
-    "editor.fontFamily": "Fira Code",
-    "editor.tabSize": 2,
-    "editor.fontLigatures": true
+  "editor.fontFamily": "Fira Code",
+  "editor.tabSize": 2,
+  "editor.fontLigatures": true,
+  "auto-close-tag.activationOnLanguage": [
+    "html",
+    "xml",
+    "php",
+    "plaintext",
+    "markdown",
+    "razor",
+    "vue"
+  ],
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "[typescript]": {},
+  "tsimporter.doubleQuotes": true,
+  "window.zoomLevel": 0,
+  "workbench.colorTheme": "Solarized Light",
+  "editor.renderLineHighlight": "gutter",
+  "window.menuBarVisibility": "toggle",
+  "editor.wordWrap": "bounded",
+  "editor.wordWrapColumn": 120,
+  "editor.minimap.enabled": false,
+  "gitlens.advanced.messages": {
+    "suppressCommitHasNoPreviousCommitWarning": false,
+    "suppressCommitNotFoundWarning": false,
+    "suppressFileNotUnderSourceControlWarning": false,
+    "suppressGitVersionWarning": false,
+    "suppressLineUncommittedWarning": false,
+    "suppressNoRepositoryWarning": false,
+    "suppressUpdateNotice": false,
+    "suppressWelcomeNotice": true
+  },
+  "editor.formatOnSave": true,
+  "editor.lineNumbers": "off",
+  "[javascript]": {},
+  "git.autofetch": true
 }
