@@ -1,1 +1,8 @@
 *
+!.gitignore
+!.gitconfig
+!.git-hooks
+
+!.config/Code/User/settings.json
+!.config/fish/config.fish
+!.config/fish/fishfile

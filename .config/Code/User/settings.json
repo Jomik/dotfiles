@@ -24,5 +24,6 @@
   },
   "editor.formatOnSave": true,
   "editor.lineNumbers": "off",
-  "git.autofetch": true
+  "git.autofetch": true,
+  "gitlens.keymap": "alternate"
 }

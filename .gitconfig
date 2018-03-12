@@ -5,7 +5,11 @@
 	default = simple
 [core]
 	autocrlf = input
+	hooksPath = /home/jomik/.git-hooks
 [users]
 	email = Jomik@users.noreply.github.com
 [credential]
 	helper = /usr/lib/git-core/git-credential-gnome-keyring
+[alias]
+	unstage = reset HEAD --
+	last = log -1 HEAD
