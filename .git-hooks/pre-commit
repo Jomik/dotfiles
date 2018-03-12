@@ -1,8 +1,4 @@
 #!/bin/sh
-
-# If you use a GUI for controlling git, you might want to comment out the `tput` commands.
-# Some users have had problems with those commands and whatever GUI they are using.
-
 if git rev-parse --verify HEAD >/dev/null 2>&1
 then
     against=HEAD
