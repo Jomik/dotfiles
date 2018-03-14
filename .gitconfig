@@ -12,4 +12,5 @@
 	helper = /usr/lib/git-core/git-credential-gnome-keyring
 [alias]
 	unstage = reset HEAD --
-	last = log -1 HEAD
+	last = log -3 HEAD
+	discard = checkout --
