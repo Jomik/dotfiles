@@ -11,6 +11,7 @@
 [credential]
 	helper = /usr/lib/git-core/git-credential-gnome-keyring
 [alias]
+	dotfiles = !git --git-dir $HOME/.dotfiles/.git --work-tree=$HOME
 	unstage = reset HEAD --
 	last = log -3 HEAD
 	discard = checkout --
