@@ -1,8 +1,23 @@
-/*
+*
 !.gitignore
 !.gitconfig
 !.git-hooks
 
+!.config
+.config/*
+
+!.config/Code
+.config/Code/*
+!.config/Code/User
+.config/Code/User/*
 !.config/Code/User/settings.json
+
+!.config/fish
+.config/fish/*
 !.config/fish/config.fish
 !.config/fish/fishfile
+
+!.config/kitty
+.config/kitty/*
+!.config/kitty/kitty.conf
+
