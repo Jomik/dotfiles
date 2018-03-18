@@ -1,5 +1,5 @@
 " Changes to defaults
-let mapleader=" "
+let mapleader=' '
 set mouse=a " the mouse can be used
 set expandtab " the tab keys inserts spaces
 set shiftwidth=2
@@ -14,58 +14,62 @@ set smartcase " the above setting is toggled of if the search word contains uppe
 set splitbelow " create new splits below and to the right
 set splitright
 
-tnoremap <Esc> <C-\><C-n>
-
-" Install Vim Plug if not installed
-if empty(glob('~/.config/nvim/autoload/plug.vim'))
-silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-  \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall
+" Install minpac if not installed
+let s:do_update = 0
+let s:rc_path = fnamemodify(expand('<sfile>'), ':h')
+let s:minpac = expand(s:rc_path . '/pack/minpac/opt/minpac')
+if !isdirectory(glob(s:minpac))
+  silent execute '!git clone https://github.com/k-takata/minpac' s:minpac
+  let s:do_update = 1
 endif
 
-call plug#begin()
+packadd minpac
+call minpac#init()
+call minpac#add('k-takata/minpac', {'type': 'opt'})
 
 " Visuals
-Plug 'morhetz/gruvbox'
-Plug 'mhinz/vim-startify'
+call minpac#add('morhetz/gruvbox')
+call minpac#add('mhinz/vim-startify')
 
 " Navigation
-Plug '/usr/share/vim/vimfiles'
-Plug 'junegunn/fzf.vim'
+set runtimepath^='/usr/share/vim/vimfiles'
+call minpac#add('junegunn/fzf.vim')
 
 " Editing
-Plug 'Shougo/deoplete.nvim', { 'do': 'UpdateRemotePlugins' }
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-commentary'
-Plug 'jiangmiao/auto-pairs'
+call minpac#add('Shougo/deoplete.nvim', {'type': 'opt'})
+call minpac#add('tpope/vim-surround')
+call minpac#add('tpope/vim-commentary')
+call minpac#add('tommcdo/vim-exchange')
 
 " Information
-Plug 'machakann/vim-highlightedyank'
-Plug 'Shougo/echodoc.vim'
+call minpac#add('machakann/vim-highlightedyank')
+call minpac#add('Shougo/echodoc.vim')
 
 " Language
-Plug 'w0rp/ale'
-Plug 'ntpeters/vim-better-whitespace'
-Plug 'janko-m/vim-test'
+call minpac#add('w0rp/ale')
+call minpac#add('ntpeters/vim-better-whitespace')
+call minpac#add('janko-m/vim-test')
 
 " Typescript
-Plug 'HerringtonDarkholme/yats.vim'
-Plug 'mhartington/nvim-typescript'
+call minpac#add('HerringtonDarkholme/yats.vim')
+call minpac#add('mhartington/nvim-typescript')
 
 " Javascript
-Plug 'othree/yajs.vim'
-Plug 'pangloss/vim-javascript'
+call minpac#add('othree/yajs.vim')
+call minpac#add('pangloss/vim-javascript')
 
 " JSON
-Plug 'elzr/vim-json'
+call minpac#add('elzr/vim-json')
 
 " Fish-Shell
-Plug 'dag/vim-fish'
+call minpac#add('dag/vim-fish')
 
 " The special ones
-Plug 'ryanoasis/vim-devicons'
+call minpac#add('ryanoasis/vim-devicons')
 
-call plug#end()
+if (s:do_update)
+  call minpac#update()
+endif
 
 " Change color theme
 set termguicolors
@@ -73,17 +77,19 @@ let g:gruvbox_italic = 1
 colorscheme gruvbox
 
 " Deoplete settings
+packadd deoplete.nvim
 set completeopt-=preview
 let g:deoplete#enable_at_startup = 1
 call deoplete#custom#source('typescript', 'min_pattern_length', 1)
 let g:deoplete#auto_complete_delay = 0
 let g:echodoc_enable_at_startup = 1
 
+" ALE
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {
 \   'typescript': ['prettier'],
-\   'python': ['yapf'],
-\   'javascript': ['prettier']
+\   'javascript': ['prettier'],
+\   'python': ['yapf']
 \}
 
 " Typescript
@@ -91,7 +97,6 @@ let g:nvim_typescript#type_info_on_hold = 1
 let g:nvim_typescript#default_mappings = 1
 let g:nvim_typescript#max_completion_detail = 100
 let g:nvim_typescript#completion_mark = ''
-
 let g:nvim_typescript#kind_symbols = {
       \ 'keyword': 'keyword',
       \ 'class': '',
@@ -125,6 +130,7 @@ let g:nvim_typescript#kind_symbols = {
 let g:startify_bookmarks = [{'c': '~/.config/nvim/init.vim'}]
 
 " Mappings
+tnoremap <Esc> <C-\><C-n>
 noremap <buffer> <silent> k gk
 noremap <buffer> <silent> j gj
 noremap <buffer> <silent> 0 g0
@@ -141,4 +147,3 @@ augroup cfghooks
     au!
     autocmd bufwritepost $MYVIMRC source $MYVIMRC
 augroup END
-
