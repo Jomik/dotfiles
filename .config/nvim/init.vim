@@ -32,14 +32,16 @@ call minpac#add('morhetz/gruvbox')
 call minpac#add('mhinz/vim-startify')
 
 " Navigation
-set runtimepath^='/usr/share/vim/vimfiles'
+set runtimepath^=/usr/share/vim/vimfiles
 call minpac#add('junegunn/fzf.vim')
+call minpac#add('easymotion/vim-easymotion')
 
 " Editing
 call minpac#add('Shougo/deoplete.nvim', {'type': 'opt'})
 call minpac#add('tpope/vim-surround')
 call minpac#add('tpope/vim-commentary')
 call minpac#add('tommcdo/vim-exchange')
+call minpac#add('SirVer/ultisnips')
 
 " Information
 call minpac#add('machakann/vim-highlightedyank')
@@ -52,7 +54,7 @@ call minpac#add('janko-m/vim-test')
 
 " Typescript
 call minpac#add('HerringtonDarkholme/yats.vim')
-call minpac#add('mhartington/nvim-typescript')
+call minpac#add('mhartington/nvim-typescript', {'branch': 'fix-121'})
 
 " Javascript
 call minpac#add('othree/yajs.vim')
@@ -71,18 +73,34 @@ if (s:do_update)
   call minpac#update()
 endif
 
-" Change color theme
+" Colorscheme
 set termguicolors
 let g:gruvbox_italic = 1
 colorscheme gruvbox
 
-" Deoplete settings
+" Startify
+let g:startify_bookmarks = [{'c': $MYVIMRC}]
+
+" EasyMotion
+let g:EasyMotion_smartcase = 1
+let g:EasyMotion_do_mapping = 0
+
+" Deoplete
+let g:deoplete#enable_at_startup = 1
 packadd deoplete.nvim
 set completeopt-=preview
-let g:deoplete#enable_at_startup = 1
-call deoplete#custom#source('typescript', 'min_pattern_length', 1)
 let g:deoplete#auto_complete_delay = 0
+call deoplete#custom#source('typescript', 'min_pattern_length', 1)
+call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
+
+" EchoDoc
 let g:echodoc_enable_at_startup = 1
+
+" UltiSnips
+let g:UltiSnipsSnippetsDir=expand(s:rc_path . '/UltiSnips')
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<M-n>"
+let g:UltiSnipsJumpBackwardTrigger="<M-p>"
 
 " ALE
 let g:ale_fix_on_save = 1
@@ -127,8 +145,6 @@ let g:nvim_typescript#kind_symbols = {
       \ 'constructor': '',
 \}
 
-let g:startify_bookmarks = [{'c': '~/.config/nvim/init.vim'}]
-
 " Mappings
 tnoremap <Esc> <C-\><C-n>
 noremap <buffer> <silent> k gk
@@ -136,13 +152,18 @@ noremap <buffer> <silent> j gj
 noremap <buffer> <silent> 0 g0
 noremap <buffer> <silent> $ g$
 
+" EasyMotion
+nmap s <Plug>(easymotion-overwin-f2)
+map <leader>j <Plug>(easymotion-j)
+map <leader>k <Plug>(easymotion-k)
+
 " fzf
 nnoremap <leader>p :GFiles<CR>
 nnoremap <leader>P :Files<CR>
+nnoremap <leader>l :BTags<CR>
 nnoremap <leader>L :BLines<CR>
 
 " autocmds
-
 augroup cfghooks
     au!
     autocmd bufwritepost $MYVIMRC source $MYVIMRC

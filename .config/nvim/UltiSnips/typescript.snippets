@@ -1,0 +1,21 @@
+snippet log
+console.log("${1:${VISUAL}}", $1);$0
+endsnippet
+
+snippet if
+if (${1:true}) {
+	${2:${VISUAL}}
+}$0
+endsnippet
+
+snippet it
+it("${1:description}", async () => {
+	${2:${VISUAL}}
+});$0
+endsnippet
+
+snippet describe
+describe("${1:description}", async () => {
+	${2:${VISUAL}}
+});$0
+endsnippet
