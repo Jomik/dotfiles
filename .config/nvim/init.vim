@@ -23,60 +23,114 @@ if !isdirectory(glob(s:minpac))
   let s:do_update = 1
 endif
 
-packadd minpac
-call minpac#init()
-call minpac#add('k-takata/minpac', {'type': 'opt'})
+if exists('*minpac#init')
+  call minpac#add('k-takata/minpac', {'type': 'opt'})
 
-" Visuals
-call minpac#add('morhetz/gruvbox')
-call minpac#add('mhinz/vim-startify')
+  " Visuals/information
+  call minpac#add('morhetz/gruvbox')
+  call minpac#add('machakann/vim-highlightedyank')
+  call minpac#add('yggdroot/indentline')
+  call minpac#add('mhinz/vim-startify')
+  call minpac#add('itchyny/lightline.vim')
+  call minpac#add('Shougo/echodoc.vim')
+  call minpac#add('tpope/vim-fugitive')
 
-" Navigation
-set runtimepath^=/usr/share/vim/vimfiles
-call minpac#add('junegunn/fzf.vim')
-call minpac#add('easymotion/vim-easymotion')
+  " Navigation
+  call minpac#add('junegunn/fzf.vim')
+  call minpac#add('easymotion/vim-easymotion')
 
-" Editing
-call minpac#add('Shougo/deoplete.nvim', {'type': 'opt'})
-call minpac#add('tpope/vim-surround')
-call minpac#add('tpope/vim-commentary')
-call minpac#add('tommcdo/vim-exchange')
-call minpac#add('SirVer/ultisnips')
+  " Editing
+  call minpac#add('Shougo/deoplete.nvim', {'type': 'opt'})
+  call minpac#add('tpope/vim-surround')
+  call minpac#add('tpope/vim-commentary')
+  call minpac#add('tommcdo/vim-exchange')
+  call minpac#add('SirVer/ultisnips')
+  call minpac#add('sjl/gundo.vim')
 
-" Information
-call minpac#add('machakann/vim-highlightedyank')
-call minpac#add('Shougo/echodoc.vim')
+  " Language
+  call minpac#add('w0rp/ale')
+  call minpac#add('ntpeters/vim-better-whitespace')
+  call minpac#add('janko-m/vim-test')
 
-" Language
-call minpac#add('w0rp/ale')
-call minpac#add('ntpeters/vim-better-whitespace')
-call minpac#add('janko-m/vim-test')
+  " Typescript
+  call minpac#add('HerringtonDarkholme/yats.vim')
+  call minpac#add('mhartington/nvim-typescript', {'branch': 'fix-121'})
 
-" Typescript
-call minpac#add('HerringtonDarkholme/yats.vim')
-call minpac#add('mhartington/nvim-typescript', {'branch': 'fix-121'})
+  " Javascript
+  call minpac#add('othree/yajs.vim')
+  call minpac#add('pangloss/vim-javascript')
 
-" Javascript
-call minpac#add('othree/yajs.vim')
-call minpac#add('pangloss/vim-javascript')
+  " JSON
+  call minpac#add('elzr/vim-json')
 
-" JSON
-call minpac#add('elzr/vim-json')
+  " Fish-Shell
+  call minpac#add('dag/vim-fish')
 
-" Fish-Shell
-call minpac#add('dag/vim-fish')
+  " Markdown
+  call minpac#add('godlygeek/tabular')
+  call minpac#add('plasticboy/vim-markdown')
 
-" The special ones
-call minpac#add('ryanoasis/vim-devicons')
-
-if (s:do_update)
-  call minpac#update()
+  " The special ones
+  call minpac#add('ryanoasis/vim-devicons')
 endif
 
 " Colorscheme
 set termguicolors
 let g:gruvbox_italic = 1
 colorscheme gruvbox
+
+" IndentLine
+let g:indentLine_char = '┆'
+
+" LightLine
+let g:lightline = {
+      \ 'colorscheme': 'gruvbox',
+      \ 'separator': {
+      \   'left': '', 'right': ''
+      \ },
+      \ 'subseparator': {
+      \   'left': '', 'right': ''
+      \ },
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ],
+      \   'right': [['lineinfo'], ['percent'], ['fileformat', 'fileencoding', 'filetype']]
+      \ },
+      \ 'component': {
+      \   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}'
+      \ },
+      \ 'component_function': {
+      \   'fugitive': 'LightLineFugitive',
+      \   'filetype': 'LightLineFileType',
+      \   'fileformat': 'LightLineFileFormat',
+      \ },
+      \ 'component_visible_condition': {
+      \   'readonly': '(&filetype!="help"&& &readonly)',
+      \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))'
+      \ },
+      \ }
+
+function! LightLineFugitive()
+  if &filetype ==# 'help'
+    return ''
+  endif
+
+  if exists('*fugitive#head')
+    let s:head = fugitive#head()
+    if s:head isnot ''
+      return ' ' . s:head
+    endif
+  endif
+  return ''
+endfunction
+
+function! LightLineFileType()
+  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+endfunction
+
+function! LightLineFileFormat()
+  return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+endfunction
 
 " Startify
 let g:startify_bookmarks = [{'c': $MYVIMRC}]
@@ -93,22 +147,25 @@ let g:deoplete#auto_complete_delay = 0
 call deoplete#custom#source('typescript', 'min_pattern_length', 1)
 call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
 
+" fzf
+set runtimepath^=/usr/share/vim/vimfiles
+
 " EchoDoc
 let g:echodoc_enable_at_startup = 1
 
 " UltiSnips
-let g:UltiSnipsSnippetsDir=expand(s:rc_path . '/UltiSnips')
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<M-n>"
-let g:UltiSnipsJumpBackwardTrigger="<M-p>"
+let g:UltiSnipsSnippetsDir = expand(s:rc_path . '/UltiSnips')
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<M-n>"
+let g:UltiSnipsJumpBackwardTrigger = "<M-p>"
 
 " ALE
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {
-\   'typescript': ['prettier'],
-\   'javascript': ['prettier'],
-\   'python': ['yapf']
-\}
+      \   'typescript': ['prettier'],
+      \   'javascript': ['prettier'],
+      \   'python': ['yapf']
+      \}
 
 " Typescript
 let g:nvim_typescript#type_info_on_hold = 1
@@ -143,7 +200,7 @@ let g:nvim_typescript#kind_symbols = {
       \ 'setter': '',
       \ 'call': 'call',
       \ 'constructor': '',
-\}
+      \}
 
 " Mappings
 tnoremap <Esc> <C-\><C-n>
@@ -151,6 +208,9 @@ noremap <buffer> <silent> k gk
 noremap <buffer> <silent> j gj
 noremap <buffer> <silent> 0 g0
 noremap <buffer> <silent> $ g$
+
+" Gundo
+nnoremap <F5> :GundoToggle<CR>
 
 " EasyMotion
 nmap s <Plug>(easymotion-overwin-f2)
@@ -163,8 +223,13 @@ nnoremap <leader>P :Files<CR>
 nnoremap <leader>l :BTags<CR>
 nnoremap <leader>L :BLines<CR>
 
+" Commands
+command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
+command! PackClean  packadd minpac | source $MYVIMRC | call minpac#clean()
+
 " autocmds
 augroup cfghooks
-    au!
-    autocmd bufwritepost $MYVIMRC source $MYVIMRC
+  au!
+  autocmd bufwritepost $MYVIMRC source $MYVIMRC
 augroup END
+
