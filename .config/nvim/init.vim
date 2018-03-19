@@ -38,6 +38,9 @@ if exists('*minpac#init')
   " Navigation
   call minpac#add('junegunn/fzf.vim')
   call minpac#add('easymotion/vim-easymotion')
+  call minpac#add('airblade/vim-rooter')
+  call minpac#add('scrooloose/nerdtree')
+  call minpac#add('Xuyuanp/nerdtree-git-plugin')
 
   " Editing
   call minpac#add('Shougo/deoplete.nvim', {'type': 'opt'})
@@ -116,9 +119,9 @@ function! LightLineFugitive()
   endif
 
   if exists('*fugitive#head')
-    let s:head = fugitive#head()
-    if s:head isnot ''
-      return ' ' . s:head
+    let l:head = fugitive#head()
+    if l:head isnot ''
+      return ' ' . l:head
     endif
   endif
   return ''
@@ -134,6 +137,9 @@ endfunction
 
 " Startify
 let g:startify_bookmarks = [{'c': $MYVIMRC}]
+
+" NERDTree
+noremap <C-n> :NERDTreeToggle<CR>
 
 " EasyMotion
 let g:EasyMotion_smartcase = 1
