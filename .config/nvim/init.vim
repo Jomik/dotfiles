@@ -34,21 +34,24 @@ if exists('*minpac#init')
   call minpac#add('itchyny/lightline.vim')
   call minpac#add('Shougo/echodoc.vim')
   call minpac#add('tpope/vim-fugitive')
+  call minpac#add('ryanoasis/vim-devicons')
 
   " Navigation
   call minpac#add('junegunn/fzf.vim')
-  call minpac#add('easymotion/vim-easymotion')
   call minpac#add('airblade/vim-rooter')
   call minpac#add('scrooloose/nerdtree')
   call minpac#add('Xuyuanp/nerdtree-git-plugin')
+  call minpac#add('yuttie/comfortable-motion.vim')
+  call minpac#add('t9md/vim-choosewin')
 
   " Editing
   call minpac#add('Shougo/deoplete.nvim', {'type': 'opt'})
-  call minpac#add('tpope/vim-surround')
+  call minpac#add('machakann/vim-sandwich')
   call minpac#add('tpope/vim-commentary')
   call minpac#add('tommcdo/vim-exchange')
   call minpac#add('SirVer/ultisnips')
-  call minpac#add('sjl/gundo.vim')
+  call minpac#add('mbbill/undotree')
+  call minpac#add('jiangmiao/auto-pairs')
 
   " Language
   call minpac#add('w0rp/ale')
@@ -72,9 +75,6 @@ if exists('*minpac#init')
   " Markdown
   call minpac#add('godlygeek/tabular')
   call minpac#add('plasticboy/vim-markdown')
-
-  " The special ones
-  call minpac#add('ryanoasis/vim-devicons')
 endif
 
 " Colorscheme
@@ -137,13 +137,13 @@ endfunction
 
 " Startify
 let g:startify_bookmarks = [{'c': $MYVIMRC}]
+let g:startify_session_dir = expand('~/.local/share/nvim/sessions')
+
+" ChooseWin
+let g:choosewin_label = 'ARSTNEIOVMDHC,PLUFWY'
 
 " NERDTree
 noremap <C-n> :NERDTreeToggle<CR>
-
-" EasyMotion
-let g:EasyMotion_smartcase = 1
-let g:EasyMotion_do_mapping = 0
 
 " Deoplete
 let g:deoplete#enable_at_startup = 1
@@ -210,18 +210,16 @@ let g:nvim_typescript#kind_symbols = {
 
 " Mappings
 tnoremap <Esc> <C-\><C-n>
-noremap <buffer> <silent> k gk
-noremap <buffer> <silent> j gj
-noremap <buffer> <silent> 0 g0
-noremap <buffer> <silent> $ g$
+noremap <silent> k gk
+noremap <silent> j gj
+noremap <silent> 0 g0
+noremap <silent> $ g$
 
-" Gundo
-nnoremap <F5> :GundoToggle<CR>
+" ChooseWin
+nmap <leader>o <Plug>(choosewin)
 
-" EasyMotion
-nmap s <Plug>(easymotion-overwin-f2)
-map <leader>j <Plug>(easymotion-j)
-map <leader>k <Plug>(easymotion-k)
+" UndoTree
+nnoremap <F5> :UndotreeToggle<CR>
 
 " fzf
 nnoremap <leader>p :GFiles<CR>
@@ -232,10 +230,3 @@ nnoremap <leader>L :BLines<CR>
 " Commands
 command! PackUpdate packadd minpac | source $MYVIMRC | call minpac#update()
 command! PackClean  packadd minpac | source $MYVIMRC | call minpac#clean()
-
-" autocmds
-augroup cfghooks
-  au!
-  autocmd bufwritepost $MYVIMRC source $MYVIMRC
-augroup END
-
