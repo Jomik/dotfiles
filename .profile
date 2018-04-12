@@ -5,3 +5,5 @@ export Q_INSPECT_NOTIFY_EMAIL=jonasdamtoft@hotmail.com
 export NPM_PACKAGES=$HOME/.local
 export CHROME_BIN=/usr/bin/chromium
 export PATH=$NPM_PACKAGES/bin:$PATH
+export LC_ALL=en_DK.utf8
+export LANG=en_DK.utf8
