@@ -27,5 +27,7 @@
   "editor.formatOnSave": true,
   "editor.lineNumbers": "off",
   "git.autofetch": true,
-  "gitlens.keymap": "alternate"
+  "gitlens.keymap": "alternate",
+  "gitlens.historyExplorer.enabled": false,
+  "vim.useSystemClipboard": true
 }
