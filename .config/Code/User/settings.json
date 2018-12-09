@@ -29,5 +29,8 @@
   "git.autofetch": true,
   "gitlens.keymap": "alternate",
   "gitlens.historyExplorer.enabled": false,
-  "vim.useSystemClipboard": true
+  "vim.useSystemClipboard": true,
+  "markdown-preview-enhanced.breakOnSingleNewLine": false,
+  "markdown-preview-enhanced.mathRenderingOption": "MathJax",
+  "typescript.updateImportsOnFileMove.enabled": "always"
 }
