@@ -58,10 +58,6 @@ if exists('*minpac#init')
   call minpac#add('ntpeters/vim-better-whitespace')
   call minpac#add('janko-m/vim-test')
 
-  " Typescript
-  call minpac#add('HerringtonDarkholme/yats.vim')
-  call minpac#add('mhartington/nvim-typescript', {'branch': 'fix-121'})
-
   " Javascript
   call minpac#add('othree/yajs.vim')
   call minpac#add('pangloss/vim-javascript')
@@ -150,8 +146,6 @@ let g:deoplete#enable_at_startup = 1
 packadd deoplete.nvim
 set completeopt-=preview
 let g:deoplete#auto_complete_delay = 0
-call deoplete#custom#source('typescript', 'min_pattern_length', 1)
-call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
 
 " fzf
 set runtimepath^=/usr/share/vim/vimfiles
@@ -168,44 +162,7 @@ let g:UltiSnipsJumpBackwardTrigger = "<M-p>"
 " ALE
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {
-      \   'typescript': ['prettier'],
-      \   'javascript': ['prettier'],
       \   'python': ['yapf']
-      \}
-
-" Typescript
-let g:nvim_typescript#type_info_on_hold = 1
-let g:nvim_typescript#default_mappings = 1
-let g:nvim_typescript#max_completion_detail = 100
-let g:nvim_typescript#completion_mark = ''
-let g:nvim_typescript#kind_symbols = {
-      \ 'keyword': 'keyword',
-      \ 'class': '',
-      \ 'interface': '',
-      \ 'script': 'script',
-      \ 'module': '',
-      \ 'local class': 'local class',
-      \ 'type': '',
-      \ 'enum': '',
-      \ 'enum member': '',
-      \ 'alias': '',
-      \ 'type parameter': 'type param',
-      \ 'primitive type': 'primitive type',
-      \ 'var': '',
-      \ 'local var': '',
-      \ 'property': '',
-      \ 'let': '',
-      \ 'const': '',
-      \ 'label': 'label',
-      \ 'parameter': 'param',
-      \ 'index': 'index',
-      \ 'function': 'λ',
-      \ 'local function': 'local function',
-      \ 'method': '',
-      \ 'getter': '',
-      \ 'setter': '',
-      \ 'call': 'call',
-      \ 'constructor': '',
       \}
 
 " Mappings
