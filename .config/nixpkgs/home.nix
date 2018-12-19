@@ -8,8 +8,9 @@ let
     sha256 = "0qbycg7wkb71v20rchlkafrjfpbk2fnlvvbh3ai9pyfisci5wxvq";
   }) { config.allowUnfree = true ;};
   mypkgs = import ./mypkgs pkgs;
+  fish-plugins = import ./programs/fish/plugins pkgs;
 in {
-  imports = [ ./programs/alacritty.nix ];
+  imports = [ ./programs/alacritty.nix ./programs/fish/fish.nix ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -55,6 +56,9 @@ in {
       ports = "netstat -tulanp";
       psg = "ps aux | rg -v rg | rg -i -e VSZ -e";
     };
+    plugins = with fish-plugins; [
+      prompt.spacefish fasd
+    ];
   };
   programs.git = {
     enable = true;
