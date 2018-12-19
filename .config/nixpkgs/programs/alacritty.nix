@@ -162,7 +162,7 @@ in {
         white = strOption "0xffffff";
       };
       indexedColors = mkOption {
-        type = nullOr (listOf (submodule {
+        type = listOf (submodule {
           options = {
             index = mkOption {
               type = int;
@@ -171,8 +171,8 @@ in {
               type = str;
             };
           };
-        }));
-        default = null;
+        });
+        default = [];
       };
     };
     visualBell = {
@@ -207,8 +207,9 @@ in {
       url = {
         launcher = strOption "xdg-open";
         modifiers = mkOption {
-          type = nullOr (listOf (enum modList));
-          default = null;
+          type = listOf (enum modList);
+          default = [];
+          apply = lib.concatStringsSep "|";
         };
       };
     };
@@ -245,6 +246,7 @@ in {
         mods = mkOption {
           type = listOf modList;
           default = [];
+          apply = lib.concatStringsSep "|";
         };
         mode = mkOption {
           type = nullOr (enum [ "~AppCursor" "AppCursor" "~AppKeypad" "AppKeypad" ]);
@@ -279,7 +281,7 @@ in {
     home.packages = [ pkgs.alacritty ];
 
     xdg.configFile."alacritty/alacritty.yml".text = let
-        tmp = filterAttrsRecursive (n: v: v != null) cfg;
+        tmp = filterAttrsRecursive (n: v: v != null && v != "" && v != []) cfg;
         set = mapAttrNamesRecursive' toSnakeCase tmp;
       in builtins.toJSON set;
   };

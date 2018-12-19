@@ -1,21 +1,36 @@
 { pkgs, ... }:
 
 let
+  unstable = import (pkgs.fetchFromGitHub {
+    owner = "NixOS";
+    repo = "nixpkgs-channels";
+    rev = "61c3169a0e17d789c566d5b241bfe309ce4a6275";
+    sha256 = "0qbycg7wkb71v20rchlkafrjfpbk2fnlvvbh3ai9pyfisci5wxvq";
+  }) { config.allowUnfree = true ;};
   mypkgs = import ./mypkgs pkgs;
 in {
   imports = [ ./programs/alacritty.nix ];
 
   nixpkgs.config.allowUnfree = true;
 
+  nixpkgs.overlays = [
+    (self: super: {
+      vscode-with-extensions = unstable.vscode-with-extensions;
+    })
+  ];
+
   home.packages =
     (with pkgs; [
-      neovim firefox gnupg exa ripgrep xclip atom
+      neovim firefox gnupg exa ripgrep xclip okular weechat zip unzip
+    ]) ++ (with unstable; [
+      atom
     ]) ++ (with mypkgs; [
       dotfiles-sh
     ]);
 
   programs.htop.enable = true;
   programs.fzf.enable = true;
+  programs.direnv.enable = true;
 
   programs.vscode.enable = true;
   programs.vscode.extensions = with pkgs.vscode-extensions; [ bbenoist.Nix ];
@@ -72,7 +87,8 @@ in {
       dashbox
       chktex
       cleveref
-      bussproofs;
+      bussproofs
+      latexmk;
   };
 
   programs.alacritty.enable = true;
@@ -84,6 +100,7 @@ in {
 
   services.gpg-agent.enable = true;
   services.gpg-agent.enableSshSupport = true;
+  services.flameshot.enable = true;
 
   home.sessionVariables = {
     EDITOR = "${pkgs.neovim}/bin/nvim";
