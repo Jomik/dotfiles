@@ -7,21 +7,21 @@ let
   #   rev = "44b02b52ea6a49674f124f50009299f192ed78bb";
   #   sha256 = "0000000000000000000000000000000000000000000000000000";
   # }) { config.allowUnfree = true; };
-  mypkgs = import ./mypkgs pkgs;
   fish-plugins = import ./programs/fish/plugins pkgs;
 in {
   imports = [ ./programs/alacritty.nix ./programs/fish/fish.nix ];
 
   nixpkgs.config.allowUnfree = true;
 
-  home.packages =
-    (with pkgs; [
-      neovim firefox gnupg exa ripgrep xclip okular weechat zip unzip
-      atom discord
-    # ]) ++ (with unstable; [
-    ]) ++ (with mypkgs; [
-      dotfiles-sh
-    ]);
+  home.packages = (with pkgs; [
+    neovim firefox gnupg exa ripgrep xclip okular weechat zip unzip
+    atom discord
+
+    # mypkgs
+    dotfiles-sh
+    androidHome
+  # ]) ++ (with unstable; [
+  ]);
 
   programs.htop.enable = true;
   programs.fzf.enable = true;

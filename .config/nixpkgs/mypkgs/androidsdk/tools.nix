@@ -18,28 +18,30 @@ in stdenv.mkDerivation rec {
   dontBuild = true;
 
   installPhase = ''
-    mkdir -p $out
-    mv -t $out ./*
+    mkdir -p $out/tools
+    mv -t $out/tools ./*
+    ln -s $out/tools/bin $out/bin
   '';
 
   preFixup = ''
+    prefix=$out/tools
     patchelf \
       --set-interpreter ${stdenv_32bit.cc.libc.out}/lib/ld-linux.so.2 \
       --set-rpath ${stdenv_32bit.cc.cc.lib}/lib \
-        $out/mksdcard
+        $prefix/mksdcard
 
     ${if stdenv.hostPlatform.system == "x86_64-linux" then '' 
       patchelf \
         --set-interpreter ${stdenv.cc.libc.out}/lib/ld-linux-x86-64.so.2 \
-          $out/lib/monitor-x86_64/monitor
+          $prefix/lib/monitor-x86_64/monitor
       patchelf \
         --set-rpath ${with pkgs; with xorg; makeLibraryPath [ libX11 libXext libXrender freetype fontconfig ]}  \
-          $out/lib/monitor-x86_64/libcairo-swt.so
-      wrapProgram $out/lib/monitor-x86_64/monitor \
+          $prefix/lib/monitor-x86_64/libcairo-swt.so
+      wrapProgram $prefix/lib/monitor-x86_64/monitor \
         --prefix LD_LIBRARY_PATH : ${with pkgs; with xorg; makeLibraryPath [ gtk2 atk stdenv.cc.cc libXtst ]}
     '' else ""}
 
-    wrapProgram $out/bin/sdkmanager \
+    wrapProgram $prefix/bin/sdkmanager \
       --set JAVA_HOME ${pkgs.jdk}
   '';
 }

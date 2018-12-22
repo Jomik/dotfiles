@@ -14,19 +14,20 @@ in stdenv.mkDerivation rec {
   dontBuild = true;
 
   installPhase = ''
-    mkdir -p $out
-    mv -t $out ./*
+    mkdir -p $out/platform-tools
+    mv -t $out/platform-tools ./*
 
     mkdir -p $out/bin
-    ln -s $out/{adb,fastboot} $out/bin/
+    ln -s $out/platform-tools/{adb,fastboot} $out/bin/
   '';
 
   preFixup = ''
+    prefix=$out/platform-tools
     for elf in adb dmtracedump etc1tool e2fsdroid fastboot hprof-conv make_f2fs sload_f2fs sqlite3; do
       patchelf \
         --set-interpreter "${stdenv.cc.libc.out}/lib/ld-linux-x86-64.so.2" \
-        --set-rpath "${stdenv.cc.cc.lib.out}/lib:${pkgs.zlib.out}/lib:$out/lib64" \
-          $out/$elf
+        --set-rpath "${stdenv.cc.cc.lib.out}/lib:${pkgs.zlib.out}/lib:$prefix/lib64" \
+          $prefix/$elf
     done
   '';
 }
