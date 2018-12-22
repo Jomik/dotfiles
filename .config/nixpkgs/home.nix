@@ -1,12 +1,12 @@
 { pkgs, ... }:
 
 let
-  unstable = import (pkgs.fetchFromGitHub {
-    owner = "NixOS";
-    repo = "nixpkgs-channels";
-    rev = "61c3169a0e17d789c566d5b241bfe309ce4a6275";
-    sha256 = "0qbycg7wkb71v20rchlkafrjfpbk2fnlvvbh3ai9pyfisci5wxvq";
-  }) { config.allowUnfree = true ;};
+  # unstable = import (pkgs.fetchFromGitHub {
+  #   owner = "NixOS";
+  #   repo = "nixpkgs-channels";
+  #   rev = "44b02b52ea6a49674f124f50009299f192ed78bb";
+  #   sha256 = "0000000000000000000000000000000000000000000000000000";
+  # }) { config.allowUnfree = true; };
   mypkgs = import ./mypkgs pkgs;
   fish-plugins = import ./programs/fish/plugins pkgs;
 in {
@@ -14,17 +14,11 @@ in {
 
   nixpkgs.config.allowUnfree = true;
 
-  nixpkgs.overlays = [
-    (self: super: {
-      vscode-with-extensions = unstable.vscode-with-extensions;
-    })
-  ];
-
   home.packages =
     (with pkgs; [
       neovim firefox gnupg exa ripgrep xclip okular weechat zip unzip
-    ]) ++ (with unstable; [
-      atom
+      atom discord
+    # ]) ++ (with unstable; [
     ]) ++ (with mypkgs; [
       dotfiles-sh
     ]);
@@ -34,7 +28,16 @@ in {
   programs.direnv.enable = true;
 
   programs.vscode.enable = true;
-  programs.vscode.extensions = with pkgs.vscode-extensions; [ bbenoist.Nix ];
+  programs.vscode.extensions = with pkgs.vscode-extensions; [
+    bbenoist.Nix
+  ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+    {
+      name = "Vim";
+      publisher = "vscodevim";
+      version = "0.17.0";
+      sha256 = "013qsq8ms5yw40wc550p0ilalj1575aj6pqmrczzj04pvfywmf7d";
+    }
+  ];
   programs.vscode.userSettings = {
     editor = {
       fontFamily = "Fira Code";
@@ -60,6 +63,7 @@ in {
       prompt.spacefish fasd
     ];
   };
+
   programs.git = {
     enable = true;
     userName = "Jonas Holst Damtoft";

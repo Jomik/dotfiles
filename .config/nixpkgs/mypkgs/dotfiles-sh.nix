@@ -12,7 +12,7 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ makeWrapper ];
 
-  dontBuild = "true";
+  dontBuild = true;
 
   installPhase = ''
     install -m 755 -Dt $out/bin $src/dotfiles
