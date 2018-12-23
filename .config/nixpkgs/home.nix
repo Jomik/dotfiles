@@ -19,7 +19,6 @@ in {
 
     # mypkgs
     dotfiles-sh
-    androidHome
   # ]) ++ (with unstable; [
   ]);
 
@@ -36,6 +35,12 @@ in {
       publisher = "vscodevim";
       version = "0.17.0";
       sha256 = "013qsq8ms5yw40wc550p0ilalj1575aj6pqmrczzj04pvfywmf7d";
+    }
+    {
+      name = "fish-vscode";
+      publisher = "skyapps";
+      version = "0.2.1";
+      sha256 = "0y1ivymn81ranmir25zk83kdjpjwcqpnc9r3jwfykjd9x0jib2hl";
     }
   ];
   programs.vscode.userSettings = {
@@ -56,7 +61,7 @@ in {
       ls = "exa";
       ll = "exa -lha";
       mkdir = "mkdir -pv";
-      ports = "netstat -tulanp";
+      ports = "ss -tulanp";
       psg = "ps aux | rg -v rg | rg -i -e VSZ -e";
     };
     plugins = with fish-plugins; [
