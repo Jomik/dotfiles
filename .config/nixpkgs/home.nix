@@ -16,6 +16,7 @@ in {
   home.packages = (with pkgs; [
     neovim firefox gnupg exa ripgrep xclip okular weechat zip unzip
     atom discord
+    gist
 
     # mypkgs
     dotfiles-sh
@@ -60,12 +61,16 @@ in {
     shellAbbrs = {
       ls = "exa";
       ll = "exa -lha";
-      mkdir = "mkdir -pv";
-      ports = "ss -tulanp";
       psg = "ps aux | rg -v rg | rg -i -e VSZ -e";
     };
+    functions = {
+      mkdir.body = "command mkdir -pv $argv";
+      ports.body = "command ss -tulanp";
+    };
     plugins = with fish-plugins; [
-      prompt.spacefish fasd
+      prompt.spacefish
+      thefuck
+      # fasd
     ];
   };
 

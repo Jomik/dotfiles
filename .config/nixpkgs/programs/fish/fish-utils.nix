@@ -1,12 +1,12 @@
 { stdenv, lib, fish, fetchFromGitHub }: 
 
 let
-  extendedPkgVersion = lib.getVersion fish;
-  extendedPkgName = lib.removeSuffix "-${extendedPkgVersion}" fish.name;
-  
+  fishVersion = lib.getVersion fish;
+  fishName = lib.removeSuffix "-${fishVersion}" fish.name;
+
   buildPlugin = {
     name,
-    namePrefix ? "${extendedPkgVersion}-plugin-",
+    namePrefix ? "${fishName}-plugin-",
     src,
     buildPhase ? ":",
     buildInputs ? [],
@@ -18,22 +18,22 @@ let
     dontStrip = true;
     inherit src buildPhase buildInputs packages;
     installPhase = ''
-      for d in ./conf.d ./completions ./functions; do
-        if [[ -d $d ]]; then
-          mkdir -p $out/$d
-          mv -t $out/$d/ $d/*.fish
+      for dir in ./conf.d ./completions ./functions; do
+        if [[ -d $dir ]]; then
+          mkdir -p $out/$dir
+          mv -t $out/$dir/ $dir/*.fish
         fi
       done
 
-      for f in ./*.fish; do
-        case $f in
+      for file in ./*.fish; do
+        case $file in
           ./{init,key_bindings}.fish)
             mkdir -p $out/conf.d
-            mv $f $out/conf.d/$name_''${f##/*}
+            mv $file $out/conf.d/$name_''${file##/*}
             ;;
           *)
             mkdir -p $out/functions
-            mv -t $out/functions/ $f
+            mv -t $out/functions/ $file
         esac
       done
     '';
@@ -48,5 +48,5 @@ let
     };
   };
 in {
-  inherit pluginFromGitHub buildPlugin;
+  inherit fishVersion fishName pluginFromGitHub buildPlugin;
 }
