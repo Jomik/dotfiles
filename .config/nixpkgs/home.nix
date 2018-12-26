@@ -1,21 +1,38 @@
 { pkgs, ... }:
 
 let
-  # unstable = import (pkgs.fetchFromGitHub {
-  #   owner = "NixOS";
-  #   repo = "nixpkgs-channels";
-  #   rev = "44b02b52ea6a49674f124f50009299f192ed78bb";
-  #   sha256 = "0000000000000000000000000000000000000000000000000000";
-  # }) { config.allowUnfree = true; };
+  unstable = import (pkgs.fetchFromGitHub {
+    owner = "NixOS";
+    repo = "nixpkgs-channels";
+    rev = "44b02b52ea6a49674f124f50009299f192ed78bb";
+    sha256 = "0gmk6w1lnp6kjf26ak8jzj0h2qrnk7bin54gq68w1ky2pdijnc44";
+  }) {};
+  fork = import /home/jomik/projects/nixos/nixpkgs {};
   fish-plugins = import ./programs/fish/plugins pkgs;
 in {
-  imports = [ ./programs/alacritty.nix ./programs/fish/fish.nix ];
+  imports = [ ./programs/alacritty ./programs/fish ];
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [
+    (import ./overlays/pkgs.nix)
+    (self: super: {
+      inherit (unstable) thefuck;
+      inherit (fork) alacritty;
+    })
+  ];
 
   home.packages = (with pkgs; [
-    neovim firefox gnupg exa ripgrep xclip okular weechat zip unzip
-    atom discord
+    neovim
+    firefox
+    gnupg
+    exa
+    ripgrep
+    xsel
+    okular
+    weechat
+    zip unzip
+    atom
+    discord
     gist
 
     # mypkgs
@@ -73,6 +90,27 @@ in {
       # fasd
     ];
   };
+  programs.alacritty = {
+    enable = true;
+    font.size = 6.0;
+    colors.primary.background = "0x191919";
+    window.dimensions = {
+      columns = 120;
+      lines = 36;
+    };
+  };
+  programs.tmux = {
+    enable = true;
+    sensibleOnTop = true;
+    plugins = with pkgs.tmuxPlugins; [
+      copycat
+      yank
+      open
+    ];
+    extraConfig = ''
+      set -g mode-keys "vi"
+    '';
+  };
 
   programs.git = {
     enable = true;
@@ -107,13 +145,6 @@ in {
       cleveref
       bussproofs
       latexmk;
-  };
-
-  programs.alacritty.enable = true;
-  programs.alacritty.font.size = 6.0;
-  programs.alacritty.window.dimensions = {
-    columns = 120;
-    lines = 36;
   };
 
   services.gpg-agent.enable = true;

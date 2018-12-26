@@ -64,7 +64,7 @@ in {
     let
       wrappedPkgVersion = lib.getVersion pkgs.fish;
       wrappedPkgName = lib.removeSuffix "-${wrappedPkgVersion}" pkgs.fish.name;
-      packages = concatMap (p: p.packages) cfg.plugins;
+      dependencies = concatMap (p: p.dependencies) cfg.plugins;
       combinedPluginDrv = pkgs.buildEnv {
         name = "${wrappedPkgName}-plugins-${wrappedPkgVersion}";
         paths = cfg.plugins;
@@ -85,6 +85,6 @@ in {
       };
     in {
       xdg.configFile."fish/conf.d/00plugins.fish".source = "${combinedPluginDrv}/setup.fish";
-      home.packages = packages;
+      home.packages = dependencies;
     }))]);
 }

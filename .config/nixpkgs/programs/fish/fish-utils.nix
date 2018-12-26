@@ -10,13 +10,13 @@ let
     src,
     buildPhase ? ":",
     buildInputs ? [],
-    packages ? []
+    dependencies ? []
   }: stdenv.mkDerivation {
     name = namePrefix + name;
     configurePhase = ":";
     dontPatchELF = true;
     dontStrip = true;
-    inherit src buildPhase buildInputs packages;
+    inherit src buildPhase buildInputs dependencies;
     installPhase = ''
       for dir in ./conf.d ./completions ./functions; do
         if [[ -d $dir ]]; then
@@ -40,9 +40,9 @@ let
   };
 
   pluginFromGitHub = {
-    owner, repo, rev, sha256, name ? repo, packages ? []
+    owner, repo, rev, sha256, name ? repo, dependencies ? []
   }: buildPlugin {
-    inherit name packages;
+    inherit name dependencies;
     src = fetchFromGitHub {
       inherit owner repo rev sha256;
     };

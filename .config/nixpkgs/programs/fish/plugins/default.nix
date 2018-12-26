@@ -35,7 +35,7 @@ in with utils; {
     repo = "fasd";
     rev = "a1e991b4a22a63af5f52751ef245b1b9f8a6e6d7";
     sha256 = "0a28z9davbnpwg4j9nhsbs5b7qp8wisv59xv2440yd6xzr05v59d";
-    packages = [ pkgs.fasd ];
+    dependencies = [ pkgs.fasd ];
   };
 
   thefuck = pkgs.callPackage ./thefuck.nix { inherit utils; };
