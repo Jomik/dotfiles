@@ -10,7 +10,7 @@ let
   fork = import /home/jomik/projects/nixos/nixpkgs {};
   fish-plugins = import ./programs/fish/plugins pkgs;
 in {
-  imports = [ ./programs/alacritty ./programs/fish ];
+  imports = [ ./programs ];
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
@@ -71,6 +71,10 @@ in {
       formatOnSave = true;
       lineNumbers = "off";
     };
+  };
+  programs.emacs = {
+    enable = true;
+    service = true;
   };
 
   programs.fish = {
