@@ -75,6 +75,10 @@ in {
   programs.emacs = {
     enable = true;
     service = true;
+
+    theme = "gruvbox";
+    evil = true;
+    leader = "<SPC>";
   };
 
   programs.fish = {
@@ -161,6 +165,7 @@ in {
   };
 
   programs.home-manager.enable = true;
-  programs.home-manager.path = https://github.com/rycee/home-manager/archive/master.tar.gz;
+  # programs.home-manager.path = https://github.com/rycee/home-manager/archive/master.tar.gz;
+  programs.home-manager.path = "$HOME/projects/nixos/home-manager";
   home.stateVersion = "18.09";
 }
