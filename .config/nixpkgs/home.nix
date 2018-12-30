@@ -76,9 +76,13 @@ in {
     enable = true;
     service = true;
 
-    theme = "gruvbox";
-    evil = true;
-    leader = "<SPC>";
+    theme = {
+      enable = true;
+      name = "gruvbox";
+      variant = "light-soft";
+    };
+    evil.enable = true;
+    evil.collection = true;
   };
 
   programs.fish = {

@@ -1,23 +1,32 @@
-{ config, lib, pkgs, ... }:
-
+import ../builder.nix "theme" ({ lib, pkgs, config, ... }:
 with lib; 
 let
-  cfg = config.programs.emacs;
   themeNames = map (removeSuffix "-theme") (filter (hasSuffix "-theme") (attrNames pkgs.emacsPackagesNg));
+  cfg = config.theme;
 in {
-  options.programs.emacs.theme = mkOption {
-    type = types.nullOr (types.enum themeNames);
-    default = null;
-    description = "Which theme to load.";
+  options = {
+    name = mkOption {
+      type = types.enum themeNames;
+      description = "Which theme to load.";
+    };
+    variant = mkOption {
+      type = types.nullOr types.string;
+      default = null;
+      description = "Theme variant to use, will append the variant to the theme name, separated by a dash.";
+    };
   };
 
-  config.programs.emacs = mkIf (cfg.theme != null) {
+  config = {
     extraPackages = epkgs: [
-      epkgs."${cfg.theme}-theme"
+      epkgs."${cfg.name}-theme"
     ];
 
     init = {
-      theme = "(load-theme '${cfg.theme} t)";
+      theme = ''
+        (use-package ${cfg.name}-theme
+          :config
+          (load-theme '${cfg.name}${optionalString (cfg.variant != null) "-${cfg.variant}"} t))
+      '';
     };
   };
-}
+})

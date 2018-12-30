@@ -26,7 +26,7 @@ let
     };
   };
 in {
-  imports = map (name: "${./modules}/${name}")
+  imports = map (name: ./modules + "/${name}")
     (builtins.attrNames (builtins.readDir ./modules));
 
   options.programs.emacs = {
@@ -41,6 +41,9 @@ in {
 
   config = mkIf cfg.enable (mkMerge [
     {
+      programs.emacs.extraPackages = epkgs: with epkgs; [
+        use-package
+      ];
       home.file.".emacs.d/init.el".text = "(package-initialize)"
         + concatMapStringsSep
           "\n\n"

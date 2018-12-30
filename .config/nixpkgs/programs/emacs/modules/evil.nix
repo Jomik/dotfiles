@@ -1,38 +1,38 @@
-{ config, lib, pkgs, ... }:
-
+import ../builder.nix "evil" ({ lib, config, dag, ... }:
 with lib; 
 let
-  cfg = config.programs.emacs;
+  cfg = config.evil;
 in {
-  options.programs.emacs = {
-    evil = mkOption {
+  options ={
+    enable = mkOption {
       type = types.bool;
       default = false;
       description = "Should we be evil?";
     };
-    leader = mkOption {
-      type = types.string;
-      default = "/";
-    };
+    collection = mkEnableOption "evil-collection";
   };
-
-  config.programs.emacs = mkIf cfg.evil {
+  config = {
     extraPackages = epkgs: with epkgs; [
       evil
-      evil-leader
-      evil-collection
-    ];
+    ] ++ optional (cfg.collection) evil-collection;
 
     init = {
       evil = ''
-        (setq evil-want-integration nil)
-        (evil-collection-init)
-        (setq evil-collection-setup-minibuffer t)
-        (global-evil-leader-mode)
-        (evil-mode 1)
-        (evil-leader/set-leader "${cfg.leader}")
-        (setq evil-leader/in-all-states t)
+        (use-package evil
+          ${optionalString cfg.collection ''
+          :init
+            (setq evil-want-integration t)
+            (setq evil-want-keybinding nil)''}
+          :config
+          (evil-mode 1))
+      '';
+    } // optionalAttrs cfg.collection {
+      "evil-collection" = dag.entryAfter ["evil"] ''
+        (use-package evil-collection
+          :after evil
+          :config
+          (evil-collection-init))
       '';
     };
   };
-}
+})
