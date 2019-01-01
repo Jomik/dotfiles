@@ -1,3 +1,0 @@
-{
-  imports = [ ./alacritty ./fish ./emacs ];
-}
