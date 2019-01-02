@@ -9,6 +9,7 @@ in {
       ls = "exa";
       ll = "exa -lha";
       psg = "ps aux | rg -v rg | rg -i -e VSZ -e";
+      ec = "emacsclient -nc";
     };
     functions = {
       mkdir.body = "command mkdir -pv $argv";

@@ -34,7 +34,6 @@
             use-dialog-box nil ; Prevent emacs from showing GUI-dialogs
 
             ;; Indentation
-            tab-width 2
             standard-indent 2
             tab-stop-list (number-sequence 2 120 2) ; Set the amount of spaces on identation
             css-indent-offset 2
@@ -213,11 +212,15 @@
         enable = true;
         defer = true;
       };
+
       nix-mode = {
         enable = true;
-        mode = [
-          ''"\\.nix\\'"''
-        ];
+        mode = [ ''"\\.nix\\'"'' ];
+      };
+
+      fish-mode = {
+        enable = true;
+        mode = [ ''"\\.fish\\'"'' ];
       };
 
       haskell-mode = {

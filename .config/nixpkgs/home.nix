@@ -11,14 +11,8 @@ let
 
   editor = pkgs.writeScript "editor" ''
     #!${pkgs.stdenv.shell}
-    emacsclient -t "$@"
-  '';
-
-  visual = pkgs.writeScript "visual" ''
-    #!${pkgs.stdenv.shell}
     emacsclient -c "$@"
   '';
-
 in rec {
   imports = [
     ./modules/programs/alacritty
@@ -107,7 +101,7 @@ in rec {
 
   home.sessionVariables = {
     EDITOR = "${editor}";
-    VISUAL = "${visual}";
+    VISUAL = "${editor}";
     BROWSER = "${pkgs.firefox}/bin/firefox";
   };
 
