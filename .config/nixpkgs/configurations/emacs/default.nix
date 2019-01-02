@@ -24,7 +24,7 @@
       (setq initial-major-mode 'org-mode ; Sets the *scratch* to org mode as default
             initial-scratch-message nil ; Sets the *scratch* message
             inhibit-splash-screen t ; Prevents the Emacs Startup menu
-            confirm-nonexistent-file-or-buffer t 
+            confirm-nonexistent-file-or-buffer t
             save-interprogram-paste-before-kill t ; Save pastebin to kill ring
             dired-omit-mode t ; Hides uninteresting files
             ring-bell-function 'ignore ; Removing the beep when error
@@ -52,7 +52,7 @@
             frame-title-format '("Emacs @ " system-name ": %b %+%+ %f") ; Sets the window title to more useful
             sentence-end-double-space nil ; Only one space after sentence
             echo-keystrokes 0.1 ; Show keystrokes at once in the bottom
-            system-uses-terminfo nil ; Shell mode character fix      
+            system-uses-terminfo nil ; Shell mode character fix
             password-cache-expiry (* 60 15) ; Time before asking for su pass again
             fringes-outside-margins t
             desktop-restore-frames nil ; for desktop-mode
@@ -87,7 +87,7 @@
         enable = true;
         config = ''
           ;; Only use theme if GUI
-          (if (display-graphic-p) 
+          (if (display-graphic-p)
             (load-theme 'gruvbox-light-soft t))
         '';
       };
@@ -106,7 +106,7 @@
         config = ''
           (add-hook 'prog-mode-hook 'highlight-symbol-mode)
           (setq highlight-symbol-idle-delay .2
-                highlight-symbol-highlight-single-occurrence nil));
+                highlight-symbol-highlight-single-occurrence nil)
         '';
       };
 
@@ -215,16 +215,18 @@
       };
       nix-mode = {
         enable = true;
-        mode = [ ''"\\.nix\\'"'' ];
+        mode = [
+          ''"\\.nix\\'"''
+        ];
       };
 
       haskell-mode = {
         enable = true;
         mode = [
-          ''("\\.hs\\'" . haskell-mode)''
-          ''("\\.hsc\\'" . haskell-mode)''
-          ''("\\.c2hs\\'" . haskell-mode)''
-          ''("\\.cpphs\\'" . haskell-mode)''
+          ''"\\.hs\\'"''
+          ''"\\.hsc\\'"''
+          ''"\\.c2hs\\'"''
+          ''"\\.cpphs\\'"''
           ''("\\.lhs\\'" . literate-haskell-mode)''
         ];
         hook = [

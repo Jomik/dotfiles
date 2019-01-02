@@ -273,9 +273,9 @@ let
   '';
 
   initFile = ''
-    ;;; init.el --- Emacs configuration à la Home Manager.
-    ;;
     ;; -*- lexical-binding: t; -*-
+    ;;; Emacs configuration à la Home Manager.
+    ;;
     ;;
     ;;; Commentary:
     ;;

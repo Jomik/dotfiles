@@ -8,7 +8,18 @@ let
     sha256 = "0gmk6w1lnp6kjf26ak8jzj0h2qrnk7bin54gq68w1ky2pdijnc44";
   }) {};
   fork = import /home/jomik/projects/nixos/nixpkgs {};
-in {
+
+  editor = pkgs.writeScript "editor" ''
+    #!${pkgs.stdenv.shell}
+    emacsclient -t "$@"
+  '';
+
+  visual = pkgs.writeScript "visual" ''
+    #!${pkgs.stdenv.shell}
+    emacsclient -c "$@"
+  '';
+
+in rec {
   imports = [
     ./modules/programs/alacritty
   ] ++ map (name: ./configurations + "/${name}")
@@ -95,7 +106,8 @@ in {
   services.flameshot.enable = true;
 
   home.sessionVariables = {
-    EDITOR = "${pkgs.neovim}/bin/nvim";
+    EDITOR = "${editor}";
+    VISUAL = "${visual}";
     BROWSER = "${pkgs.firefox}/bin/firefox";
   };
 
