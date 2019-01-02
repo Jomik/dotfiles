@@ -85,7 +85,11 @@
     usePackage = {
       gruvbox-theme = {
         enable = true;
-        config = "(load-theme 'gruvbox-light-soft t)";
+        config = ''
+          ;; Only use theme if GUI
+          (if (display-graphic-p) 
+            (load-theme 'gruvbox-light-soft t))
+        '';
       };
 
       which-key = {
@@ -96,7 +100,17 @@
         config = "(which-key-mode)";
       };
 
-      # Remember where we where in a previously visited file. Built-in.
+      highlight-symbol = {
+        enable = true;
+        diminish = [ "highlight-symbol-mode" ];
+        config = ''
+          (add-hook 'prog-mode-hook 'highlight-symbol-mode)
+          (setq highlight-symbol-idle-delay .2
+                highlight-symbol-highlight-single-occurrence nil));
+        '';
+      };
+
+      # Remember where we where in a previously visited file.
       saveplace = {
         enable = true;
         config = ''
@@ -105,7 +119,7 @@
         '';
       };
 
-      # More helpful buffer names. Built-in.
+      # More helpful buffer names.
       uniquify = {
         enable = true;
         config = ''
@@ -127,16 +141,6 @@
         '';
       };
 
-      # Shows Git differences in buffers, may want hydra for control
-      "git-gutter+" = {
-        enable = false;
-        defer = 1;
-        diminish = [ "git-gutter+-mode" ];
-        config = ''
-          (global-git-gutter+-mode 1)
-        '';
-      };
-
       # Evil
       evil = {
         enable = true;
@@ -150,6 +154,14 @@
         enable = true;
         after = [ "evil" ];
         config = "(evil-collection-init)";
+      };
+      evil-surround = {
+        enable = true;
+        config = "(global-evil-surround-mode 1)";
+      };
+      evil-commentary = {
+        enable = true;
+        config = "(evil-commentary-mode)";
       };
 
       # Ivy
@@ -167,11 +179,6 @@
           "C-s" = "swiper";
         };
       };
-      # Lets counsel do prioritization.
-      amx = {
-        enable = true;
-        commands = [ "amx-initialize" ];
-      };
       counsel = {
         enable = true;
         diminish = [ "counsel-mode" ];
@@ -183,11 +190,69 @@
         };
       };
 
-      # Language/syntax
+      # Syntax checking
+      flycheck = {
+        enable = true;
+        commands = [ "global-flycheck-mode" ];
+        config = ''
+          ;; Only check buffer when mode is enabled or buffer is saved.
+          (setq flycheck-check-syntax-automatically '(mode-enabled save))
+
+          ;; Enable flycheck in all eligible buffers.
+          (global-flycheck-mode)
+        '';
+      };
+
+      flycheck-haskell = {
+        enable = true;
+        hook = [ "(flycheck-mode . flycheck-haskell-setup)" ];
+      };
+
+      # Languages
       systemd = {
         enable = true;
         defer = true;
       };
+      nix-mode = {
+        enable = true;
+        mode = [ ''"\\.nix\\'"'' ];
+      };
+
+      haskell-mode = {
+        enable = true;
+        mode = [
+          ''("\\.hs\\'" . haskell-mode)''
+          ''("\\.hsc\\'" . haskell-mode)''
+          ''("\\.c2hs\\'" . haskell-mode)''
+          ''("\\.cpphs\\'" . haskell-mode)''
+          ''("\\.lhs\\'" . literate-haskell-mode)''
+        ];
+        hook = [
+          ''
+            (haskell-mode
+             . (lambda ()
+                 (subword-mode +1)
+                 (interactive-haskell-mode +1)
+                 (haskell-doc-mode +1)
+                 (haskell-indentation-mode +1)
+                 (haskell-decl-scan-mode +1)))
+          ''
+        ];
+        config = ''
+          (require 'haskell)
+          (require 'haskell-doc)
+
+          (setq haskell-process-auto-import-loaded-modules t
+                haskell-process-suggest-remove-import-lines t
+                haskell-process-log t
+                haskell-tags-on-save t
+                haskell-notify-p t)
+
+          (setq haskell-process-args-cabal-repl
+                '("--ghc-options=+RTS -M500m -RTS -ferror-spans -fshow-loaded-modules"))
+        '';
+      };
+
     };
   };
 }
