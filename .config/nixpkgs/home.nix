@@ -8,7 +8,6 @@ let
     sha256 = "0gmk6w1lnp6kjf26ak8jzj0h2qrnk7bin54gq68w1ky2pdijnc44";
   }) {};
   fork = import /home/jomik/projects/nixos/nixpkgs {};
-
   editor = pkgs.writeScript "editor" ''
     #!${pkgs.stdenv.shell}
     emacsclient -c "$@"
@@ -36,11 +35,11 @@ in rec {
     ripgrep
     xsel
     okular
-    weechat
     zip unzip
-    atom
-    discord
     gist
+    discord
+    weechat
+    slack
 
     # mypkgs
     dotfiles-sh

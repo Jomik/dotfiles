@@ -32,5 +32,20 @@
         name = "evil-collection";
       };
     };
+    use-package = self.melpaBuild {
+      pname = "use-package";
+      version = "20181119.2350";
+      src = pkgs.fetchFromGitHub {
+        owner = "jwiegley";
+        repo = "use-package";
+        rev = "39a8b8812c2c9f6f0b299e6a04e504ef393694ce";
+        sha256 = "1b7mjjh0d6fmkkd9vyj64vca27xqhga0nvyrrcqxpqjn62zq046y";
+      };
+      recipe = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/melpa/melpa/51a19a251c879a566d4ae451d94fcb35e38a478b/recipes/use-package";
+        sha256 = "0d0zpgxhj6crsdi9sfy30fn3is036apm1kz8fhjg1yzdapf1jdyp";
+        name = "use-package";
+      };
+    };
   };
 }

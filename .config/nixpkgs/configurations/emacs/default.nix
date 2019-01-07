@@ -1,6 +1,63 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
-{
+with lib;
+let
+  hydra = name: description: options: heads:
+  let
+  in ''
+    (defhydra hydra-${name} ${options}
+    "${description}"
+    ${concatStringsSep "\n" heads})
+  '';
+  hydraLeader = hydra "leader" "Leader" "nil" [
+    ''("q" nil)''
+    ''("c" hydra-flycheck/body "flycheck" :color blue)''
+    ''("f" hydra-fold/body "fold" :color blue)''
+  ];
+  hydraFlycheck = ''
+    (defhydra hydra-flycheck (:color pink)
+    "
+    ^
+    ^Flycheck^          ^Errors^            ^Checker^
+    ^────────^──────────^──────^────────────^───────^───────────
+    _q_ quit            _p_ previous        _?_ describe
+    _m_ manual          _n_ next            _d_ disable
+    _v_ verify setup    _f_ check           _s_ select
+    ^^                  _l_ list            ^^
+    ^^                  ^^                  ^^
+    "
+    ("q" nil)
+    ("p" flycheck-previous-error)
+    ("n" flycheck-next-error)
+    ("?" flycheck-describe-checker :color blue)
+    ("d" flycheck-disable-checker :color blue)
+    ("f" flycheck-buffer)
+    ("l" flycheck-list-errors :color blue)
+    ("m" flycheck-manual :color blue)
+    ("s" flycheck-select-checker :color blue)
+    ("v" flycheck-verify-setup :color blue))
+  '';
+  hydraFold = ''
+    (defhydra hydra-fold (:color pink)
+    "
+    ^
+    ^Fold^              ^Do^                ^Jump^              ^Toggle^
+    ^────^──────────────^──^────────────────^────^──────────────^──────^────────────
+    _q_ quit            _f_ fold            _p_ previous        _t_ current
+    ^^                  _k_ kill            _n_ next            _T_ all
+    ^^                  _K_ kill all        ^^                  ^^
+    ^^                  ^^                  ^^                  ^^
+    "
+    ("q" nil)
+    ("t" vimish-fold-toggle)
+    ("T" vimish-fold-toggle-all)
+    ("p" vimish-fold-previous-fold)
+    ("n" vimish-fold-next-fold)
+    ("f" vimish-fold)
+    ("k" vimish-fold-delete)
+    ("K" vimish-fold-delete-all))
+  '';
+in {
   imports = [ ../../modules/programs/emacs ./overrides.nix ];
 
   programs.emacs.init = {
@@ -9,13 +66,13 @@
     startupTimer = true;
     diminish = true;
     bindKey = true;
+    general = true;
 
     prelude = ''
       (menu-bar-mode -1) ; Removes the menu-bar
-      (when window-system
-        (tool-bar-mode -1) ; Removes the toolbar in graphic editor
-        (tooltip-mode -1) ; Removes mouse hover tooltips
-        (scroll-bar-mode -1)) ; Removes the scollbar
+      (tool-bar-mode -1) ; Removes the toolbar in graphic editor
+      (tooltip-mode -1) ; Removes mouse hover tooltips
+      (scroll-bar-mode -1) ; Removes the scollbar
 
       (setq-default indent-tabs-mode nil
                     fill-column 80
@@ -28,18 +85,17 @@
             save-interprogram-paste-before-kill t ; Save pastebin to kill ring
             dired-omit-mode t ; Hides uninteresting files
             ring-bell-function 'ignore ; Removing the beep when error
-            confirm-kill-emacs 'y-or-n-p ; Ask before closing
             minibuffer-prompt-properties
             '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt) ; Prevent Read-only warnings in prompt
             use-dialog-box nil ; Prevent emacs from showing GUI-dialogs
 
             ;; Indentation
             standard-indent 2
-            tab-stop-list (number-sequence 2 120 2) ; Set the amount of spaces on identation
+            tab-width 2
             css-indent-offset 2
             c-basic-offset 2
-            history-length 1000
 
+            history-length 1000
             require-final-newline t ; Always end files with a newline character.
             line-move-visual nil ; Don't want to move based on visual line.
 
@@ -76,6 +132,8 @@
       (column-number-mode 1) ; show linenumber in modebar
       (transient-mark-mode 1)
 
+      (electric-indent-mode +1)
+
       ;; Unbind Pesky Sleep Button
       (global-unset-key [(control z)])
       (global-unset-key [(control x)(control z)])
@@ -84,19 +142,19 @@
     usePackage = {
       gruvbox-theme = {
         enable = true;
-        config = ''
-          ;; Only use theme if GUI
-          (if (display-graphic-p)
-            (load-theme 'gruvbox-light-soft t))
-        '';
       };
 
       which-key = {
         enable = true;
+        defer = 2;
         commands = [ "which-key-mode" ];
         diminish = [ "which-key-mode" ];
-        defer = 2;
-        config = "(which-key-mode)";
+       config = "(which-key-mode)";
+      };
+
+      general = {
+        enable = true;
+        config = "(general-evil-setup)";
       };
 
       highlight-symbol = {
@@ -126,6 +184,32 @@
         '';
       };
 
+      projectile = {
+        enable = true;
+        diminish = [ "projectile-mode" ];
+        commands = [ "projectile-mode" ];
+        config = ''
+          (setq projectile-enable-caching t
+                projectile-completion-system 'ivy)
+          (projectile-mode 1)
+        '';
+      };
+
+      hydra = {
+        enable = true;
+        general = ''
+          (:states '(normal visual)
+           :keymaps 'override
+           "SPC" 'hydra-leader/body)
+        '';
+        config = ''
+          (setq-default hydra-default-hint nil)
+          ${hydraLeader}
+          ${hydraFlycheck}
+          ${hydraFold}
+        '';
+      };
+
       # Git
       magit = {
         enable = true;
@@ -143,6 +227,7 @@
       # Evil
       evil = {
         enable = true;
+        diminish = [ "undo-tree-mode" ];
         init = ''
           (setq evil-want-integration t)
           (setq evil-want-keybinding nil)
@@ -160,7 +245,25 @@
       };
       evil-commentary = {
         enable = true;
+        diminish = [ "evil-commentary-mode" ];
         config = "(evil-commentary-mode)";
+      };
+      evil-goggles = {
+        enable = true;
+        diminish = [ "evil-goggles-mode" ];
+        config = ''
+          (evil-goggles-mode)
+          (evil-goggles-use-diff-faces)
+        '';
+      };
+      vimish-fold = {
+        enable = true;
+      };
+      evil-vimish-fold = {
+        enable = true;
+        after = [ "vimish-fold" ];
+        diminish = [ "evil-vimish-fold-mode" ];
+        config = "(evil-vimish-fold-mode 1)";
       };
 
       # Ivy
@@ -216,11 +319,32 @@
       nix-mode = {
         enable = true;
         mode = [ ''"\\.nix\\'"'' ];
+        config = "(setq nix-indent-function 'nix-indent-line)";
       };
 
       fish-mode = {
         enable = true;
         mode = [ ''"\\.fish\\'"'' ];
+      };
+
+      org = {
+        enable = true;
+        mode = [ ''("\.org\\'" . org-mode)'' ];
+      };
+      org-bullets = {
+        enable = true;
+        after = [ "org" ];
+        hook = [ "(org-mode . org-bullets-mode)" ];
+      };
+      evil-org = {
+        enable = true;
+        after = [ "evil" "org" ];
+        hook = [ "(org-mode . evil-org-mode)" ];
+      };
+
+      dotenv-mode = {
+        enable = true;
+        mode = [ ''"\\.env\\..*\\"'' ];
       };
 
       haskell-mode = {
@@ -257,7 +381,6 @@
                 '("--ghc-options=+RTS -M500m -RTS -ferror-spans -fshow-loaded-modules"))
         '';
       };
-
     };
   };
 }

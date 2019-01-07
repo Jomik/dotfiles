@@ -10,6 +10,7 @@ in {
       ll = "exa -lha";
       psg = "ps aux | rg -v rg | rg -i -e VSZ -e";
       ec = "emacsclient -nc";
+      grep = "rg";
     };
     functions = {
       mkdir.body = "command mkdir -pv $argv";
