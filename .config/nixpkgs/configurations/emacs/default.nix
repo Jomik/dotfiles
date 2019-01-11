@@ -316,6 +316,24 @@ in {
         defer = true;
       };
 
+      typescript-mode = {
+        enable = true;
+        mode = [ ''"\\.ts\\'"'' ];
+        init = "(setq typescript-indent-level 2)";
+      };
+      tide = {
+        enable = true;
+        after = [ "typescript-mode" ];
+        init = ''
+          (setq tide-tsserver-executable "node_modules/typescript/bin/tsserver")
+        '';
+        hook = [
+          "(typescript-mode . tide-setup)"
+          "(typescript-mode . tide-hl-identifier-mode)"
+          "(before-save . tide-format-before-save)"
+        ];
+      };
+
       nix-mode = {
         enable = true;
         mode = [ ''"\\.nix\\'"'' ];
@@ -345,6 +363,11 @@ in {
       dotenv-mode = {
         enable = true;
         mode = [ ''"\\.env\\..*\\"'' ];
+      };
+
+      yaml-mode = {
+        enable = true;
+        mode = [ ''"\.yml\\'"'' ];
       };
 
       haskell-mode = {

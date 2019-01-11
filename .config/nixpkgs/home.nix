@@ -22,12 +22,14 @@ in rec {
   nixpkgs.overlays = [
     (import ./overlays/pkgs.nix)
     (self: super: {
-      inherit (unstable) thefuck;
+      inherit (unstable) thefuck direnv;
       inherit (fork) alacritty;
     })
   ];
 
   home.packages = (with pkgs; [
+    nodejs-10_x
+    docker_compose
     neovim
     firefox
     gnupg

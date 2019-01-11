@@ -6,9 +6,6 @@
 # and symlink to it will be created at ./.direnv/default.
 # Dependencies are added to the GC roots, such that the environment remains persistent.
 #
-# Packages can also be specified directly via e.g `use nix -p ocaml`,
-# however those will not be added to the GC roots.
-#
 # The resulting environment is cached for better performance.
 #
 # To trigger switch to a different environment:
@@ -26,52 +23,73 @@
 # To remove only old environments:
 # `find .direnv -name 'env-*' -and -not -name `readlink .direnv/default` -exec rm -rf {} +`
 #
+
+set -eo pipefail
+
 use_nix() {
-    set -e
+	# define all local variables
+	local f env_hash dir default wd drv dump path_backup
+        local shell="shell.nix"
+	local files_to_watch=("shell.nix")
 
-    local shell="shell.nix"
-    if [[ ! -f "${shell}" ]]; then
-        shell="default.nix"
-    fi
+	# compute the hash of all the files that makes up the development environment
+	env_hash="$(hashContents "${files_to_watch[@]}")"
 
-    if [[ ! -f "${shell}" ]]; then
-        fail "use nix: shell.nix or default.nix not found in the folder"
-    fi
+	dir="$(direnv_layout_dir)"
+	default="${dir}/default"
+	if [[ ! -L "${default}" ]] || [[ ! -d $(readlink "${default}") ]]; then
+		wd="${dir}/env-${env_hash}"
+		mkdir -p "${wd}"
 
-    local dir="${PWD}"/.direnv
-    local default="${dir}/default"
-    if [[ ! -L "${default}" ]] || [[ ! -d `readlink "${default}"` ]]; then
-        local wd="${dir}/env-`md5sum "${shell}" | cut -c -32`" # TODO: Hash also the nixpkgs version?
-        mkdir -p "${wd}"
+		drv="${wd}/env.drv"
+		if [[ ! -f "${drv}" ]]; then
+			log_status "use nix: deriving new environment"
+			IN_NIX_SHELL=1 nix-instantiate --add-root "${drv}" --indirect "${shell}" > /dev/null
+			nix-store -r $(nix-store --query --references "${drv}") --add-root "${wd}/dep" --indirect > /dev/null
+		fi
 
-        local drv="${wd}/env.drv"
-        if [[ ! -f "${drv}" ]]; then
-            log_status "use nix: deriving new environment"
-            IN_NIX_SHELL=1 nix-instantiate --add-root "${drv}" --indirect "${shell}" > /dev/null
-            nix-store -r `nix-store --query --references "${drv}"` --add-root "${wd}/dep" --indirect > /dev/null
-        fi
+		rm -f "${default}"
+		ln -s $(basename "${wd}") "${default}"
+	fi
 
-        rm -f "${default}"
-        ln -s `basename "${wd}"` "${default}"
-    fi
+	drv=$(readlink "${default}/env.drv")
+	dump="${dir}/dump-$(hashFile ".envrc")-$(hashFile ${drv})"
 
-    local drv=`readlink -f "${default}/env.drv"`
-    local dump="${dir}/dump-`md5sum ".envrc" | cut -c -32`-`md5sum ${drv} | cut -c -32`"
+	if [[ ! -f "${dump}" ]] || [[ "${XDG_CONFIG_DIR}/direnv/direnvrc" -nt "${dump}" ]]; then
+		log_status "use nix: updating cache"
+                local de=$(which direnv)
 
-    if [[ ! -f "${dump}" ]] || [[ "${XDG_CONFIG_DIR}/direnv/direnvrc" -nt "${dump}" ]]; then
-        log_status "use nix: updating cache"
+		old=$(find "${dir}" -name 'dump-*')
+		nix-shell --pure "${drv}" --show-trace --run "$(join_args ${de} dump bash)" > "${dump}"
+		rm -f ${old}
+	fi
 
-        old=`find "${dir}" -name 'dump-*'`
-        nix-shell "${drv}" --show-trace "$@" --run 'direnv dump' > "${dump}"
-        rm -f ${old}
-    fi
+	# evaluate the dump created by nix-shell earlier, but have to merge the PATH
+	# with the current PATH
+	# NOTE: we eval the dump here as opposed to direnv_load it because we don't
+	# want to persist environment variables coming from the shell at the time of
+	# the dump. See https://github.com/direnv/direnv/issues/405 for context.
+	path_backup="${PATH}"
+	eval $(cat "${dump}")
+	export PATH="${PATH}:${path_backup}"
 
-    direnv_load cat "${dump}"
-
-    watch_file "${default}"
-    watch_file shell.nix
-    if [[ ${shell} == "default.nix" ]]; then
-        watch_file default.nix
-    fi
+	for f in "${files_to_watch[@]}"; do
+		watch_file "${f}"
+	done
 }
 
+hashContents() {
+	if has md5sum; then
+		cat "${@}" | md5sum | cut -c -32
+	elif has md5; then
+		cat "${@}" | md5 -q
+	fi
+}
+
+hashFile() {
+	if has md5sum; then
+		md5sum "${@}" | cut -c -32
+	elif has md5; then
+		md5 -q "${@}"
+	fi
+}

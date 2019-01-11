@@ -9,10 +9,14 @@ in {
       ls = "exa";
       ll = "exa -lha";
       psg = "ps aux | rg -v rg | rg -i -e VSZ -e";
-      ec = "emacsclient -nc";
+      e = "emacsclient -nc";
       grep = "rg";
     };
     functions = {
+      E.body = ''
+        set -lx SUDO_EDITOR emacsclient -c
+        command sudoedit $argv
+      '';
       mkdir.body = "command mkdir -pv $argv";
       ports.body = "command ss -tulanp";
     };
