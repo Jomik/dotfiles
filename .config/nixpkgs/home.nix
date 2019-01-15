@@ -1,12 +1,7 @@
 { pkgs, ... }:
 
 let
-  unstable = import (pkgs.fetchFromGitHub {
-    owner = "NixOS";
-    repo = "nixpkgs-channels";
-    rev = "44b02b52ea6a49674f124f50009299f192ed78bb";
-    sha256 = "0gmk6w1lnp6kjf26ak8jzj0h2qrnk7bin54gq68w1ky2pdijnc44";
-  }) {};
+  unstable = import <unstable> {};
   fork = import /home/jomik/projects/nixos/nixpkgs {};
   editor = pkgs.writeScript "editor" ''
     #!${pkgs.stdenv.shell}
@@ -22,8 +17,7 @@ in rec {
   nixpkgs.overlays = [
     (import ./overlays/pkgs.nix)
     (self: super: {
-      inherit (unstable) thefuck direnv;
-      inherit (fork) alacritty;
+      inherit (unstable) thefuck direnv alacritty;
     })
   ];
 
@@ -48,7 +42,10 @@ in rec {
   # ]) ++ (with unstable; [
   ]);
 
-  programs.htop.enable = true;
+  programs.htop = {
+    enable = true;
+    showProgramPath = false;
+  };
   programs.fzf.enable = true;
   programs.direnv.enable = true;
   programs.emacs.enable = true;

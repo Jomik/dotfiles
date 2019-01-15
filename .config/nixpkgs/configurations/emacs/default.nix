@@ -295,7 +295,6 @@ in {
       # Syntax checking
       flycheck = {
         enable = true;
-        commands = [ "global-flycheck-mode" ];
         config = ''
           ;; Only check buffer when mode is enabled or buffer is saved.
           (setq flycheck-check-syntax-automatically '(mode-enabled save))
@@ -323,7 +322,7 @@ in {
       };
       tide = {
         enable = true;
-        after = [ "typescript-mode" ];
+        after = [ "typescript-mode" "flycheck" ];
         init = ''
           (setq tide-tsserver-executable "node_modules/typescript/bin/tsserver")
         '';
