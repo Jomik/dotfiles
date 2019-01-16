@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  unstable = import <unstable> {};
+  unstable = import <unstable> { config.allowUnfree = true;};
   fork = import /home/jomik/projects/nixos/nixpkgs {};
   editor = pkgs.writeScript "editor" ''
     #!${pkgs.stdenv.shell}
@@ -22,8 +22,6 @@ in rec {
   ];
 
   home.packages = (with pkgs; [
-    nodejs-10_x
-    docker_compose
     neovim
     firefox
     gnupg

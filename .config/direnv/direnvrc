@@ -29,6 +29,7 @@ set -eo pipefail
 use_nix() {
 	# define all local variables
 	local f env_hash dir default wd drv dump path_backup
+        local vars_to_unset=("TMP" "TMPDIR" "TEMP" "TEMPDIR" "PYTHONPATH")
         local shell="shell.nix"
 	local files_to_watch=("shell.nix")
 
@@ -72,6 +73,7 @@ use_nix() {
 	path_backup="${PATH}"
 	eval $(cat "${dump}")
 	export PATH="${PATH}:${path_backup}"
+        unset "${vars_to_unset[@]}"
 
 	for f in "${files_to_watch[@]}"; do
 		watch_file "${f}"
