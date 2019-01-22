@@ -1,9 +1,14 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
-let 
+let
   fish-plugins = import ../modules/programs/fish/plugins pkgs;
 in {
   imports = [ ../modules/programs/fish ];
+
+  home.file.".bashrc".text = ''
+    exec ${config.programs.fish.package}/bin/fish
+  '';
+
   programs.fish = {
     shellAbbrs = {
       ls = "exa";

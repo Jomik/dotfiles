@@ -176,6 +176,12 @@ in {
         '';
       };
 
+      direnv = {
+        enable = true;
+        diminish = [ "direnv-mode" ];
+        config = "(direnv-mode)";
+      };
+
       # More helpful buffer names.
       uniquify = {
         enable = true;

@@ -17,7 +17,7 @@ in rec {
   nixpkgs.overlays = [
     (import ./overlays/pkgs.nix)
     (self: super: {
-      inherit (unstable) thefuck direnv alacritty;
+      inherit (unstable) thefuck direnv alacritty fish;
     })
   ];
 
@@ -31,13 +31,14 @@ in rec {
     okular
     zip unzip
     gist
-    discord
     weechat
     slack
+    transmission-gtk
 
     # mypkgs
     dotfiles-sh
-  # ]) ++ (with unstable; [
+  ]) ++ (with unstable; [
+    discord
   ]);
 
   programs.htop = {
@@ -49,6 +50,7 @@ in rec {
   programs.emacs.enable = true;
   programs.emacs.service = true;
   programs.fish.enable = true;
+  # programs.zsh.enable = true;
   programs.vscode.enable = true;
   programs.git.enable = true;
 
@@ -94,6 +96,25 @@ in rec {
   services.gpg-agent.enable = true;
   services.gpg-agent.enableSshSupport = true;
   services.flameshot.enable = true;
+
+  home.keyboard = {
+    layout = "us";
+    variant = "colemak";
+    options = [ "ctrl:nocaps" ];
+  };
+  xsession = {
+    enable = true;
+    preferStatusNotifierItems = true;
+  };
+  # Disable setxkbmap hack
+  systemd.user.services.setxkbmap.Service.ExecStart= "true";
+  xsession.windowManager.xmonad = {
+    enable = true;
+    enableContribAndExtras = true;
+    extraPackages = self: [
+      self.taffybar
+    ];
+  };
 
   home.sessionVariables = {
     EDITOR = "${editor}";
