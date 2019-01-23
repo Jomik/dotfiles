@@ -1,10 +1,13 @@
 { pkgs, ... }:
 
+let
+  deps = [
+  ];
+in
 {
   home.packages = with pkgs; [
-    taffybar
+    rofi-pass
   ];
-
   programs.rofi = {
     enable = true;
     terminal = "${pkgs.alacritty}";

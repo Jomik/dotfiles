@@ -3,10 +3,6 @@
 let
   unstable = import <unstable> { config.allowUnfree = true;};
   fork = import /home/jomik/projects/nixos/nixpkgs {};
-  editor = pkgs.writeScript "editor" ''
-    #!${pkgs.stdenv.shell}
-    emacsclient -c "$@"
-  '';
 in rec {
   imports = [
     ./modules/programs/alacritty
@@ -25,8 +21,6 @@ in rec {
     neovim
     firefox
     gnupg
-    exa
-    ripgrep
     xsel
     okular
     zip unzip
@@ -34,6 +28,12 @@ in rec {
     weechat
     slack
     transmission-gtk
+
+    pass rofi-pass
+
+    exa
+    bat
+    ripgrep
 
     # mypkgs
     dotfiles-sh
@@ -48,7 +48,7 @@ in rec {
   programs.fzf.enable = true;
   programs.direnv.enable = true;
   programs.emacs.enable = true;
-  programs.emacs.service = true;
+  # programs.emacs.service = true;
   programs.fish.enable = true;
   # programs.zsh.enable = true;
   programs.vscode.enable = true;
@@ -97,28 +97,22 @@ in rec {
   services.gpg-agent.enableSshSupport = true;
   services.flameshot.enable = true;
 
-  home.keyboard = {
-    layout = "us";
-    variant = "colemak";
-    options = [ "ctrl:nocaps" ];
-  };
-  xsession = {
-    enable = true;
-    preferStatusNotifierItems = true;
-  };
+  # home.keyboard = {
+  #   layout = "us";
+  #   variant = "colemak";
+  #   options = [ "ctrl:nocaps" ];
+  # };
+  # xsession = {
+  #   enable = true;
+  #   preferStatusNotifierItems = true;
+  # };
   # Disable setxkbmap hack
-  systemd.user.services.setxkbmap.Service.ExecStart= "true";
-  xsession.windowManager.xmonad = {
-    enable = true;
-    enableContribAndExtras = true;
-    extraPackages = self: [
-      self.taffybar
-    ];
-  };
+  # systemd.user.services.setxkbmap.Service.ExecStart= "true";
+  # xsession.windowManager.xmonad.enable = true;
 
   home.sessionVariables = {
-    EDITOR = "${editor}";
-    VISUAL = "${editor}";
+    EDITOR = "emacs";
+    VISUAL = "emacs";
     BROWSER = "${pkgs.firefox}/bin/firefox";
   };
 

@@ -36,13 +36,18 @@ clean_nix_shell_dump() {
         "__ETC_PROFILE_SOURCED" "SHELL" "HOME" "SHLVL"
         "PAGER" "READELF" "PWD" "TERM" "LOGNAME" "_PATH" "SIZE" "TARGET_HOST" "RANLIB" "WINDRES"
         "_" "AR" "AS" "CC" "LD" "NM" "CONFIG_SHELL" "CXX" "HOST_PATH" "IN_NIX_SHELL"
+        "AR_FOR_TARGET" "AS_FOR_TARGET" "CC_FOR_TARGET" "CXX_FOR_TARGET" "LD_FOR_TARGET"
+        "NM_FOR_TARGET" "OBJCOPY_FOR_TARGET" "OBJDUMP_FOR_TARGET" "RANLIB_FOR_TARGET"
+        "READELF_FOR_TARGET" "SIZE_FOR_TARGET" "STRINGS_FOR_TARGET" "STRIP_FOR_TARGET" "TARGET_AR"
+        "TARGET_AS" "TARGET_CC" "TARGET_CXX" "TARGET_LD" "TARGET_NM" "TARGET_OBJCOPY" "TARGET_OBJDUMP"
+        "TARGET_RANLIB" "TARGET_READELF" "TARGET_SIZE" "TARGET_STRINGS" "TARGET_STRIP"
+        "TARGET_WINDRES" "WINDRES_FOR_TARGET"
     )
     sed -iEe 's/;export/;\nexport/g' $1
     sed -iEe 's/export \$.*;//g' $1
     for r in "${to_remove[@]}"; do
         sed -iEe "s/export $r=.*;//g" $1
     done
-    # cat $1
 }
 
 use_nix() {
