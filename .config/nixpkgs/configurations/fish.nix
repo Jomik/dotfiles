@@ -16,14 +16,12 @@ in {
       ls = "exa";
       ll = "exa -lha";
       psg = "ps aux | rg -v rg | rg -i -e VSZ -e";
+      e = "emacsclient -nc";
       E = "sudoedit";
       grep = "rg";
       cat = "bat";
     };
     functions = {
-      e.body = ''
-        emacs $argv &; disown
-      '';
       mkdir.body = "command mkdir -pv $argv";
       ports.body = "command ss -tulanp";
     };

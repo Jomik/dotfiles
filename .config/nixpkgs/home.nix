@@ -3,6 +3,10 @@
 let
   unstable = import <unstable> { config.allowUnfree = true;};
   fork = import /home/jomik/projects/nixos/nixpkgs {};
+  editor = pkgs.writeScript "editor" ''
+    #!${pkgs.stdenv.shell}
+    emacsclient -c "$@"
+  '';
 in rec {
   imports = [
     ./modules/programs/alacritty
@@ -48,7 +52,7 @@ in rec {
   programs.fzf.enable = true;
   programs.direnv.enable = true;
   programs.emacs.enable = true;
-  # programs.emacs.service = true;
+  programs.emacs.service = true;
   programs.fish.enable = true;
   # programs.zsh.enable = true;
   programs.vscode.enable = true;
@@ -111,8 +115,8 @@ in rec {
   # xsession.windowManager.xmonad.enable = true;
 
   home.sessionVariables = {
-    EDITOR = "emacs";
-    VISUAL = "emacs";
+    EDITOR = "${editor}";
+    VISUAL = "${editor}";
     BROWSER = "${pkgs.firefox}/bin/firefox";
   };
 
