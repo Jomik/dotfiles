@@ -33,7 +33,7 @@ in rec {
     slack
     transmission-gtk
 
-    pass rofi-pass
+    pass
 
     exa
     bat
