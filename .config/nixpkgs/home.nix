@@ -31,8 +31,6 @@ in rec {
     gist
     weechat
     slack
-    transmission-gtk
-
     pass
 
     exa
@@ -101,18 +99,11 @@ in rec {
   services.gpg-agent.enableSshSupport = true;
   services.flameshot.enable = true;
 
-  # home.keyboard = {
-  #   layout = "us";
-  #   variant = "colemak";
-  #   options = [ "ctrl:nocaps" ];
-  # };
-  # xsession = {
-  #   enable = true;
-  #   preferStatusNotifierItems = true;
-  # };
+  xsession.enable = true;
+  systemd.user.startServices = true;
   # Disable setxkbmap hack
-  # systemd.user.services.setxkbmap.Service.ExecStart= "true";
-  # xsession.windowManager.xmonad.enable = true;
+  systemd.user.services.setxkbmap.Service.ExecStart = "${pkgs.coreutils}/bin/true";
+  xsession.windowManager.xmonad.enable = true;
 
   home.sessionVariables = {
     EDITOR = "${editor}";
