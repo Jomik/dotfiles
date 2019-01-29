@@ -102,7 +102,7 @@ in rec {
   xsession.enable = true;
   systemd.user.startServices = true;
   # Disable setxkbmap hack
-  systemd.user.services.setxkbmap.Service.ExecStart = "${pkgs.coreutils}/bin/true";
+  systemd.user.services.setxkbmap.Service.ExecStart = "${pkgs.xorg.setxkbmap}/bin/setxkbmap";
   xsession.windowManager.xmonad.enable = true;
 
   home.sessionVariables = {

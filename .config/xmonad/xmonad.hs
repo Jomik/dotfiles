@@ -1,4 +1,5 @@
 import XMonad
+import XMonad.Actions.Volume
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.EwmhDesktops (ewmh)
 import XMonad.Layout.NoBorders (smartBorders)
@@ -19,6 +20,9 @@ myConfig = def
     , ("M-S-p", spawn $ rofiPass "/bin/rofi-pass")
     , ("<XF86MonBrightnessDown>", Brightness.decrease)
     , ("<XF86MonBrightnessUp>", Brightness.increase)
+    , ("<XF86AudioLowerVolume>", lowerVolume 5 >> return ())
+    , ("<XF86AudioRaiseVolume>", raiseVolume 5 >> return ())
+    , ("<XF86AudioMute>", toggleMute >> return ())
     ]
 
 main =
