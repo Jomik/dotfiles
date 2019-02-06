@@ -1,8 +1,8 @@
-pkgs:
+{ pkgs, utils }:
 
-let 
-  utils = pkgs.callPackage ./../fish-utils.nix {};
-in with utils; {
+with utils;
+{
+  inherit buildPlugin pluginFromGitHub;
   prompt = {
     spacefish = pluginFromGitHub {
       owner = "matchai";

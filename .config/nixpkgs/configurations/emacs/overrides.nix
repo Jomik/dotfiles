@@ -2,6 +2,21 @@
 
 {
   programs.emacs.overrides = self: super: {
+    tla-mode = self.melpaBuild {
+      pname = "tla-mode";
+      version = "1.0.0";
+      src = pkgs.fetchFromGitHub {
+        owner = "ratish-punnoose";
+        repo = "tla-mode";
+        rev = "ab604ba3739ad613599ccee7bc7cb4c9a7b84f5c";
+        sha256 = "1q9pnf4hdan7y4gyxssgdarprdf3wjv5gflnirbpfqq7fyfihwxw";
+      };
+      recipe = pkgs.writeText "recipe" ''
+        (tla-mode
+        :repo "ratish-punnoose/tla-mode"
+        :fetcher github)
+      '';
+    };
     general = self.melpaBuild {
       pname = "general";
       version = "20181229.1542";

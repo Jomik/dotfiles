@@ -1,4 +1,4 @@
-{ stdenv, lib, fish, fetchFromGitHub }: 
+{ stdenv, lib, fish, fetchFromGitHub }:
 
 let
   fishVersion = lib.getVersion fish;

@@ -375,6 +375,11 @@ in {
         mode = [ ''"\.yml\\'"'' ];
       };
 
+      tla-mode = {
+        enable = true;
+        mode = [ ''"\.tla\\'"'' ];
+      };
+
       haskell-mode = {
         enable = true;
         mode = [

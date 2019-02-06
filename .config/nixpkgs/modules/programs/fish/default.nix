@@ -2,6 +2,8 @@
 
 with lib;
 let
+  types = lib.types // import ../../lib/types.nix { inherit lib; };
+  utils = pkgs.callPackage ./fish-utils.nix {};
   cfg = config.programs.fish;
 
   fileType = types.submodule (
@@ -40,8 +42,8 @@ let
 in {
   options = {
     programs.fish.plugins = mkOption {
-      type = types.listOf types.package;
-      default = [];
+      type = types.selectorFunction;
+      default = plugins: [];
       description = ''
         The plugins to add to fish.
         Built with <varname>buildPlugin</varname> or fetched from GitHub with <varname>pluginFromGitHub</varname>.
@@ -60,14 +62,15 @@ in {
   config = mkIf cfg.enable (mkMerge [
     {
       xdg.configFile = map (n: { target = "fish/functions/${n}.fish"; source = cfg.functions.${n}.source; }) (attrNames cfg.functions);
-    } (mkIf (length cfg.plugins > 0) (
+    } (
     let
+    plugins = cfg.plugins (import ./plugins { inherit pkgs utils; });
       wrappedPkgVersion = lib.getVersion pkgs.fish;
       wrappedPkgName = lib.removeSuffix "-${wrappedPkgVersion}" pkgs.fish.name;
-      dependencies = concatMap (p: p.dependencies) cfg.plugins;
+      dependencies = concatMap (p: p.dependencies) plugins;
       combinedPluginDrv = pkgs.buildEnv {
         name = "${wrappedPkgName}-plugins-${wrappedPkgVersion}";
-        paths = cfg.plugins;
+        paths = plugins;
         postBuild = ''
           touch $out/setup.fish
           if [ -d $out/functions ]; then
@@ -83,8 +86,8 @@ in {
           fi
         '';
       };
-    in {
+    in mkIf (length plugins > 0) {
       xdg.configFile."fish/conf.d/00plugins.fish".source = "${combinedPluginDrv}/setup.fish";
       home.packages = dependencies;
-    }))]);
+    })]);
 }
