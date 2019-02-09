@@ -98,6 +98,10 @@ in rec {
   services.gpg-agent.enable = true;
   services.gpg-agent.enableSshSupport = true;
   services.flameshot.enable = true;
+  services.random-background = {
+    enable = true;
+    imageDirectory = "%h/wallpapers/";
+  };
 
   xsession.enable = true;
   systemd.user.startServices = true;

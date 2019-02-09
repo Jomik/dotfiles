@@ -13,7 +13,10 @@ let
   };
 
   cfg = {
-    home.packages = [ pkgs.at-spi2-core ];
+    home.packages = with pkgs; [
+      at-spi2-core
+    ];
+    services.network-manager-applet.enable = true;
     nixpkgs.overlays = [
     (self: super: {
       taffybar = (unstable.taffybar.override {

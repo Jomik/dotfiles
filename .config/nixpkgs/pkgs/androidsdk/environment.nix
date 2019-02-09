@@ -2,7 +2,7 @@
 
 with pkgs.androidsdk;
 
-let 
+let
   licenses = {
     android-sdk-license = "d56f5187479451eabf01fb78af6dfcb131a6481e";
   };

@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
+import Control.Monad
 import Control.Monad.Trans.Reader
 import Linear.Vector (lerp)
 import System.Taffybar
@@ -16,7 +17,7 @@ import System.Taffybar.Widget.Generic.PollingBar
 import System.Taffybar.Widget.Util
 import System.Taffybar.Widget.Workspaces
 import System.Log.Logger
-import System.Taffybar.Context (logIO)
+import System.Taffybar.Context (appendHook)
 
 transparent = (0.0, 0.0, 0.0, 0.0)
 yellow1 = (0.9453125, 0.63671875, 0.2109375, 1.0)
@@ -116,6 +117,7 @@ main = do
             , widgetSpacing = 0
             }
     dyreTaffybar $
-      withLogServer $
-      withToggleServer $
-      toTaffyConfig myConfig
+        appendHook (void $ getHost False) $
+        withLogServer $
+        withToggleServer $
+        toTaffyConfig myConfig
