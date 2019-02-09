@@ -16,7 +16,6 @@ let
     home.packages = with pkgs; [
       at-spi2-core
     ];
-    services.network-manager-applet.enable = true;
     nixpkgs.overlays = [
     (self: super: {
       taffybar = (unstable.taffybar.override {
@@ -34,7 +33,6 @@ let
         linear
       ];
     };
-    services.status-notifier-watcher.enable = true;
     xsession = {
         windowManager.xmonad = {
         enableContribAndExtras = true;

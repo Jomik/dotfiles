@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Control.Monad
 import Control.Monad.Trans.Reader
 import Linear.Vector (lerp)
 import System.Taffybar
@@ -17,7 +16,6 @@ import System.Taffybar.Widget.Generic.PollingBar
 import System.Taffybar.Widget.Util
 import System.Taffybar.Widget.Workspaces
 import System.Log.Logger
-import System.Taffybar.Context (appendHook)
 
 transparent = (0.0, 0.0, 0.0, 0.0)
 yellow1 = (0.9453125, 0.63671875, 0.2109375, 1.0)
@@ -80,7 +78,7 @@ battCfg =
 battWidget = do
     chan <- getDisplayBatteryChan
     ctx <- ask
-    pollingBarNew battCfg 1 $ battCallback ctx
+    pollingBarNew battCfg 60 $ battCallback ctx
 
 main = do
     let myWorkspacesConfig =
@@ -96,7 +94,6 @@ main = do
         clock = textClockNew Nothing "%a %b %_d %X" 1
         layout = layoutNew defaultLayoutConfig
         windows = windowsNew defaultWindowsConfig
-        tray = sniTrayNew
         myConfig =
             defaultSimpleTaffyConfig
             { startWidgets =
@@ -106,7 +103,6 @@ main = do
             ]
             , endWidgets = map (>>= buildContentsBox)
             [ battWidget
-            , tray
             , cpu
             , mem
             , net
@@ -117,7 +113,6 @@ main = do
             , widgetSpacing = 0
             }
     dyreTaffybar $
-        appendHook (void $ getHost False) $
         withLogServer $
         withToggleServer $
         toTaffyConfig myConfig
