@@ -50,7 +50,7 @@ in rec {
   programs.fzf.enable = true;
   programs.direnv.enable = true;
   programs.emacs.enable = true;
-  programs.emacs.service = true;
+  services.emacs.enable = true;
   programs.fish.enable = true;
   # programs.zsh.enable = true;
   programs.vscode.enable = true;
