@@ -2,58 +2,47 @@
 
 with lib;
 let
-  unstable = import <unstable> {};
-  taffybarPatch = pkgs.fetchpatch {
-    url = "https://raw.githubusercontent.com/spencerjanssen/dotfiles/master/nixos/taffybar-gi-gdkpixbuf-2.0.18.patch";
-    sha256 = "00fczqii26z005dmzmn6zjbi4l7r0p0vsrs5v170sw556aic4vbh";
-  };
   deps = with pkgs; {
     inherit rofi;
+    inherit (scripts) slock;
     rofiPass = rofi-pass;
+    powerMenu = scripts.rofi-menu "power-menu" [
+      [ "Lock" "${scripts.slock}/bin/slock" false ]
+      [ "Shutdown" "systemctl poweroff" true ]
+      [ "Reboot" "systemctl reboot" true ]
+      [ "Hibernate" "systemctl hibernate" true ]
+      [ "Suspend" "systemctl suspend" true ]
+      [ "Halt" "systemctl halt" true ]
+    ];
+  };
+in mkIf config.xsession.windowManager.xmonad.enable {
+  home.packages = with pkgs; [
+    networkmanagerapplet
+  ];
+
+  services.screen-locker.enable = true;
+  services.screen-locker.lockCmd = "${pkgs.scripts.slock}/bin/slock";
+
+  xsession = {
+    windowManager.xmonad = {
+      enableContribAndExtras = true;
+    };
+    pointerCursor = {
+      defaultCursor = "left_ptr";
+      package = pkgs.gnome3.adwaita-icon-theme;
+      name = "Adwaita";
+      size = 24;
+    };
   };
 
-  cfg = {
-    home.packages = with pkgs; [
-      at-spi2-core
-    ];
-    nixpkgs.overlays = [
-    (self: super: {
-      taffybar = (unstable.taffybar.override {
-        ghcWithPackages = (unstable.haskellPackages.override {
-          overrides = _: super: {
-            taffybar = unstable.haskell.lib.appendPatch super.taffybar taffybarPatch;
-          };
-        }).ghcWithPackages;
-      });
-    })
-    ];
-    services.taffybar.enable = true;
-    services.taffybar.package = pkgs.taffybar.override {
-      packages = haskellPackages: with haskellPackages; [
-        linear
-      ];
-    };
-    xsession = {
-        windowManager.xmonad = {
-        enableContribAndExtras = true;
-        };
-        pointerCursor = {
-        defaultCursor = "left_ptr";
-        package = pkgs.gnome3.adwaita-icon-theme;
-        name = "Adwaita";
-        size = 24;
-        };
-    };
-
-    programs.rofi = {
-        enable = true;
-        terminal = "${pkgs.alacritty}";
-    };
-
-    xdg.configFile."xmonad/lib/Packages.hs".text = ''
-        module Packages where
-    '' + concatStringsSep "\n" (map
-        (n: ''${n} = (++) "${getAttr n deps}"'')
-        (attrNames deps));
+  programs.rofi = {
+    enable = true;
+    terminal = "${pkgs.alacritty}";
   };
-in lib.mkIf config.xsession.windowManager.xmonad.enable cfg
+
+  xdg.configFile."xmonad/lib/Packages.hs".text = ''
+      module Packages where
+  '' + concatStringsSep "\n" (map
+    (n: ''${n} = (++) "${getAttr n deps}/bin/"'')
+    (attrNames deps));
+}

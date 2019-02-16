@@ -16,8 +16,10 @@ myConfig = def
     , normalBorderColor = "#000000"
     , focusedBorderColor = "#ffff00"
     } `additionalKeysP`
-    [ ("M-p", spawn $ rofi "/bin/rofi -show drun -show-icons")
-    , ("M-S-p", spawn $ rofiPass "/bin/rofi-pass")
+    [ ("M-p", spawn $ rofi "rofi -show drun -show-icons")
+    , ("M-S-p", spawn $ rofiPass "rofi-pass")
+    , ("M-S-l", spawn $ slock "slock")
+    , ("M-S-q", spawn $ powerMenu "power-menu")
     , ("<XF86MonBrightnessDown>", Brightness.decrease)
     , ("<XF86MonBrightnessUp>", Brightness.increase)
     , ("<XF86AudioLowerVolume>", lowerVolume 5 >> return ())

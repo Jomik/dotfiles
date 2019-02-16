@@ -32,6 +32,8 @@ in rec {
     weechat
     slack
     pass
+    gimp
+    libreoffice-fresh
 
     exa
     bat
@@ -108,6 +110,7 @@ in rec {
   # Disable setxkbmap hack
   systemd.user.services.setxkbmap.Service.ExecStart = "${pkgs.xorg.setxkbmap}/bin/setxkbmap";
   xsession.windowManager.xmonad.enable = true;
+  services.taffybar.enable = true;
 
   home.sessionVariables = {
     EDITOR = "${editor}";
