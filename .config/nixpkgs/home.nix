@@ -49,7 +49,6 @@ in rec {
     enable = true;
     showProgramPath = false;
   };
-  programs.fzf.enable = true;
   programs.direnv.enable = true;
   programs.emacs.enable = true;
   services.emacs.enable = true;

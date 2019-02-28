@@ -22,6 +22,7 @@ in mkIf config.xsession.windowManager.xmonad.enable {
 
   services.screen-locker.enable = true;
   services.screen-locker.lockCmd = "${pkgs.scripts.slock}/bin/slock";
+  services.dunst.enable = true;
 
   xsession = {
     windowManager.xmonad = {
@@ -37,7 +38,12 @@ in mkIf config.xsession.windowManager.xmonad.enable {
 
   programs.rofi = {
     enable = true;
-    terminal = "${pkgs.alacritty}";
+    terminal = "${pkgs.alacritty}/bin/alacritty";
+    separator = "solid";
+    theme = "gruvbox-dark-soft";
+    extraConfig = ''
+      rofi.modi: drun,window
+    '';
   };
 
   xdg.configFile."xmonad/lib/Packages.hs".text = ''

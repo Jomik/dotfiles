@@ -26,29 +26,26 @@ with lib;
     [ -f "$screen" ] && rm $screen
   '';
   rofi-menu = name: menu: pkgs.writeShellScriptBin name ''
-    rofi=${pkgs.rofi}/bin/rofi
-    # menu defined as an associative array
-    declare -A menu
-    declare -a order=()
+    launcher="${pkgs.rofi}/bin/rofi -dmenu -i -hide-scrollbar"
+    options="${concatMapStringsSep "\\n" head menu}"
 
-    # Menu with keys/commands
-    ${concatMapStringsSep "\n"
-      (e: ''menu[${elemAt e 0}]="${elemAt e 1}"; order+=("${elemAt e 0}")'')
-      menu}
-    menu_nrows=''${#menu[@]}
-
-    confirm="${concatMapStringsSep " " head (filter last menu) }"
-
-    launcher="''${rofi} -dmenu -i -lines ''${menu_nrows}"
-    selection="$(printf '%s\n' "''${order[@]}" | $launcher)"
-    if [[ $? -eq 0 && ! -z ''${selection} ]]; then
-      if [[ ''${confirm} =~ (^|[[:space:]])"''${selection}"($|[[:space:]]) ]]; then
-        confirmed=$(echo -e "No\nYes" | ''${rofi} -dmenu -i -lines 2 -p "''${selection}?")
-        if [[ $? -ne 0 || "''${confirmed}" == "No" ]]; then
-          exit 0
-        fi
-      fi
-      ''${menu[''${selection}]}
+    if [[ $? -ne 0 ]]; then
+    exit 0
     fi
+
+    choice=$(echo -e $options | $launcher -p ${name} -lines ${toString (length menu)})
+    case $choice in
+    ${concatMapStringsSep "\n"
+      (e: ''${head e})
+      ${optionalString (last e) ''
+            confirmed=$(echo -e "Yes\nNo" | $launcher -lines 2 -p "''${choice}?" -selected-row 1)
+            if [[ $? -ne 0 || "''${confirmed}" == "No" ]]; then
+              exit 0
+            fi
+''}
+            ${elemAt e 1}
+            ;;'')
+    menu}
+    esac
   '';
 }
