@@ -17,12 +17,12 @@ in rec {
   nixpkgs.overlays = [
     (import ./overlays/pkgs.nix)
     (self: super: {
-      inherit (unstable) thefuck direnv alacritty fish;
+    inherit (unstable) thefuck direnv alacritty fish;
+    inherit (unstable) wrapNeovim vimPlugins vimUtils;
     })
   ];
 
   home.packages = (with pkgs; [
-    neovim
     firefox
     gnupg
     xsel
@@ -52,6 +52,7 @@ in rec {
   programs.direnv.enable = true;
   programs.emacs.enable = true;
   services.emacs.enable = true;
+  programs.neovim.enable = true;
   programs.fish.enable = true;
   # programs.zsh.enable = true;
   programs.vscode.enable = true;
