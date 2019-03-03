@@ -17,8 +17,7 @@ in rec {
   nixpkgs.overlays = [
     (import ./overlays/pkgs.nix)
     (self: super: {
-    inherit (unstable) thefuck direnv alacritty fish;
-    inherit (unstable) wrapNeovim vimPlugins vimUtils;
+      # inherit (unstable) wrapNeovim vimPlugins vimUtils;
     })
   ];
 
@@ -41,6 +40,11 @@ in rec {
 
     # mypkgs
     dotfiles-sh
+
+    # fonts
+    fira fira-code
+    source-sans-pro source-code-pro
+    font-awesome_5
   ]) ++ (with unstable; [
     discord
   ]);
