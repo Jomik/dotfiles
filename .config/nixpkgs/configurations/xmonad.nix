@@ -8,10 +8,10 @@ let
     rofiPass = rofi-pass;
     powerMenu = scripts.rofi-menu "power-menu" [
       [ "Lock" "${scripts.slock}/bin/slock" false ]
-      [ "Shutdown" "systemctl poweroff" true ]
-      [ "Reboot" "systemctl reboot" true ]
-      [ "Hibernate" "systemctl hibernate" true ]
       [ "Suspend" "systemctl suspend" true ]
+      [ "Hibernate" "systemctl hibernate" true ]
+      [ "Reboot" "systemctl reboot" true ]
+      [ "Shutdown" "systemctl poweroff" true ]
       [ "Halt" "systemctl halt" true ]
     ];
   };

@@ -2,7 +2,6 @@
 
 stdenv.mkDerivation {
   name = "${utils.fishName}-plugin-thefuck";
-  buildInputs = [ pkgs.fish pkgs.thefuck ];
   dependencies = [ pkgs.thefuck ];
 
   buildCommand = ''

@@ -1,7 +1,31 @@
-{ vimUtils, fetchFromGitHub }:
+{ pkgs, stdenv, vimUtils, fetchurl, fetchFromGitHub }:
 
 with vimUtils;
-{
+let
+  nodePackages = import ./node-composition.nix {};
+in {
+  coc-nvim = let
+    version = "0.0.61";
+  in buildVimPluginFrom2Nix {
+    inherit version;
+    pname = "coc-nvim";
+    src = fetchFromGitHub {
+      owner = "neoclide";
+      repo = "coc.nvim";
+      rev = "v${version}";
+      sha256 = "1as2hb4kfq1m0nq7vp2ibkfq8n219ykr04qx4qadg97s7iky4yx4";
+    };
+    postInstall = ''
+      cp -r ${nodePackages."coc.nvim"}/lib/node_modules/coc.nvim/node_modules $target/
+      cp -r ${nodePackages."coc.nvim"}/lib/node_modules/coc.nvim/lib $target/
+    '';
+    postFixup = ''
+      substituteInPlace $target/autoload/coc/util.vim \
+        --replace "'yarnpkg'" "'${pkgs.yarn}/bin/yarnpkg'"
+      substituteInPlace $target/autoload/health/coc.vim \
+        --replace "'yarnpkg'" "'${pkgs.yarn}/bin/yarnpkg'"
+    '';
+  };
   which-key = buildVimPluginFrom2Nix {
     pname = "vim-which-key";
     version = "2019-02-28";

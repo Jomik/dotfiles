@@ -75,8 +75,13 @@ in {
       (scroll-bar-mode -1) ; Removes the scollbar
 
       (setq-default indent-tabs-mode nil
-                    fill-column 80
-                    show-trailing-whitespace t)
+                    fill-column 80)
+      (add-hook 'prog-mode-hook
+                (lambda ()
+                  (setq show-trailing-whitespace t)))
+      (add-hook 'text-mode-hook
+                (lambda ()
+                  (setq show-trailing-whitespace t)))
 
       (setq initial-major-mode 'org-mode ; Sets the *scratch* to org mode as default
             initial-scratch-message nil ; Sets the *scratch* message
@@ -149,11 +154,21 @@ in {
         defer = 2;
         commands = [ "which-key-mode" ];
         diminish = [ "which-key-mode" ];
-       config = "(which-key-mode)";
+        config = "(which-key-mode)";
       };
 
       general = {
         enable = true;
+        init = ''
+          (setq general-override-states '(insert
+                                          emacs
+                                          hybrid
+                                          normal
+                                          visual
+                                          motion
+                                          operator
+                                          replace))
+        '';
         config = "(general-evil-setup)";
       };
 
@@ -204,7 +219,7 @@ in {
       hydra = {
         enable = true;
         general = ''
-          (:states '(normal visual)
+          (:states '(normal visual motion)
            :keymaps 'override
            "SPC" 'hydra-leader/body)
         '';

@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ stdenv, pkgs, lib, ... }:
 
 with lib;
 {
@@ -48,4 +48,17 @@ with lib;
     menu}
     esac
   '';
+  csd-post = stdenv.mkDerivation rec {
+    name = "csd-wrapper-${builtins.substring 0 7 rev}";
+    rev = "99ddf9787a794e07357955757a2b06cf1420e8c8";
+    src = pkgs.fetchurl {
+      url = "https://gitlab.com/openconnect/openconnect/raw/${rev}/trojans/csd-post.sh";
+      sha256 = "1r4ghyi09rymkrxym89dwarjbn0p5h43x8pwyi7vx49xha05w3qq";
+    };
+    buildInputs = with pkgs; [ xmlstarlet curl ];
+    unpackPhase = ":";
+    installPhase = ''
+      install -m 755 -DT $src $out/bin/csd-post
+    '';
+  };
 }

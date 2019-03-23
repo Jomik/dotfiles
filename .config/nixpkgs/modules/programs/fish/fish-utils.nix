@@ -4,7 +4,7 @@ let
   fishVersion = lib.getVersion fish;
   fishName = lib.removeSuffix "-${fishVersion}" fish.name;
 
-  buildPlugin = {
+  buildFishPlugin = {
     name,
     namePrefix ? "${fishName}-plugin-",
     src,
@@ -39,14 +39,14 @@ let
     '';
   };
 
-  pluginFromGitHub = {
+  buildFishPluginFromGitHub = {
     owner, repo, rev, sha256, name ? repo, dependencies ? []
-  }: buildPlugin {
+  }: buildFishPlugin {
     inherit name dependencies;
     src = fetchFromGitHub {
       inherit owner repo rev sha256;
     };
   };
 in {
-  inherit fishVersion fishName pluginFromGitHub buildPlugin;
+  inherit fishVersion fishName buildFishPluginFromGitHub buildFishPlugin;
 }

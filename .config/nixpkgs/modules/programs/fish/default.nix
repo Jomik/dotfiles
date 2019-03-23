@@ -46,7 +46,7 @@ in {
       default = plugins: [];
       description = ''
         The plugins to add to fish.
-        Built with <varname>buildPlugin</varname> or fetched from GitHub with <varname>pluginFromGitHub</varname>.
+        Built with <varname>buildFishPlugin</varname> or fetched from GitHub with <varname>buildFishPluginFromGitHub</varname>.
         Overrides manually installed ones.
       '';
     };

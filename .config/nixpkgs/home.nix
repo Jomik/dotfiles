@@ -10,6 +10,7 @@ let
 in rec {
   imports = [
     ./modules/programs/alacritty
+    ./modules/services/polybar
   ] ++ map (name: ./configurations + "/${name}")
     (builtins.attrNames (builtins.readDir ./configurations));
 
@@ -17,7 +18,6 @@ in rec {
   nixpkgs.overlays = [
     (import ./overlays/pkgs.nix)
     (self: super: {
-      # inherit (unstable) wrapNeovim vimPlugins vimUtils;
     })
   ];
 
@@ -40,6 +40,7 @@ in rec {
 
     # mypkgs
     dotfiles-sh
+    scripts.csd-post # For openconnect
 
     # fonts
     fira fira-code
@@ -47,6 +48,7 @@ in rec {
     font-awesome_5
   ]) ++ (with unstable; [
     discord
+    openconnect
   ]);
 
   programs.htop = {
@@ -114,15 +116,18 @@ in rec {
   # Disable setxkbmap hack
   systemd.user.services.setxkbmap.Service.ExecStart = "${pkgs.xorg.setxkbmap}/bin/setxkbmap";
   xsession.windowManager.xmonad.enable = true;
-  services.taffybar.enable = true;
+  # xsession.windowManager.i3.enable = true;
+  # services.taffybar.enable = true;
+  services.polybar.enable = true;
 
   home.sessionVariables = {
     EDITOR = "${editor}";
     VISUAL = "${editor}";
     BROWSER = "${pkgs.firefox}/bin/firefox";
+    TERMINAL = "${pkgs.alacritty}/bin/alacritty";
   };
 
   programs.home-manager.enable = true;
-  programs.home-manager.path = https://github.com/rycee/home-manager/archive/master.tar.gz;
+  # programs.home-manager.path = https://github.com/rycee/home-manager/archive/master.tar.gz;
   home.stateVersion = "18.09";
 }
