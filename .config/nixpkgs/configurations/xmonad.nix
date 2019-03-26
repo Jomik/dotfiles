@@ -2,12 +2,11 @@
 
 with lib;
 let
-  deps = with pkgs; {
-    inherit rofi;
-    inherit (scripts) slock;
+  deps = with pkgs; with nur.repos.jomik; {
+    inherit rofi slock;
     rofiPass = rofi-pass;
-    powerMenu = scripts.rofi-menu "power-menu" [
-      [ "Lock" "${scripts.slock}/bin/slock" false ]
+    powerMenu = rofi-menu "power-menu" [
+      [ "Lock" "${slock}/bin/slock" false ]
       [ "Suspend" "systemctl suspend" true ]
       [ "Hibernate" "systemctl hibernate" true ]
       [ "Reboot" "systemctl reboot" true ]
@@ -21,7 +20,7 @@ in mkIf config.xsession.windowManager.xmonad.enable {
   ];
 
   services.screen-locker.enable = true;
-  services.screen-locker.lockCmd = "${pkgs.scripts.slock}/bin/slock";
+  services.screen-locker.lockCmd = "${pkgs.nur.repos.jomik.slock}/bin/slock";
   services.dunst.enable = true;
 
   xsession = {

@@ -16,8 +16,19 @@ in rec {
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
-    (import ./overlays/pkgs.nix)
     (self: super: {
+      nur.repos.jomik = import "${builtins.fetchTarball "https://gitlab.com/Jomik/nur-expressions/-/archive/master/nur-expressions-master.tar.gz"}/overlay.nix" self super;
+    })
+    (self: super: {
+      neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oldattrs: {
+        version = "0.4.0";
+        src = pkgs.fetchFromGitHub {
+          owner = "neovim";
+          repo = "neovim";
+          rev = "36762a00a8010c5e14ad4347ab8287d1e8e7e064";
+          sha256 = "0n7i3mp3wpl8jkm5z0ifhaha6ljsskd32vcr2wksjznsmfgvm6p4";
+        };
+      });
     })
   ];
 
@@ -34,19 +45,17 @@ in rec {
     gimp
     libreoffice-fresh
 
-    exa
-    bat
     ripgrep
-
-    # mypkgs
-    dotfiles-sh
-    scripts.csd-post # For openconnect
+    exa
 
     # fonts
     fira fira-code
     source-sans-pro source-code-pro
     font-awesome_5
-  ]) ++ (with unstable; [
+  ]) ++ (with pkgs.nur.repos.jomik; [
+    dotfiles-sh
+    csd-post # For openconnect
+  ]) ++ (with unstable.pkgs; [
     discord
     openconnect
   ]);
@@ -60,6 +69,7 @@ in rec {
   services.emacs.enable = true;
   programs.neovim.enable = true;
   programs.fish.enable = true;
+  programs.bat.enable = true;
   # programs.zsh.enable = true;
   programs.vscode.enable = true;
   programs.git.enable = true;

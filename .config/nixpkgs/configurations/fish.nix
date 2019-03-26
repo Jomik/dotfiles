@@ -13,6 +13,7 @@
     shellAbbrs = {
       ls = "exa";
       ll = "exa -lha";
+      lt = "exa --tree";
       psg = "ps aux | rg -v rg | rg -i -e VSZ -e";
       e = "emacsclient -nc";
       E = "sudoedit";
