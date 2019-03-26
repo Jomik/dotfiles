@@ -27,7 +27,6 @@ in
           vim-repeat
           vim-startify
           vim-sandwich
-          vim-closer
         ];
       };
     };

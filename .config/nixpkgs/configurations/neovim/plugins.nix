@@ -1,24 +1,46 @@
 { pkgs, stdenv, vimUtils, fetchurl, fetchFromGitHub }:
 
+
 with vimUtils;
+
 let
-  nodePackages = import ./node-composition.nix {};
+  yarn2nix = pkgs.callPackage (pkgs.fetchFromGitHub {
+    owner = "moretea";
+    repo = "yarn2nix";
+    rev = "780e33a07fd821e09ab5b05223ddb4ca15ac663f";
+    sha256 = "1f83cr9qgk95g3571ps644rvgfzv2i4i7532q8pg405s4q5ada3h";
+  }) {};
 in {
   coc-nvim = let
-    version = "0.0.61";
-  in buildVimPluginFrom2Nix {
-    inherit version;
-    pname = "coc-nvim";
+    pname = "coc.nvim";
+    version = "0.0.62";
+
     src = fetchFromGitHub {
       owner = "neoclide";
-      repo = "coc.nvim";
+      repo = pname;
       rev = "v${version}";
-      sha256 = "1as2hb4kfq1m0nq7vp2ibkfq8n219ykr04qx4qadg97s7iky4yx4";
+      sha256 = "1x0iivjyijrp69bl6j2ni74whnm2m30pcml0dv1b3311gdp4cy9r";
     };
-    postInstall = ''
-      cp -r ${nodePackages."coc.nvim"}/lib/node_modules/coc.nvim/node_modules $target/
-      cp -r ${nodePackages."coc.nvim"}/lib/node_modules/coc.nvim/lib $target/
+
+    deps = yarn2nix.mkYarnModules rec {
+      inherit version pname;
+      name = "${pname}-modules-${version}";
+      packageJSON = src + "/package.json";
+      yarnLock = src + "/yarn.lock";
+    };
+  in buildVimPluginFrom2Nix {
+    inherit version pname src;
+
+    configurePhase = ''
+      mkdir -p node_modules
+      ln -s ${deps}/node_modules/* node_modules/
+      ln -s ${deps}/node_modules/.bin node_modules/
     '';
+
+    buildPhase = ''
+      ${pkgs.yarn}/bin/yarn build
+    '';
+
     postFixup = ''
       substituteInPlace $target/autoload/coc/util.vim \
         --replace "'yarnpkg'" "'${pkgs.yarn}/bin/yarnpkg'"
@@ -44,16 +66,6 @@ in {
       repo = "vim-sandwich";
       rev = "d441cf5a450f65dbf95eca3fa1138806884a7d58";
       sha256 = "1qkadkisfw21834848rphliry5h6h9mj010n2p3y27wp6xkq9phj";
-    };
-  };
-  vim-closer = buildVimPluginFrom2Nix {
-    pname = "vim-closer";
-    version = "2019-02-28";
-    src = fetchFromGitHub {
-      owner = "ozelentok";
-      repo = "vim-closer";
-      rev = "f2c46c3739ed045d126858b2cfc4b8e25a386e44";
-      sha256 = "02x32qak9cp9v5vv0rc25hiajj20pq1fi2s9kljskcqap3bi8cac";
     };
   };
   defx-nvim = buildVimPluginFrom2Nix {
