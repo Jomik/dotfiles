@@ -3,14 +3,15 @@
 let
   unstable = import <unstable> { config.allowUnfree = true;};
   fork = import /home/jomik/projects/nixos/nixpkgs {};
-  editor = pkgs.writeScript "editor" ''
-    #!${pkgs.stdenv.shell}
-    emacsclient -c "$@"
-  '';
+  #editor = pkgs.writeScript "editor" ''
+  #  #!${pkgs.stdenv.shell}
+  #  emacsclient -c "$@"
+  #'';
 in rec {
   imports = [
-    ./modules/programs/alacritty
-    ./modules/services/polybar
+    ./modules/programs/alacritty.nix
+    ./modules/services/polybar.nix
+    ./modules/services/xbanish.nix
   ] ++ map (name: ./configurations + "/${name}")
     (builtins.attrNames (builtins.readDir ./configurations));
 
@@ -69,18 +70,45 @@ in rec {
   services.emacs.enable = true;
   programs.neovim.enable = true;
   programs.fish.enable = true;
-  programs.bat.enable = true;
   # programs.zsh.enable = true;
   programs.vscode.enable = true;
   programs.git.enable = true;
+  programs.bat.enable = true;
 
   programs.alacritty = {
     enable = true;
-    font.size = 6.0;
-    colors.primary.background = "0x191919";
-    window.dimensions = {
-      columns = 120;
-      lines = 36;
+    settings = {
+      font.size = 6.0;
+      colors = {
+        primary = {
+          background = "0xfbf1c7";
+          foreground = "0x3c3836";
+        };
+        normal = {
+          black = "0xfbf1c7";
+          red = "0xcc241d";
+          green = "0x98971a";
+          yellow = "0xd79921";
+          blue = "0x458588";
+          magenta = "0xb16286";
+          cyan = "0x689d6a";
+          white = "0x7c6f64";
+        };
+        bright = {
+          black = "0x928374";
+          red = "0x9d0006";
+          green = "0x79740e";
+          yellow = "0xb57614";
+          blue = "0x076678";
+          magenta = "0x8f3f71";
+          cyan = "0x427b58";
+          white = "0x3c3836";
+        };
+      };
+      window.dimensions = {
+        columns = 120;
+        lines = 36;
+      };
     };
   };
   programs.tmux = {
@@ -113,6 +141,7 @@ in rec {
       latexmk;
   };
 
+  services.xbanish.enable = true;
   services.gpg-agent.enable = true;
   services.gpg-agent.enableSshSupport = true;
   services.flameshot.enable = true;
@@ -125,16 +154,17 @@ in rec {
   systemd.user.startServices = true;
   # Disable setxkbmap hack
   systemd.user.services.setxkbmap.Service.ExecStart = "${pkgs.xorg.setxkbmap}/bin/setxkbmap";
-  xsession.windowManager.xmonad.enable = true;
-  # xsession.windowManager.i3.enable = true;
+  # xsession.windowManager.xmonad.enable = true;
+  # xsession.windowManager.awesome.enable = true;
+  xsession.windowManager.i3.enable = true;
   # services.taffybar.enable = true;
-  services.polybar.enable = true;
+  # services.polybar.enable = true;
 
   home.sessionVariables = {
-    EDITOR = "${editor}";
-    VISUAL = "${editor}";
-    BROWSER = "${pkgs.firefox}/bin/firefox";
-    TERMINAL = "${pkgs.alacritty}/bin/alacritty";
+    EDITOR = "nvim";
+    # VISUAL = "${editor}";
+    BROWSER = "firefox";
+    TERMINAL = "alacritty";
   };
 
   programs.home-manager.enable = true;

@@ -7,12 +7,19 @@ noremap <silent> 0 g0
 noremap <silent> $ g$
 map Y y$
 
+" Change color theme
+set termguicolors
+let g:gruvbox_italic=1
+colorscheme gruvbox
+set background=light
+let g:gruvbox_contrast="medium"
+
 " CoC setup
 set hidden
-set cmdheight=2
 set updatetime=300
 set shortmess+=c
-set signcolumn=yes
+" set cmdheight=2
+" set signcolumn=yes
 
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :

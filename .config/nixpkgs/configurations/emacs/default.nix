@@ -147,6 +147,9 @@ in {
     usePackage = {
       gruvbox-theme = {
         enable = true;
+        config = ''
+          (load-theme 'gruvbox-light-medium t)
+        '';
       };
 
       which-key = {

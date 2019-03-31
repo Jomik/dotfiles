@@ -23,6 +23,7 @@
     functions = {
       # Workaround for fish in nix-shell. Needed when .bashrc contains exec fish
       nix-shell.body = "command nix-shell --run fish $argv";
+      bash.body = "command bash --norc";
       mkdir.body = "command mkdir -pv $argv";
       ports.body = "command ss -tulanp";
       init-envrc.body = ''
