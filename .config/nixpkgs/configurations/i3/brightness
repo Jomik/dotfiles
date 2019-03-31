@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+function bar {
+  percent=$1
+  width=${BAR_WIDTH:-10}
+  
+  echo -n "<span font='${LABEL_SIZE:-22}'>$LABEL</span> "
+  echo -n "<span rise='5000'>"
+  
+  end=$(($width - 1))
+  for i in $(seq 0 $end); do
+    segment=$(($i * (100 / $width)))
+    if (( percent > segment )); then
+      filled+=${BAR_FILL:-━}
+    else
+      empty+=${BAR_EMPTY:-┉}
+    fi
+  done
+  
+  if [ -z $BAR_FILL_COLOR ]; then
+    echo -n "$filled"
+  else
+    echo -n "<span color='$BAR_FILL_COLOR'>$filled</span>"
+  fi
+  
+  if [ -z $BAR_EMPTY_COLOR ]; then
+    echo -n "$empty"
+  else
+    echo -n "<span color='$BAR_EMPTY_COLOR'>$empty</span>"
+  fi
+  
+  echo "</span>"
+}
+
+interface=${BLOCK_INSTANCE:-Master}
+
+case $BLOCK_BUTTON in
+  4) /nix/store/mlnm53yphbvh037aranj1sy9985h7c28-acpilight-1.1/bin/xbacklight -dec 10 ;;
+  5) /nix/store/mlnm53yphbvh037aranj1sy9985h7c28-acpilight-1.1/bin/xbacklight -inc 10 ;;
+esac
+
+dir=/sys/class/backlight/${BLOCK_INSTANCE:-intel_backlight}
+percent=$(( $(cat $dir/brightness) * 100 / $(cat $dir/max_brightness) ))
+
+bar $percent
+

@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+function bar {
+  percent=$1
+  width=${BAR_WIDTH:-10}
+  
+  echo -n "<span font='${LABEL_SIZE:-22}'>$LABEL</span> "
+  echo -n "<span rise='5000'>"
+  
+  end=$(($width - 1))
+  for i in $(seq 0 $end); do
+    segment=$(($i * (100 / $width)))
+    if (( percent > segment )); then
+      filled+=${BAR_FILL:-━}
+    else
+      empty+=${BAR_EMPTY:-┉}
+    fi
+  done
+  
+  if [ -z $BAR_FILL_COLOR ]; then
+    echo -n "$filled"
+  else
+    echo -n "<span color='$BAR_FILL_COLOR'>$filled</span>"
+  fi
+  
+  if [ -z $BAR_EMPTY_COLOR ]; then
+    echo -n "$empty"
+  else
+    echo -n "<span color='$BAR_EMPTY_COLOR'>$empty</span>"
+  fi
+  
+  echo "</span>"
+}
+
+percent=$(cat /sys/class/power_supply/${BLOCK_INSTANCE:-BAT0}/capacity)
+status=$(cat /sys/class/power_supply/${BLOCK_INSTANCE:-BAT0}/status)
+
+if [ $status == "Charging" ]; then
+  export BAR_FILL_COLOR=$CHARGING
+elif ((percent < 30)); then
+  export BAR_FILL_COLOR=$BAR_CRITICAL_COLOR
+fi
+
+bar $percent
+
