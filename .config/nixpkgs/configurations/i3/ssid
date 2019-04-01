@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo -n "<span font='22'>$LABEL</span> <span rise='5000'>"
+echo -en "<span font='22'>$LABEL</span> <span rise='5000'>"
 
 ssid=$(nmcli -t connection show --active | grep ${BLOCK_INSTANCE:-wlp2s0})
 

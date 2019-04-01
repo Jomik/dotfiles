@@ -3,6 +3,7 @@
 status=$(cat /sys/class/power_supply/${BLOCK_INSTANCE:-BAT0}/status)
 
 if [ $status == "Discharging" ]; then
-  echo $(cat /sys/class/power_supply/BAT0/{current,voltage}_now | awk -v v=1 '{v*=$0}END{printf "%.1f W", v*10^-12}')
+  echo -en "$LABEL"
+  echo $(cat /sys/class/power_supply/BAT0/{current,voltage}_now | awk -v v=1 '{v*=$0}END{printf "%4.1f W", v*10^-12}')
 fi
 

@@ -4,7 +4,7 @@ function bar {
   percent=$1
   width=${BAR_WIDTH:-10}
   
-  echo -n "<span font='${LABEL_SIZE:-22}'>$LABEL</span> "
+  echo -en "<span font='${LABEL_SIZE:-22}'>$LABEL</span> "
   echo -n "<span rise='5000'>"
   
   end=$(($width - 1))
@@ -18,15 +18,15 @@ function bar {
   done
   
   if [ -z $BAR_FILL_COLOR ]; then
-    echo -n "$filled"
+    echo -en "$filled"
   else
-    echo -n "<span color='$BAR_FILL_COLOR'>$filled</span>"
+    echo -en "<span color='$BAR_FILL_COLOR'>$filled</span>"
   fi
   
   if [ -z $BAR_EMPTY_COLOR ]; then
-    echo -n "$empty"
+    echo -en "$empty"
   else
-    echo -n "<span color='$BAR_EMPTY_COLOR'>$empty</span>"
+    echo -en "<span color='$BAR_EMPTY_COLOR'>$empty</span>"
   fi
   
   echo "</span>"

@@ -14,7 +14,7 @@ BAR_CRITICAL_COLOR=${colors.red}
       inherit markup;
       command = "${./memory}";
       interval = 1;
-      LABEL = "";
+      LABEL = "\\uf2db";
     };
   }
   {
@@ -22,7 +22,7 @@ BAR_CRITICAL_COLOR=${colors.red}
       inherit markup;
       command = "${./cpu}";
       interval = "persist";
-      LABEL = "";
+      LABEL = "\\uf85a";
     };
   }
   {
@@ -31,7 +31,8 @@ BAR_CRITICAL_COLOR=${colors.red}
       command = "${./volume}";
       interval = "once";
       signal = 11;
-      LABEL = "墳";
+      LABEL = "\\ufa7d";
+      BAR_MUTE_COLOR = colors.red;
     };
   }
   {
@@ -40,7 +41,7 @@ BAR_CRITICAL_COLOR=${colors.red}
       command = "${./brightness}";
       interval = "once";
       signal = 11;
-      LABEL = "墳";
+      LABEL = "\\uf5df";
     };
   }
   {
@@ -49,14 +50,14 @@ BAR_CRITICAL_COLOR=${colors.red}
       command = "${./battery}";
       interval = 30;
       CHARGING = colors.green;
-      LABEL = "";
+      LABEL = "\\uf240";
     };
   }
   {
     battery_draw = {
       command = "${./battery_draw}";
       interval = 1;
-      label = "";
+      LABEL = "\\uf0e7 ";
     };
   }
   {
@@ -64,7 +65,7 @@ BAR_CRITICAL_COLOR=${colors.red}
       inherit markup;
       command = "${./ssid}";
       interval = 30;
-      LABEL = "";
+      LABEL = "\\uf1eb";
       NOT_CONNECTED_COLOR = colors.red;
     };
   }
