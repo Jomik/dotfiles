@@ -13,13 +13,13 @@ let
 in {
   coc-nvim = let
     pname = "coc.nvim";
-    version = "0.0.62";
+    version = "0.0.64";
 
     src = fetchFromGitHub {
       owner = "neoclide";
       repo = pname;
       rev = "v${version}";
-      sha256 = "1x0iivjyijrp69bl6j2ni74whnm2m30pcml0dv1b3311gdp4cy9r";
+      sha256 = "03y8xq3g3psra9f2804czgvzyb4kslajbqdlm718r728z6iis66c";
     };
 
     deps = yarn2nix.mkYarnModules rec {
@@ -48,6 +48,42 @@ in {
         --replace "'yarnpkg'" "'${pkgs.yarn}/bin/yarnpkg'"
     '';
   };
+
+  ale = buildVimPluginFrom2Nix {
+    pname = "ale";
+    version = "2.3.1";
+
+    src = fetchFromGitHub {
+      owner = "w0rp";
+      repo = "ale";
+      rev = "v2.3.1";
+      sha256 = "1qrm2iv2jkx4i9ki9yrkki1rfsq5khbimz3pl8gfq9mxig6m4p3d";
+    };
+  };
+
+  comfortable-motion = buildVimPluginFrom2Nix {
+    pname = "comfortable-motion";
+    version = "2018-02-22";
+
+    src = fetchFromGitHub {
+      owner = "yuttie";
+      repo = "comfortable-motion.vim";
+      rev = "e20aeafb07c6184727b29f7674530150f7ab2036";
+      sha256 = "13chwy7laxh30464xmdzjhzfcmlcfzy11i8g4a4r11m1cigcjljb";
+    };
+  };
+
+  vim-numbertoggle = buildVimPluginFrom2Nix {
+    pname = "vim-numbertoggle";
+    version = "2017-10-26";
+    src = fetchFromGitHub {
+      owner = "jeffkreeftmeijer";
+      repo = "vim-numbertoggle";
+      rev = "cfaecb9e22b45373bb4940010ce63a89073f6d8b";
+      sha256 = "1rrmvv7ali50rpbih1s0fj00a3hjspwinx2y6nhwac7bjsnqqdwi";
+    };
+  };
+
   which-key = buildVimPluginFrom2Nix {
     pname = "vim-which-key";
     version = "2019-02-28";
@@ -58,6 +94,7 @@ in {
       sha256 = "1jpkgq2plwnyiv6bqhly3v36sk3k8bn575q5gj2jdvd7fkk7v9pw";
     };
   };
+
   vim-sandwich = buildVimPluginFrom2Nix {
     pname = "vim-sandwich";
     version = "2019-02-28";
@@ -68,16 +105,30 @@ in {
       sha256 = "1qkadkisfw21834848rphliry5h6h9mj010n2p3y27wp6xkq9phj";
     };
   };
+
+  tla = buildVimPluginFrom2Nix {
+    pname = "tla-vim";
+    version = "2018-01-31";
+
+    src = fetchFromGitHub {
+      owner = "florentc";
+      repo = "vim-tla";
+      rev = "a76fbdd8bd7254dd24d610aba5a824f4fac3ad56";
+      sha256 = "1n2yi466dw1s9dpa7ry7p9xr2pb3rkgppkvnqj1hfl9cqv7fg416";
+    };
+  };
+
   defx-nvim = buildVimPluginFrom2Nix {
     pname = "defx-nvim";
-    version = "2019-03-02";
+    version = "2019-04-04";
     src = fetchFromGitHub {
       owner = "shougo";
       repo = "defx.nvim";
-      rev = "5e13e29cd69f67a3f4474822b890ef9c479119f8";
-      sha256 = "17gfj5kagr24kr85mna37pir69wd4542935l872581xhy3kiga1w";
+      rev = "78cba6f1386d194d012bbd406961650c59d224d8";
+      sha256 = "0qa0n07w2gmhbp4k898vqy89rsbfzwppng616g6dwx6g723f2m3z";
     };
   };
+
   defx-git = buildVimPluginFrom2Nix {
     pname = "defx-git";
     version = "2019-03-02";
@@ -86,6 +137,17 @@ in {
       repo = "defx-git";
       rev = "bb1ec337838870b1b966826ad24c109073d2a9ac";
       sha256 = "1xg17bvqqad1723ps6h4pwfnkxffkk3y6nz0qx9d00ryxcc312x1";
+    };
+  };
+
+  vim-matchup = buildVimPluginFrom2Nix {
+    pname = "vim-matchup";
+    version = "2019-03-13";
+    src = fetchFromGitHub {
+      owner = "andymass";
+      repo = "vim-matchup";
+      rev = "afbf309610953a2ff6144ef9746b9e8b34b61dba";
+      sha256 = "1qvw2wzjz6zqsz526lx8hmd9lh61b55j8d321sf8dr6f2670s1lj";
     };
   };
 }

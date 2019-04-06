@@ -6,13 +6,185 @@ noremap <silent> j gj
 noremap <silent> 0 g0
 noremap <silent> $ g$
 map Y y$
+map Q <Nop>
+
+" Do not load netrw
+let g:loaded_netrwPlugin = 1
+" Do not load matchit, use matchup plugin
+let g:loaded_matchit = 1
+
+set noswapfile
+set nobackup
+set nowritebackup
+
+set foldmethod=syntax
+
+" Enable the mouse
+set mouse=a
+
+" Hybrid line numbers
+set number relativenumber
+
+" Wait 100 ms, default is 4 s
+set updatetime=100
+
+" Indentation
+set tabstop=2
+set expandtab
+set shiftwidth=2
+
+" Searching ignores case
+set ignorecase smartcase
+
+" Show changes incrementally
+set inccommand="nosplit"
+
+" Show cursor line highlight
+set cursorline
+
+" Don't clear background, needed for Kitty.
+let &t_ut=''
+
+" Use conceal for pretty characters
+set conceallevel=2
 
 " Change color theme
 set termguicolors
 let g:gruvbox_italic=1
+let g:gruvbox_sign_column = 'bg0'
 colorscheme gruvbox
 set background=light
-let g:gruvbox_contrast="medium"
+let g:gruvbox_contrast_light="medium"
+hi! Operator guifg=NONE guibg=NONE
+
+" Comfortable motion
+let g:comfortable_motion_scroll_down_key = "j"
+let g:comfortable_motion_scroll_up_key = "k"
+let g:comfortable_motion_no_default_key_mappings = 1
+let g:comfortable_motion_impulse_multiplier = 1
+nnoremap <silent> <C-d> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * 2)<CR>
+nnoremap <silent> <C-u> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -2)<CR>
+nnoremap <silent> <C-f> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * 4)<CR>
+nnoremap <silent> <C-b> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -4)<CR>
+
+" Startify
+let g:startify_change_to_vcs_root = 1
+let g:startify_fortune_use_unicode = 1
+let g:startify_custom_header = 'startify#fortune#boxed()'
+
+function! s:list_projects() abort
+  return map(finddir('.git', $HOME . '/projects/**2', -1),
+        \ {_, dir -> {'line': fnamemodify(dir, ':h:s?.*projects/??'), 'cmd': 'Defx ' . fnamemodify(dir, ':h')}})
+endfunction
+
+let g:startify_lists = [
+      \ {'header': ['   MRU'], 'type': 'files'},
+      \ {'header': ['   MRU '. getcwd()], 'type': 'dir'},
+      \ {'header': ['   Bookmarks'], 'type': 'bookmarks'},
+      \ {'header': ['   Projects'], 'type': function('s:list_projects'), 'indices': map(range(1, 100), { _ -> 'p' . string(v:val)})}
+      \ ]
+
+let g:startify_bookmarks = [
+      \ {'c': '~/.config/nvim/init.vim'}
+      \ ]
+
+let g:startify_skiplist = [
+      \ '/nix/store/*'
+      \ ]
+
+" ALE
+let g:ale_linters_explicit = 1
+let g:ale_linters = { 
+      \ 'idris': ['idris']
+      \ }
+
+" Defx
+augroup defxrc
+  autocmd!
+  autocmd FileType defx call s:defx_mappings()   
+  autocmd VimEnter * call s:setup_defx()
+augroup END
+
+nnoremap <silent><Leader>n :call <sid>defx_open({ 'split': v:true })<CR>
+nnoremap <silent><Leader>hf :call <sid>defx_open({ 'split': v:true, 'find_current_file': v:true })<CR>
+
+function! s:setup_defx() abort
+  call defx#custom#column('filename', {
+        \ 'min_width': 80,
+        \ 'max_width': 80,
+        \ })
+
+  call defx#custom#column('mark', {
+        \ 'directory_icon': '',
+        \ 'root_icon': ''
+        \ })
+
+  call defx#custom#option('_', {
+        \ 'columns': 'git:icons:filename:size:time',
+        \ })
+
+  call s:defx_open({ 'dir': expand('<afile>') })
+endfunction
+
+function! s:defx_open(...) abort
+  let l:opts = get(a:, 1, {})
+  let l:path = get(l:opts, 'dir', getcwd())
+
+  if !isdirectory(l:path) || &filetype ==? 'defx'
+    return
+  endif
+
+  let l:args = '-winwidth=40 -direction=topleft'
+  let l:is_opened = bufwinnr('defx') > 0
+
+  if has_key(l:opts, 'split')
+    let l:args .= ' -split=vertical'
+  endif
+
+  if has_key(l:opts, 'find_current_file')
+    if &filetype ==? 'defx'
+      return
+    endif
+    call execute(printf('Defx %s -search=%s %s', l:args, expand('%:p'), expand('%:p:h')))
+  else
+    call execute(printf('Defx -toggle %s %s', l:args, l:path))
+    if l:is_opened
+      call execute('wincmd p')
+    endif
+  endif
+
+  return execute("norm!\<C-w>=")
+endfunction
+
+function! s:defx_context_menu() abort
+  let l:actions = ['new_multiple_files', 'rename', 'copy', 'move', 'paste', 'remove']
+  let l:selection = confirm('Action?', "&New file/directory\n&Rename\n&Copy\n&Move\n&Paste\n&Delete")
+  silent exe 'redraw'
+
+  if l:selection > 0
+    return feedkeys(defx#do_action(l:actions[l:selection - 1]))
+  endif
+endfunction
+
+function! s:defx_mappings() abort
+  nnoremap <silent><buffer>m :call <sid>defx_context_menu()<CR>
+  nnoremap <silent><buffer><expr> o defx#do_action('drop')
+  nnoremap <silent><buffer><expr> <CR> defx#do_action('drop')
+  nnoremap <silent><buffer><expr> <2-LeftMouse> defx#do_action('drop')
+  nnoremap <silent><buffer><expr> s defx#do_action('open', 'botright vsplit')
+  nnoremap <silent><buffer><expr> R defx#do_action('redraw')
+  nnoremap <silent><buffer><expr> u defx#do_action('cd', ['..'])
+  nnoremap <silent><buffer><expr> cd defx#do_action('change_vim_cwd')
+  nnoremap <silent><buffer><expr> H defx#do_action('toggle_ignored_files')
+  nnoremap <silent><buffer><expr> <Space> defx#do_action('toggle_select') . 'j'
+  nnoremap <silent><buffer><expr> j line('.') == line('$') ? 'gg' : 'j'
+  nnoremap <silent><buffer><expr> k line('.') == 1 ? 'G' : 'k'
+  nnoremap <silent><buffer><expr> yy defx#do_action('yank_path')
+  nnoremap <silent><buffer><expr> q defx#do_action('quit')
+  nnoremap <silent><buffer><expr> gh defx#do_action('cd', [getcwd()])
+  hi link Defx_mark_root Directory
+  hi link Defx_mark_directory Directory
+endfunction
 
 " CoC setup
 set hidden
@@ -60,19 +232,18 @@ function! s:show_documentation()
   endif
 endfunction
 
-
 " Highlight symbol under cursor on CursorHold
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
+nmap <Leader>rn <Plug>(coc-rename)
 
 " Remap for format selected region
-vmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+vmap <Leader>f  <Plug>(coc-format-selected)
+nmap <Leader>f  <Plug>(coc-format-selected)
 
 " Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <Leader>qf  <Plug>(coc-fix-current)
 
 " Using CocList
 " Show all diagnostics
