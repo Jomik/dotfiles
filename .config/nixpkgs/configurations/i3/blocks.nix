@@ -10,19 +10,20 @@ BAR_CRITICAL_COLOR=${colors.red}
 
 '' + concatMapStringsSep "\n" (generators.toINI {}) [
   {
-    memory = {
-      inherit markup;
-      command = "${./memory}";
-      interval = 1;
-      LABEL = "\\uf2db";
-    };
-  }
-  {
     cpu = {
       inherit markup;
       command = "${./cpu}";
       interval = "persist";
       LABEL = "\\uf85a";
+      BAR_WIDTH = 20;
+    };
+  }
+  {
+    memory = {
+      inherit markup;
+      command = "${./memory}";
+      interval = 1;
+      LABEL = "\\uf2db";
     };
   }
   {

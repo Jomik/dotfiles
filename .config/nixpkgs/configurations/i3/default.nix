@@ -86,8 +86,8 @@ in mkIf config.xsession.windowManager.i3.enable {
   xdg.configFile."i3blocks/config".text = pkgs.callPackage ./blocks.nix {} gruvbox-dark;
 
   xsession.windowManager.i3.config = {
-    modifier = "Mod4";
     inherit fonts;
+    modifier = "Mod4";
     bars = [{
       inherit fonts;
       id = "bottom-bar";
@@ -153,6 +153,10 @@ in mkIf config.xsession.windowManager.i3.enable {
       };
     };
     keybindings = with pkgs; with nur.repos.jomik; mkOptionDefault {
+      "${modifier}+comma" = "focus output left";
+      "${modifier}+Shift+comma" = "move workspace to output left";
+      "${modifier}+period" = "focus output right";
+      "${modifier}+Shift+period" = "move workspace to output right";
       "${modifier}+Shift+q" = "exec ${powerMenu}/bin/power-menu";
       "${modifier}+Shift+p" = "exec ${rofi-pass}/bin/rofi-pass";
       "${modifier}+Shift+l" = "exec ${slock}/bin/slock";
@@ -179,7 +183,7 @@ in mkIf config.xsession.windowManager.i3.enable {
 
   programs.rofi = {
     enable = true;
-    terminal = "${pkgs.alacritty}/bin/alacritty";
+    terminal = "$TERMINAL";
     separator = "solid";
     theme = "gruvbox-light";
     extraConfig = ''

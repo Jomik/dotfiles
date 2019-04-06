@@ -35,7 +35,7 @@ function bar {
 percent=$(cat /sys/class/power_supply/${BLOCK_INSTANCE:-BAT0}/capacity)
 status=$(cat /sys/class/power_supply/${BLOCK_INSTANCE:-BAT0}/status)
 
-if [ $status == "Charging" ]; then
+if [ $status == "Charging" ] || [ $status == "Full" ]; then
   export BAR_FILL_COLOR=$CHARGING
 elif ((percent < 30)); then
   export BAR_FILL_COLOR=$BAR_CRITICAL_COLOR

@@ -2,9 +2,8 @@
 
 function bar {
   percent=$1
-  width=${BAR_WIDTH:-10}
-  
-  echo -en "<span font='${LABEL_SIZE:-22}'>$LABEL</span> "
+  width=$((${BAR_WIDTH:-10} / 4))
+
   echo -n "<span rise='5000'>"
   
   end=$(($width - 1))
@@ -32,19 +31,27 @@ function bar {
   echo "</span>"
 }
 
-prev=$(grep 'cpu ' /proc/stat)
+for i in $(seq 0 3); do
+  prev[$i]=$(grep "cpu$i " /proc/stat)
+done
+
 while true; do
-  info=$(grep 'cpu ' /proc/stat)
-  percent=$(echo -e "$prev\\n$info" | awk -v RS="" '{print ($13-$2+$15-$4)*100/($13-$2+$15-$4+$16-$5)}' | cut -d "." -f 1)
-  prev=$info
+  msg="<span font='${LABEL_SIZE:-22}'>$LABEL</span>"
+  
+  for i in $(seq 0 3); do
+    info=$(grep "cpu$i " /proc/stat)
+    percent=$(echo -e "$prev[$i]\\n$info" | awk -v RS="" '{print ($13-$2+$15-$4)*100/($13-$2+$15-$4+$16-$5)}' | cut -d "." -f 1)
+    if (( percent > 70 )); then
+      export BAR_FILL_COLOR=$BAR_CRITICAL_COLOR
+    else
+      export BAR_FILL_COLOR=
+    fi
+    msg+=" $(bar $percent)"
+    $prev[$i]=$info
+  done
 
-  if (( percent > 70 )); then
-    export BAR_FILL_COLOR=$BAR_CRITICAL_COLOR
-  else
-    export BAR_FILL_COLOR=
-  fi
+  echo -e $msg
 
-  echo $(bar $percent)
   sleep ${INTERVAL:-1}
 done
 
