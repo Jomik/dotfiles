@@ -58,7 +58,7 @@ let
     ("K" vimish-fold-delete-all))
   '';
 in {
-  imports = [ ../../modules/programs/emacs ./overrides.nix ];
+  imports = [ ./overrides.nix ];
 
   programs.emacs.init = {
     enable = true;

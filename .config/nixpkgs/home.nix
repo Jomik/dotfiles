@@ -7,29 +7,17 @@ let
   #  #!${pkgs.stdenv.shell}
   #  emacsclient -c "$@"
   #'';
+
 in rec {
-  imports = [
-    ./modules/programs/alacritty.nix
-    ./modules/services/polybar.nix
-    ./modules/services/xbanish.nix
-  ] ++ map (name: ./configurations + "/${name}")
-    (builtins.attrNames (builtins.readDir ./configurations));
+  imports = with builtins;
+    map (name: ./configurations + "/${name}") (attrNames (readDir ./configurations))
+    ++ map (name: ./modules/programs + "/${name}") (attrNames (readDir ./modules/programs))
+    ++ map (name: ./modules/services + "/${name}") (attrNames (readDir ./modules/services));
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
     (self: super: {
       nur.repos.jomik = import "${builtins.fetchTarball "https://gitlab.com/Jomik/nur-expressions/-/archive/master/nur-expressions-master.tar.gz"}/overlay.nix" self super;
-    })
-    (self: super: {
-      neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oldattrs: {
-        version = "0.4.0";
-        src = pkgs.fetchFromGitHub {
-          owner = "neovim";
-          repo = "neovim";
-          rev = "36762a00a8010c5e14ad4347ab8287d1e8e7e064";
-          sha256 = "0n7i3mp3wpl8jkm5z0ifhaha6ljsskd32vcr2wksjznsmfgvm6p4";
-        };
-      });
     })
   ];
 
@@ -48,6 +36,7 @@ in rec {
 
     ripgrep
     exa
+    fd
 
     # fonts
     fira fira-code
@@ -75,8 +64,10 @@ in rec {
   programs.git.enable = true;
   programs.bat.enable = true;
 
+  programs.kitty.enable = true;
+
   programs.alacritty = {
-    enable = true;
+    # enable = true;
     settings = {
       font.size = 6.0;
       colors = {
@@ -110,18 +101,6 @@ in rec {
         lines = 36;
       };
     };
-  };
-  programs.tmux = {
-    enable = true;
-    sensibleOnTop = true;
-    plugins = with pkgs.tmuxPlugins; [
-      copycat
-      yank
-      open
-    ];
-    extraConfig = ''
-      set -g mode-keys "vi"
-    '';
   };
 
   programs.texlive.enable = true;
@@ -164,7 +143,7 @@ in rec {
     EDITOR = "nvim";
     # VISUAL = "${editor}";
     BROWSER = "firefox";
-    TERMINAL = "alacritty";
+    TERMINAL = "kitty";
   };
 
   programs.home-manager.enable = true;
