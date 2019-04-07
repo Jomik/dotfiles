@@ -106,6 +106,17 @@ in {
     };
   };
 
+  vim-startify = buildVimPluginFrom2Nix {
+    pname = "vim-startify";
+    version = "2019-04-6";
+    src = fetchFromGitHub {
+      owner = "mhinz";
+      repo = "vim-startify";
+      rev = "c758d2a79ae0e4b8602e09834800ed0b3d71d0fe";
+      sha256 = "0h43lwni05b80kwhfpwlvs3pakqw4csk6k5w638c2xrjxqr7jjfh";
+    };
+  };
+
   tla = buildVimPluginFrom2Nix {
     pname = "tla-vim";
     version = "2018-01-31";

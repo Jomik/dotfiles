@@ -18,6 +18,7 @@ set nobackup
 set nowritebackup
 
 set foldmethod=syntax
+set foldlevelstart=99
 
 " Enable the mouse
 set mouse=a
@@ -69,23 +70,24 @@ nnoremap <silent> <C-b> :call comfortable_motion#flick(g:comfortable_motion_impu
 
 " Startify
 let g:startify_change_to_vcs_root = 1
+let g:startify_change_to_dir = 1
 let g:startify_fortune_use_unicode = 1
 let g:startify_custom_header = 'startify#fortune#boxed()'
 
 function! s:list_projects() abort
   return map(finddir('.git', $HOME . '/projects/**2', -1),
-        \ {_, dir -> {'line': fnamemodify(dir, ':h:s?.*projects/??'), 'cmd': 'Defx ' . fnamemodify(dir, ':h')}})
+        \ {_, dir -> {'line': fnamemodify(dir, ':h:s?.*projects/??'), 'cmd': 'cd ' . fnamemodify(dir, ':h') . ' | Defx .'}})
 endfunction
 
 let g:startify_lists = [
       \ {'header': ['   MRU'], 'type': 'files'},
-      \ {'header': ['   MRU '. getcwd()], 'type': 'dir'},
-      \ {'header': ['   Bookmarks'], 'type': 'bookmarks'},
-      \ {'header': ['   Projects'], 'type': function('s:list_projects'), 'indices': map(range(1, 100), { _ -> 'p' . string(v:val)})}
+      \ {'header': ['   Projects'], 'type': function('s:list_projects'), 'indices': map(range(1, 100), { _ -> 'p' . string(v:val)})},
+      \ {'header': ['   Bookmarks'], 'type': 'bookmarks'}
       \ ]
 
 let g:startify_bookmarks = [
-      \ {'c': '~/.config/nvim/init.vim'}
+      \ {'c': '~/.config/nvim/init.vim'},
+      \ {'n': '~/.config/nixpkgs/home.nix'}
       \ ]
 
 let g:startify_skiplist = [
