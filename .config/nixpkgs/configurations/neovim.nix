@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  vimPlugins = pkgs.vimPlugins // pkgs.callPackage ./plugins.nix {};
+  vimPlugins = pkgs.vimPlugins // pkgs.nur.repos.jomik.vimPlugins;
 
   fzf = vimPlugins.fzfWrapper.overrideAttrs (old: {
     postFixup = ''
