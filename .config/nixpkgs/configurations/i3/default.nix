@@ -88,6 +88,9 @@ in mkIf config.xsession.windowManager.i3.enable {
   xsession.windowManager.i3.config = {
     inherit fonts;
     modifier = "Mod4";
+    assigns = {
+      "9" = [{ class = "^discord$"; } { class = "^Slack$"; }];
+    };
     bars = [{
       inherit fonts;
       id = "bottom-bar";
