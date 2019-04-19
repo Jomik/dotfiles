@@ -9,6 +9,19 @@ let
         --replace "s:base_dir.'/bin/fzf'" "'${pkgs.fzf}/bin/fzf'"
     '';
   });
+
+  cocSettings = {
+    "coc.preferences.codeLens.enable" = true;
+    "coc.preferences.formatOnSaveFiletypes" = ["tsx" "typescript"];
+    "prettier.requireConfig" = true;
+    languageserver = {
+      rls = {
+        command = "${pkgs.rls}/bin/rls";
+        filetypes = ["rust"];
+        "trace.server" = "verbose";
+      };
+    };
+  };
 in
 {
   nixpkgs.overlays = [
@@ -25,6 +38,8 @@ in
     })
   ];
 
+  xdg.configFile."nvim/coc-settings.json".text = builtins.toJSON cocSettings;
+
   programs.neovim = {
     viAlias = true;
     vimAlias = true;
@@ -32,6 +47,7 @@ in
 
     configure= {
       customRC = ''
+        let $RUST_SRC_PATH = '${pkgs.rustPlatform.rustcSrc}'
         source ~/.config/nvim/init.vim
       '';
 
@@ -49,6 +65,7 @@ in
           gitgutter
           gruvbox
           idris-vim
+          rust-vim
           sensible
           tla
           typescript-vim
@@ -60,6 +77,7 @@ in
           vim-peekaboo
           vim-sandwich
           vim-startify
+          vim-tsx
         ];
       };
     };

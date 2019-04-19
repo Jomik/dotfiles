@@ -1,6 +1,8 @@
 let mapleader=" "
 
 tnoremap <Esc> <C-\><C-n>
+nnoremap <leader>w :w<CR>
+nnoremap <leader>q :q<CR>
 noremap <silent> k gk
 noremap <silent> j gj
 noremap <silent> 0 g0
@@ -9,9 +11,9 @@ map Y y$
 map Q <Nop>
 
 " Do not load netrw
-let g:loaded_netrwPlugin = 1
+let g:loaded_netrwPlugin=1
 " Do not load matchit, use matchup plugin
-let g:loaded_matchit = 1
+let g:loaded_matchit=1
 
 set noswapfile
 set nobackup
@@ -52,51 +54,57 @@ set conceallevel=2
 " Change color theme
 set termguicolors
 let g:gruvbox_italic=1
-let g:gruvbox_sign_column = 'bg0'
+let g:gruvbox_sign_column='bg0'
 colorscheme gruvbox
 set background=light
 let g:gruvbox_contrast_light="medium"
 hi! Operator guifg=NONE guibg=NONE
 
+" FZF
+nnoremap <leader>p :GFiles<CR>
+nnoremap <leader>P :Files<CR>
+nnoremap <leader>m :History<CR>
+nnoremap <leader>b :Buffers<CR>
+
 " Comfortable motion
-let g:comfortable_motion_scroll_down_key = "j"
-let g:comfortable_motion_scroll_up_key = "k"
-let g:comfortable_motion_no_default_key_mappings = 1
-let g:comfortable_motion_impulse_multiplier = 1
+let g:comfortable_motion_scroll_down_key="j"
+let g:comfortable_motion_scroll_up_key="k"
+let g:comfortable_motion_no_default_key_mappings=1
+let g:comfortable_motion_impulse_multiplier=1
 nnoremap <silent> <C-d> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * 2)<CR>
 nnoremap <silent> <C-u> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -2)<CR>
 nnoremap <silent> <C-f> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * 4)<CR>
 nnoremap <silent> <C-b> :call comfortable_motion#flick(g:comfortable_motion_impulse_multiplier * winheight(0) * -4)<CR>
 
 " Startify
-let g:startify_change_to_vcs_root = 1
-let g:startify_change_to_dir = 1
-let g:startify_fortune_use_unicode = 1
-let g:startify_custom_header = 'startify#fortune#boxed()'
+let g:startify_change_to_vcs_root=1
+let g:startify_change_to_dir=1
+let g:startify_fortune_use_unicode=1
+let g:startify_custom_header='startify#fortune#boxed()'
 
 function! s:list_projects() abort
   return map(finddir('.git', $HOME . '/projects/**2', -1),
         \ {_, dir -> {'line': fnamemodify(dir, ':h:s?.*projects/??'), 'cmd': 'cd ' . fnamemodify(dir, ':h') . ' | Defx .'}})
 endfunction
 
-let g:startify_lists = [
+let g:startify_lists=[
       \ {'header': ['   MRU'], 'type': 'files'},
       \ {'header': ['   Projects'], 'type': function('s:list_projects'), 'indices': map(range(1, 100), { _ -> 'p' . string(v:val)})},
       \ {'header': ['   Bookmarks'], 'type': 'bookmarks'}
       \ ]
 
-let g:startify_bookmarks = [
+let g:startify_bookmarks=[
       \ {'c': '~/.config/nvim/init.vim'},
       \ {'n': '~/.config/nixpkgs/home.nix'}
       \ ]
 
-let g:startify_skiplist = [
+let g:startify_skiplist=[
       \ '/nix/store/*'
       \ ]
 
 " ALE
-let g:ale_linters_explicit = 1
-let g:ale_linters = { 
+let g:ale_linters_explicit=1
+let g:ale_linters={ 
       \ 'idris': ['idris']
       \ }
 
@@ -107,8 +115,8 @@ augroup defxrc
   autocmd VimEnter * call s:setup_defx()
 augroup END
 
-nnoremap <silent><Leader>n :call <sid>defx_open({ 'split': v:true })<CR>
-nnoremap <silent><Leader>hf :call <sid>defx_open({ 'split': v:true, 'find_current_file': v:true })<CR>
+nnoremap <silent><leader>n :call <sid>defx_open({ 'split': v:true })<CR>
+nnoremap <silent><leader>hf :call <sid>defx_open({ 'split': v:true, 'find_current_file': v:true })<CR>
 
 function! s:setup_defx() abort
   call defx#custom#column('filename', {
@@ -129,15 +137,15 @@ function! s:setup_defx() abort
 endfunction
 
 function! s:defx_open(...) abort
-  let l:opts = get(a:, 1, {})
-  let l:path = get(l:opts, 'dir', getcwd())
+  let l:opts=get(a:, 1, {})
+  let l:path=get(l:opts, 'dir', getcwd())
 
   if !isdirectory(l:path) || &filetype ==? 'defx'
     return
   endif
 
-  let l:args = '-winwidth=40 -direction=topleft'
-  let l:is_opened = bufwinnr('defx') > 0
+  let l:args='-winwidth=40 -direction=topleft'
+  let l:is_opened=bufwinnr('defx') > 0
 
   if has_key(l:opts, 'split')
     let l:args .= ' -split=vertical'
@@ -159,8 +167,8 @@ function! s:defx_open(...) abort
 endfunction
 
 function! s:defx_context_menu() abort
-  let l:actions = ['new_multiple_files', 'rename', 'copy', 'move', 'paste', 'remove']
-  let l:selection = confirm('Action?', "&New file/directory\n&Rename\n&Copy\n&Move\n&Paste\n&Delete")
+  let l:actions=['new_multiple_files', 'rename', 'copy', 'move', 'paste', 'remove']
+  let l:selection=confirm('Action?', "&New file/directory\n&Rename\n&Copy\n&Move\n&Paste\n&Delete")
   silent exe 'redraw'
 
   if l:selection > 0
@@ -202,7 +210,7 @@ inoremap <silent><expr> <TAB>
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
-  let col = col('.') - 1
+  let col=col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
@@ -238,14 +246,14 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Remap for rename current word
-nmap <Leader>rn <Plug>(coc-rename)
+nmap <leader>rn <Plug>(coc-rename)
 
 " Remap for format selected region
-vmap <Leader>f  <Plug>(coc-format-selected)
-nmap <Leader>f  <Plug>(coc-format-selected)
+vmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
 
 " Fix autofix problem of current line
-nmap <Leader>qf  <Plug>(coc-fix-current)
+nmap <leader>qf  <Plug>(coc-fix-current)
 
 " Using CocList
 " Show all diagnostics
