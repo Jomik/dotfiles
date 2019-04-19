@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
   unstable = import <unstable> { config.allowUnfree = true;};
@@ -7,17 +7,19 @@ let
   #  #!${pkgs.stdenv.shell}
   #  emacsclient -c "$@"
   #'';
+  myNurExpression = import (builtins.fetchTarball "https://gitlab.com/Jomik/nur-expressions/-/archive/master/nur-expressions-master.tar.gz") { inherit pkgs; };
 
 in rec {
   imports = with builtins;
     map (name: ./configurations + "/${name}") (attrNames (readDir ./configurations))
     ++ map (name: ./modules/programs + "/${name}") (attrNames (readDir ./modules/programs))
-    ++ map (name: ./modules/services + "/${name}") (attrNames (readDir ./modules/services));
+    ++ map (name: ./modules/services + "/${name}") (attrNames (readDir ./modules/services))
+    ++ (with myNurExpression.home-modules; [ fish ]);
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
     (self: super: {
-      nur.repos.jomik = import "${builtins.fetchTarball "https://gitlab.com/Jomik/nur-expressions/-/archive/master/nur-expressions-master.tar.gz"}/overlay.nix" self super;
+      nur.repos.jomik = myNurExpression.pkgs;
     })
   ];
 
@@ -44,10 +46,8 @@ in rec {
     font-awesome_5
   ]) ++ (with pkgs.nur.repos.jomik; [
     dotfiles-sh
-    csd-post # For openconnect
   ]) ++ (with unstable.pkgs; [
     discord
-    openconnect
   ]);
 
   programs.htop = {
@@ -131,13 +131,19 @@ in rec {
 
   xsession.enable = true;
   systemd.user.startServices = true;
-  # Disable setxkbmap hack
-  systemd.user.services.setxkbmap.Service.ExecStart = "${pkgs.xorg.setxkbmap}/bin/setxkbmap";
   # xsession.windowManager.xmonad.enable = true;
   # xsession.windowManager.awesome.enable = true;
   xsession.windowManager.i3.enable = true;
   # services.taffybar.enable = true;
   # services.polybar.enable = true;
+
+  # Execute setxkbmap so that rofi-pass can input properly.
+  systemd.user.services.setxkbmap.Service.ExecStart = lib.mkForce "${pkgs.xorg.setxkbmap}/bin/setxkbmap";
+  # home.keyboard = {
+  #   layout = "us";
+  #   variant = "colemak";
+  #   options = ["ctrl:nocaps"];
+  # };
 
   home.sessionVariables = {
     EDITOR = "nvim";

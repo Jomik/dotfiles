@@ -1,8 +1,6 @@
 { pkgs, config, lib, ... }:
 
 {
-  imports = [ ../modules/programs/fish ];
-
   home.file.".bashrc" = lib.mkIf config.programs.fish.enable {
     text = ''
         exec ${config.programs.fish.package}/bin/fish
@@ -45,9 +43,16 @@
           return 0
         end
       '';
+      z.body = ''
+          fasd_cd -d $argv
+      '';
     };
-    plugins = plugins: with plugins; [
-      prompt.spacefish
+    completions = {
+      z.body = ''complete -c z -a "(__fasd_print_completion -d)" -f'';
+    };
+    plugins = with pkgs.nur.repos.jomik.fishPlugins; [
+      fasd
+      spacefish
       thefuck
     ];
   };
