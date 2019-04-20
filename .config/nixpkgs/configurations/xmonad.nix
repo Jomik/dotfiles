@@ -3,10 +3,11 @@
 with lib;
 let
   deps = with pkgs; with nur.repos.jomik; {
-    inherit rofi slock;
+    inherit rofi;
+    jomikI3lock = jomikI3lock;
     rofiPass = rofi-pass;
     powerMenu = rofi-menu "power-menu" [
-      [ "Lock" "${slock}/bin/slock" false ]
+      [ "Lock" "${jomik-i3lock}/bin/jomik-i3lock" false ]
       [ "Suspend" "systemctl suspend" true ]
       [ "Hibernate" "systemctl hibernate" true ]
       [ "Reboot" "systemctl reboot" true ]
@@ -20,7 +21,7 @@ in mkIf config.xsession.windowManager.xmonad.enable {
   ];
 
   services.screen-locker.enable = true;
-  services.screen-locker.lockCmd = "${pkgs.nur.repos.jomik.slock}/bin/slock";
+  services.screen-locker.lockCmd = "${pkgs.nur.repos.jomik.jomik-i3lock}/bin/jomik-i3lock";
   services.dunst.enable = true;
 
   xsession = {

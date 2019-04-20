@@ -8,7 +8,6 @@ let
   #  emacsclient -c "$@"
   #'';
   myNurExpression = import (builtins.fetchTarball "https://gitlab.com/Jomik/nur-expressions/-/archive/master/nur-expressions-master.tar.gz") { inherit pkgs; };
-
 in rec {
   imports = with builtins;
     map (name: ./configurations + "/${name}") (attrNames (readDir ./configurations))

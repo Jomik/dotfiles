@@ -28,7 +28,7 @@ let
   };
   modifier = config.xsession.windowManager.i3.config.modifier;
   powerMenu = with pkgs.nur.repos.jomik; rofi-menu "power-menu" [
-    [ "Lock" "${slock}/bin/slock" false ]
+    [ "Lock" "exec ${pkgs.systemd}/bin/loginctl lock-session $XDG_SESSION_ID" false ]
     [ "Logout" "exec i3-msg exit" true ]
     [ "Suspend" "systemctl suspend" true ]
     [ "Hibernate" "systemctl hibernate" true ]
@@ -96,8 +96,8 @@ in mkIf config.xsession.windowManager.i3.enable {
       id = "bottom-bar";
       position = "bottom";
       mode = "hide";
-      # statusCommand = "${i3blocks}/bin/i3blocks";
-      statusCommand = "2> /tmp/i3blocks.err ${i3blocks}/bin/i3blocks -vvv | tee /tmp/i3blocks.out";
+      statusCommand = "${i3blocks}/bin/i3blocks";
+      # statusCommand = "2> /tmp/i3blocks.err ${i3blocks}/bin/i3blocks -vvv | tee /tmp/i3blocks.out";
       workspaceButtons = true;
       colors = with gruvbox-dark; {
         background = bg;
@@ -162,7 +162,7 @@ in mkIf config.xsession.windowManager.i3.enable {
       "${modifier}+Shift+period" = "move workspace to output right";
       "${modifier}+Shift+q" = "exec ${powerMenu}/bin/power-menu";
       "${modifier}+Shift+p" = "exec ${rofi-pass}/bin/rofi-pass";
-      "${modifier}+Shift+l" = "exec ${slock}/bin/slock";
+      "${modifier}+Shift+l" = "exec ${pkgs.systemd}/bin/loginctl lock-session $XDG_SESSION_ID";
       "${modifier}+p" = "exec ${rofi}/bin/rofi -show drun -show-icons";
       "${modifier}+Shift+c" = "kill";
       "XF86MonBrightnessDown" = "exec ${pkgs.acpilight}/bin/xbacklight -dec 10 && pkill -RTMIN+10 i3blocks";
@@ -181,7 +181,7 @@ in mkIf config.xsession.windowManager.i3.enable {
   };
 
   services.screen-locker.enable = true;
-  services.screen-locker.lockCmd = "${pkgs.nur.repos.jomik.slock}/bin/slock";
+  services.screen-locker.lockCmd = "${jomik-i3lock}/bin/jomik-i3lock";
   services.dunst.enable = true;
 
   programs.rofi = {

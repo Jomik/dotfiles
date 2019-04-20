@@ -18,7 +18,7 @@ myConfig = def
     } `additionalKeysP`
     [ ("M-p", spawn $ rofi "rofi -show drun -show-icons")
     , ("M-S-p", spawn $ rofiPass "rofi-pass")
-    , ("M-S-l", spawn $ slock "slock")
+    , ("M-S-l", spawn $ jomikI3lock "jomik-i3lock")
     , ("M-S-q", spawn $ powerMenu "power-menu")
     , ("<XF86MonBrightnessDown>", Brightness.decrease)
     , ("<XF86MonBrightnessUp>", Brightness.increase)

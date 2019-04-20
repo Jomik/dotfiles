@@ -182,6 +182,7 @@ function! s:defx_mappings() abort
   nnoremap <silent><buffer><expr> <CR> defx#do_action('drop')
   nnoremap <silent><buffer><expr> <2-LeftMouse> defx#do_action('drop')
   nnoremap <silent><buffer><expr> s defx#do_action('open', 'botright vsplit')
+  nnoremap <silent><buffer><expr> S defx#do_action('open', 'botright split')
   nnoremap <silent><buffer><expr> R defx#do_action('redraw')
   nnoremap <silent><buffer><expr> u defx#do_action('cd', ['..'])
   nnoremap <silent><buffer><expr> cd defx#do_action('change_vim_cwd')
