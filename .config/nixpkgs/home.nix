@@ -7,18 +7,19 @@ let
   #  #!${pkgs.stdenv.shell}
   #  emacsclient -c "$@"
   #'';
-  myNurExpression = import (builtins.fetchTarball "https://gitlab.com/Jomik/nur-expressions/-/archive/master/nur-expressions-master.tar.gz") { inherit pkgs; };
+  myNurExpressions = import <nur-jomik> { inherit pkgs; };
+  # myNurExpressions = import ~/projects/nix/nur-expressions { inherit pkgs; };
 in rec {
   imports = with builtins;
     map (name: ./configurations + "/${name}") (attrNames (readDir ./configurations))
     ++ map (name: ./modules/programs + "/${name}") (attrNames (readDir ./modules/programs))
     ++ map (name: ./modules/services + "/${name}") (attrNames (readDir ./modules/services))
-    ++ (with myNurExpression.home-modules; [ fish ]);
+    ++ (with myNurExpressions.home-modules; [ fish ]);
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [
     (self: super: {
-      nur.repos.jomik = myNurExpression.pkgs;
+      nur.repos.jomik = myNurExpressions.pkgs;
     })
   ];
 
