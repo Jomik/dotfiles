@@ -38,7 +38,7 @@ in mkIf config.xsession.windowManager.xmonad.enable {
 
   programs.rofi = {
     enable = true;
-    terminal = "${pkgs.alacritty}/bin/alacritty";
+    terminal = "$TERMINAL";
     separator = "solid";
     theme = "gruvbox-dark-soft";
     extraConfig = ''
