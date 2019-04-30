@@ -4,7 +4,7 @@
   programs.git = {
     enable = true;
     userName = "Jonas Holst Damtoft";
-    userEmail = "jonasdamtoft@hotmail.com";
+    userEmail = "jonasdamtoft@gmail.com";
     signing.signByDefault = true;
     signing.key = "F135EB6E5796123F11166E40B41F19B1BAD55D37";
     extraConfig = {
