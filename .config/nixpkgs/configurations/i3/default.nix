@@ -180,9 +180,10 @@ in mkIf config.xsession.windowManager.i3.enable {
     size = 24;
   };
 
-  services.screen-locker.enable = true;
-  services.screen-locker.lockCmd = "${jomik-i3lock}/bin/jomik-i3lock";
   services.dunst.enable = true;
+  services.screen-locker.enable = true;
+  services.screen-locker.lockCmd = "${pkgs.lightlocker}/bin/light-locker-command -l";
+  xsession.initExtra = "${pkgs.lightlocker}/bin/light-locker &";
 
   programs.rofi = {
     enable = true;
