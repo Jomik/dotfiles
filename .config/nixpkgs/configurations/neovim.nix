@@ -62,14 +62,20 @@ in
           echodoc
           fzf
           fzf-vim
+          git-messenger
           gitgutter
           gruvbox
           idris-vim
+          lslvimazing
+          markdown
+          markdown-preview
+          quick-scope
           rust-vim
+          search-pulse
           sensible
+          tcomment
           tla
           typescript-vim
-          vim-commentary
           vim-highlightedyank
           vim-matchup
           vim-nix
