@@ -1,5 +1,6 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
+with lib;
 let
   vimPlugins = pkgs.vimPlugins // pkgs.nur.repos.jomik.vimPlugins;
 
@@ -11,14 +12,44 @@ let
   });
 
   cocSettings = {
-    "coc.preferences.codeLens.enable" = true;
     "coc.preferences.formatOnSaveFiletypes" = ["tsx" "typescript"];
+    "codeLens.enable" = true;
     "prettier.requireConfig" = true;
     languageserver = {
       rls = {
         command = "${pkgs.rls}/bin/rls";
         filetypes = ["rust"];
-        "trace.server" = "verbose";
+      };
+      dls = {
+        command = "${pkgs.nur.repos.jomik.diagnostic-languageserver}/bin/diagnostic-languageserver";
+        args = ["--stdio"];
+        filetypes = ["lsl"];
+        initializationOptions = {
+          linters = {
+            lslint = {
+              command = "${pkgs.nur.repos.jomik.lslint}/bin/lslint-wrapped";
+              sourceName = "lslint";
+              isStdout = true;
+              isStderr = true;
+              formatPattern = [
+                "^\\s*(.+):: \\(\\s*(\\d+),\\s*(\\d+)\\): (.+)$"
+                { 
+                  line = 2;
+                  column = 3;
+                  message = [4];
+                  security = 1;
+                }
+              ];
+              securities = {
+                "ERROR" = "error";
+                "WARN" = "warning";
+              };
+            };
+          };
+          filetypes = {
+            lsl = "lslint";
+          };
+        };
       };
     };
   };
@@ -27,7 +58,7 @@ in
   nixpkgs.overlays = [
     (self: super: {
       neovim-unwrapped = super.neovim-unwrapped.overrideAttrs (oldattrs: {
-        version = "0.4.0";
+       version = "0.4.0";
        src = pkgs.fetchFromGitHub {
           owner = "neovim";
           repo = "neovim";
@@ -38,12 +69,22 @@ in
     })
   ];
 
-  xdg.configFile."nvim/coc-settings.json".text = builtins.toJSON cocSettings;
+  xdg.configFile = {
+    "nvim/coc-settings.json".text = builtins.toJSON cocSettings;
+  };
 
   programs.neovim = {
     viAlias = true;
     vimAlias = true;
     withNodeJs = true;
+
+    package = pkgs.neovim-unwrapped.overrideAttrs (old: {
+      nativeBuildInputs = old.nativeBuildInputs ++ (with pkgs; [ makeWrapper ]);
+      postFixup = ''
+        wrapProgram $out/bin/nvim \
+          --prefix PATH : ${makeBinPath (with pkgs; [ yarn ])}
+      '';
+    });
 
     configure= {
       customRC = ''
@@ -54,6 +95,7 @@ in
       packages.myVimPackage = with vimPlugins; {
         start = [
           ale
+          clever-f
           coc-nvim
           comfortable-motion
           defx-git
@@ -66,6 +108,7 @@ in
           gitgutter
           gruvbox
           idris-vim
+          lightline
           lslvimazing
           markdown
           markdown-preview

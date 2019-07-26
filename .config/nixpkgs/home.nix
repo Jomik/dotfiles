@@ -35,6 +35,7 @@ in rec {
     pass
     gimp
     libreoffice-fresh
+    steam
 
     ripgrep
     exa
@@ -46,6 +47,7 @@ in rec {
     font-awesome_5
   ]) ++ (with pkgs.nur.repos.jomik; [
     dotfiles-sh
+    firestorm
   ]) ++ (with unstable.pkgs; [
     discord
   ]);

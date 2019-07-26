@@ -59,6 +59,31 @@ colorscheme gruvbox
 set background=light
 let g:gruvbox_contrast_light="medium"
 hi! Operator guifg=NONE guibg=NONE
+hi link gitmessengerPopupNormal Pmenu
+hi gitmessengerEndOfBuffer term=None guifg=None guibg=None ctermfg=None ctermbg=None
+
+" Lightline
+let g:lightline = {
+      \ 'colorscheme': 'gruvbox',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ], [ 'filename', 'modified' ] ],
+      \   'right': [ [ 'lineinfo' ], [ 'cocstatus', 'percent' ] ]  
+      \ },
+      \ 'inactive': {
+      \   'left': [ [ 'filename' ] ],
+      \   'right': [ [ 'lineinfo' ], [ 'percent' ] ]
+			\ },
+      \ 'component_function': {
+      \   'cocstatus': 'coc#status',
+      \   'filename': 'LightlineFilename',
+      \ },
+      \ }
+
+function! LightlineFilename()
+  let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+  let modified = &modified ? ' +' : ''
+  return filename . modified
+endfunction
 
 " FZF
 nnoremap <leader>p :GFiles<CR>
@@ -105,7 +130,8 @@ let g:startify_skiplist=[
 " ALE
 let g:ale_linters_explicit=1
 let g:ale_linters={ 
-      \ 'idris': ['idris']
+      \ 'idris': ['idris'],
+      \ 'lsl' : ['lslint']
       \ }
 
 " Defx

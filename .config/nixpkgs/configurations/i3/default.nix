@@ -3,6 +3,7 @@
 with lib;
 
 let
+  screenLocker = pkgs.nur.repos.jomik.jomik-i3lock;
   i3blocks = pkgs.i3blocks.overrideAttrs (old: {
     version = "20190207";
     src = pkgs.fetchFromGitHub {
@@ -182,8 +183,7 @@ in mkIf config.xsession.windowManager.i3.enable {
 
   services.dunst.enable = true;
   services.screen-locker.enable = true;
-  services.screen-locker.lockCmd = "${pkgs.lightlocker}/bin/light-locker-command -l";
-  xsession.initExtra = "${pkgs.lightlocker}/bin/light-locker &";
+  services.screen-locker.lockCmd = "${screenLocker}/bin/jomik-i3lock";
 
   programs.rofi = {
     enable = true;
