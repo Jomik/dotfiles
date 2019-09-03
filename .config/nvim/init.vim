@@ -15,6 +15,8 @@ let g:loaded_netrwPlugin=1
 " Do not load matchit, use matchup plugin
 let g:loaded_matchit=1
 
+set shell=/bin/sh
+
 set noswapfile
 set nobackup
 set nowritebackup
@@ -50,6 +52,68 @@ let &t_ut=''
 
 " Use conceal for pretty characters
 set conceallevel=2
+
+" Plugins
+
+" Install Vim Plug if not installed
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall
+endif
+
+call plug#begin()
+
+function! DoRemote(arg)
+  UpdateRemotePlugins
+endfunction
+
+Plug 'w0rp/ale'
+Plug 'rhysd/clever-f.vim'
+Plug 'yuttie/comfortable-motion.vim'
+Plug 'kristijanhusak/defx-git'
+Plug 'Shougo/defx.nvim'
+Plug 'Shougo/echodoc.vim'
+Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
+
+Plug 'kmarius/vim-fish'
+
+" Fzf
+Plug '/usr/share/vim/vimfiles'
+Plug 'junegunn/fzf.vim'
+
+Plug 'rhysd/git-messenger.vim'
+Plug 'airblade/vim-gitgutter'
+
+Plug 'morhetz/gruvbox'
+Plug 'itchyny/lightline.vim'
+
+" Markdown
+Plug 'sidofc/mkdx'
+let g:mkdx#settings = { 'highlight': { 'enable': 1 },
+                    \ 'enter': { 'shift': 1 },
+                    \ 'links': { 'external': { 'enable': 1 } },
+                    \ 'fold': { 'enable': 0 } }
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install' }
+
+" HTML/CSS
+Plug 'mustache/vim-mustache-handlebars'
+Plug 'digitaltoad/vim-pug'
+Plug 'rrethy/vim-hexokinase'
+
+Plug 'inside/vim-search-pulse'
+Plug 'tpope/vim-sensible'
+Plug 'tomtom/tcomment_vim'
+Plug 'machakann/vim-highlightedyank'
+Plug 'andymass/vim-matchup'
+Plug 'LnL7/vim-nix'
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
+Plug 'junegunn/vim-peekaboo'
+Plug 'machakann/vim-sandwich'
+Plug 'mhinz/vim-startify'
+Plug 'leafgarland/typescript-vim'
+
+call plug#end()
 
 " Change color theme
 set termguicolors
@@ -130,7 +194,6 @@ let g:startify_skiplist=[
 " ALE
 let g:ale_linters_explicit=1
 let g:ale_linters={ 
-      \ 'idris': ['idris'],
       \ 'lsl' : ['lslint']
       \ }
 
