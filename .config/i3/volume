@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+function bar {
+  percent=$1
+  width=${BAR_WIDTH:-10}
+  
+  echo -en "<span font='${LABEL_SIZE:-22}'>$LABEL</span> "
+  echo -n "<span rise='5000'>"
+  
+  end=$(($width - 1))
+  for i in $(seq 0 $end); do
+    segment=$(($i * (100 / $width)))
+    if (( percent > segment )); then
+      filled+=${BAR_FILL:-━}
+    else
+      empty+=${BAR_EMPTY:-┉}
+    fi
+  done
+  
+  if [ -z $BAR_FILL_COLOR ]; then
+    echo -en "$filled"
+  else
+    echo -en "<span color='$BAR_FILL_COLOR'>$filled</span>"
+  fi
+  
+  if [ -z $BAR_EMPTY_COLOR ]; then
+    echo -en "$empty"
+  else
+    echo -en "<span color='$BAR_EMPTY_COLOR'>$empty</span>"
+  fi
+  
+  echo "</span>"
+}
+
+sink=$(pactl list sinks | head -n 1 | cut -d "#" -f 2)
+percent=$(pactl list sinks | grep '^[[:space:]]Volume:' | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,')
+
+case $BLOCK_BUTTON in
+  1) pactl set-sink-mute $sink toggle ;;
+  4) pactl set-sink-volume $sink -5% && pactl set-sink-mute $sink 0 ;;
+  5) [[ $percent -le 95 ]] && pactl set-sink-volume $sink +5% && pactl set-sink-mute $sink 0 ;;
+esac
+
+if pactl list sinks | grep -q "Mute: yes"; then
+  export BAR_FILL_COLOR=$BAR_MUTE_COLOR
+  export BAR_EMPTY_COLOR=$BAR_MUTE_COLOR
+fi
+
+bar $percent
+

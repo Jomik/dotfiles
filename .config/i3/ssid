@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+echo -en "<span font='22'>$LABEL</span><span rise='5000'> "
+
+ssid=$(wpa_cli -i ${BLOCK_INSTANCE:-wlp2s0} status | grep -e '^ssid')
+
+if [ $? == 0 ]; then
+  echo -n "$(echo "$ssid" | cut -d "=" -f 2)"
+elif [ -z $NOT_CONNECTED_COLOR ]; then
+  echo -n "Not connected"
+else
+  echo -n "<span color='$NOT_CONNECTED_COLOR'>Not connected</span>"
+fi
+
+echo "</span>"
+

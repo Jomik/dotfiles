@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+function bar {
+  percent=$1
+  width=$((${BAR_WIDTH:-10} / 4))
+
+  echo -n "<span rise='5000'>"
+  
+  end=$(($width - 1))
+  for i in $(seq 0 $end); do
+    segment=$(($i * (100 / $width)))
+    if (( percent > segment )); then
+      filled+=${BAR_FILL:-━}
+    else
+      empty+=${BAR_EMPTY:-┉}
+    fi
+  done
+  
+  if [ -z $BAR_FILL_COLOR ]; then
+    echo -en "$filled"
+  else
+    echo -en "<span color='$BAR_FILL_COLOR'>$filled</span>"
+  fi
+  
+  if [ -z $BAR_EMPTY_COLOR ]; then
+    echo -en "$empty"
+  else
+    echo -en "<span color='$BAR_EMPTY_COLOR'>$empty</span>"
+  fi
+  
+  echo "</span>"
+}
+
+for i in $(seq 0 3); do
+  prev[$i]=$(grep "cpu$i " /proc/stat)
+done
+
+while true; do
+  msg="<span font='${LABEL_SIZE:-22}'>$LABEL</span>"
+  
+  for i in $(seq 0 3); do
+    info=$(grep "cpu$i " /proc/stat)
+    percent=$(echo -e "$prev[$i]\\n$info" | awk -v RS="" '{print ($13-$2+$15-$4)*100/($13-$2+$15-$4+$16-$5)}' | cut -d "." -f 1)
+    if (( percent > 70 )); then
+      export BAR_FILL_COLOR=$BAR_CRITICAL_COLOR
+    else
+      export BAR_FILL_COLOR=
+    fi
+    msg+=" $(bar $percent)"
+    $prev[$i]=$info
+  done
+
+  echo -e $msg
+
+  sleep ${INTERVAL:-1}
+done
+
