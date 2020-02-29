@@ -68,15 +68,12 @@ function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
 
-Plug 'w0rp/ale'
 Plug 'rhysd/clever-f.vim'
 Plug 'yuttie/comfortable-motion.vim'
 Plug 'kristijanhusak/defx-git'
 Plug 'Shougo/defx.nvim'
 Plug 'Shougo/echodoc.vim'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
-
-Plug 'kmarius/vim-fish'
 
 " Fzf
 Plug '/usr/share/vim/vimfiles'
@@ -98,8 +95,10 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install' }
 
 " HTML/CSS
 Plug 'mustache/vim-mustache-handlebars'
-Plug 'digitaltoad/vim-pug'
 Plug 'rrethy/vim-hexokinase'
+
+Plug 'dart-lang/dart-vim-plugin'
+Plug 'thosakwe/vim-flutter'
 
 Plug 'inside/vim-search-pulse'
 Plug 'tpope/vim-sensible'
@@ -112,6 +111,8 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'machakann/vim-sandwich'
 Plug 'mhinz/vim-startify'
 Plug 'leafgarland/typescript-vim'
+Plug 'dag/vim-fish'
+
 
 call plug#end()
 
@@ -190,12 +191,6 @@ let g:startify_bookmarks=[
 let g:startify_skiplist=[
       \ '/nix/store/*'
       \ ]
-
-" ALE
-let g:ale_linters_explicit=1
-let g:ale_linters={ 
-      \ 'lsl' : ['lslint']
-      \ }
 
 " Defx
 augroup defxrc
