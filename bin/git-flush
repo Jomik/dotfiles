@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+set -e
+
+git rev-parse
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [ $branch != "master" ]
+then
+  echo "flush mush be run on master"
+  exit 1
+fi
+
+git fetch
+git remote prune origin
+
+git branch --merged master | grep -v 'master$' | xargs git branch -d
+

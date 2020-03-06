@@ -1,6 +1,7 @@
 set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
-
 source $XDG_CONFIG_HOME/fish/(hostname).fish
+
+set -x PATH $HOME/bin $PATH
 
 abbr -a ls exa
 abbr -a ll exa -lha
