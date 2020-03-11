@@ -1,7 +1,7 @@
 set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
 source $XDG_CONFIG_HOME/fish/(hostname).fish
 
-set -x PATH $HOME/bin $PATH
+set -x PATH $XDG_CONFIG_HOME/git/scripts $PATH
 
 abbr -a ls exa
 abbr -a ll exa -lha

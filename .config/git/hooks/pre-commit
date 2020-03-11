@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+if git rev-parse --verify HEAD >/dev/null 2>&1; then  
+  against=HEAD
+else  
+  # Initial commit: diff against an empty tree object
+  against=$(git hash-object -t tree /dev/null)
+fi
+
+exec 1>&2
+
+for entry in `git diff-index --cached --diff-filter=ACM --name-status $against -- | cut -c1,3-`; do  
+  file=`echo "$entry" | cut -c2-`
+  if git diff --cached "$file" | grep -qi 'NOCOMMIT'; then
+    nocommit="$nocommit $file"
+  fi
+done
+
+if [ "x${nocommit}x" != "xx" ]; then
+  echo "Error: Files containing NOCOMMIT:"
+  for file in ${nocommit}; do
+    echo $file
+  done
+  exit 1
+fi
+
