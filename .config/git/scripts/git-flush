@@ -1,18 +1,22 @@
 #!/usr/bin/env sh
 set -e
 
-git rev-parse
+force=false
+case "$1" in
+  -f) force=true;;
+esac
 
-branch=$(git rev-parse --abbrev-ref HEAD)
-
-if [ $branch != "master" ]
-then
-  echo "flush mush be run on master"
-  exit 1
-fi
-
-git fetch
+git fetch --all 2>/dev/null
 git remote prune origin
 
-git branch --merged master | grep -v 'master$' | xargs git branch -d
-
+$force || echo "This is a dry-run.\nPass -f to delete"
+for branch in $(git for-each-ref --format='%(refname:short)' refs/heads); do
+    # find configured upstream, if any
+    remote=$(git config --get branch.$branch.remote) || continue
+    # if tracking local branch, skip
+    if [ "$remote" = . ]; then continue; fi
+    # if the upstream commit resolves, skip
+    ucommit=$(git rev-parse "${branch}@{u}" 2>/dev/null) && continue
+    # upstream is invalid - remove local branch, or print removal
+    $force && git branch -D $branch || echo "$branch"
+done
