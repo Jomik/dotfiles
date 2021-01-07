@@ -10,8 +10,7 @@ abbr -a psg 'ps aux | rg -v rg | rg -i -e VSZ -e'
 abbr -a grep rg
 abbr -a cat bat
 
-if not functions -q fisher
-    curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
-    fish -c fisher
+if status is-interactive && ! functions --query fisher
+    curl --silent --location https://git.io/fisher | source && fisher install jorgebucaran/fisher
 end
 
