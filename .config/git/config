@@ -1,5 +1,8 @@
 [include]
   path = local.conf
+[user]
+  useconfigonly = true
+  name = Jonas Holst Damtoft
 [core]
   hooksPath = ~/.config/git/hooks
 [pull]
@@ -18,5 +21,3 @@
   ignored = ls-files --others --i --exclude-standard
   l = log --graph --pretty='%Cred%h%Creset - %C(bold blue)<%an>%Creset %s%C(yellow)%d%Creset %Cgreen(%cr)' --abbrev-commit --date=relative
   unpushed = log @{u}..
-[user]
-	useconfigonly = true
