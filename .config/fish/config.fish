@@ -10,7 +10,13 @@ abbr -a psg 'ps aux | rg -v rg | rg -i -e VSZ -e'
 abbr -a grep rg
 abbr -a cat bat
 
-if status is-interactive && ! functions --query fisher
+if ! status is-interactive
+  exit
+end
+
+if ! functions --query fisher
     curl --silent --location https://git.io/fisher | source && fisher install jorgebucaran/fisher
 end
+
+thefuck --alias | source
 

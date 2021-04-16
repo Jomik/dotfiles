@@ -12,7 +12,6 @@
   autosquash = true
 [alias]
   unstage = reset HEAD --
-  discard = checkout --
   pop = reset HEAD^
   last = log -3 HEAD
   oops = commit --amend --no-edit
@@ -21,3 +20,7 @@
   ignored = ls-files --others --i --exclude-standard
   l = log --graph --pretty='%Cred%h%Creset - %C(bold blue)<%an>%Creset %s%C(yellow)%d%Creset %Cgreen(%cr)' --abbrev-commit --date=relative
   unpushed = log @{u}..
+[tag]
+	sort = -version:refname
+[advice]
+	detachedHead = false
