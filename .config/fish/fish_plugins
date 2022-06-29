@@ -2,3 +2,5 @@ jomik/fish-fasd
 matchai/spacefish
 jorgebucaran/fish-nvm
 jorgebucaran/fisher
+oh-my-fish/plugin-aws
+evanlucas/fish-kubectl-completions
