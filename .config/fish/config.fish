@@ -4,6 +4,8 @@ source $XDG_CONFIG_HOME/fish/(hostname).fish
 # Workaround for regression: https://github.com/nvbn/thefuck/issues/1219
 set -x THEFUCK_PRIORITY "git_hook_bypass=1100"
 
+set -x EDITOR /usr/local/bin/nvim
+
 fish_add_path $XDG_CONFIG_HOME/git/scripts $PATH
 
 abbr -a ls exa
