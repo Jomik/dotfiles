@@ -1,7 +1,7 @@
 jomik/fish-fasd
 matchai/spacefish
-jorgebucaran/fish-nvm
 jorgebucaran/fisher
 oh-my-fish/plugin-aws
 evanlucas/fish-kubectl-completions
 halostatue/fish-direnv@v1.x
+jorgebucaran/nvm.fish
