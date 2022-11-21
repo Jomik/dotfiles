@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+localhead=$(git rev-parse --abbrev-ref origin/HEAD 2> /dev/null)
+if [[ $? != 0 ]]
+then
+  git remote set-head origin --auto > /dev/null
+  localhead=$(git rev-parse --abbrev-ref origin/HEAD 2> /dev/null);
+  if [[ $? != 0 ]] ; then exit ; fi
+fi
+
+echo $localhead | cut -c8-
