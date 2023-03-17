@@ -6,3 +6,5 @@ status --is-interactive; and source (rbenv init -|psub)
 fish_add_path ~/.cargo/bin
 fish_add_path $GOPATH/bin
 
+abbr -a lg lazygit
+
