@@ -16,7 +16,15 @@ return {
   },
   {
     "telescope.nvim",
+    ---@type LazySpec[]
     dependencies = {
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        config = function()
+          require("telescope").load_extension("fzf")
+        end,
+      },
       {
         "debugloop/telescope-undo.nvim",
         config = function()
@@ -34,5 +42,11 @@ return {
         },
       },
     },
+  },
+  {
+    "simrat39/symbols-outline.nvim",
+    cmd = "SymbolsOutline",
+    keys = { { "<leader>cs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" } },
+    config = true,
   },
 }
