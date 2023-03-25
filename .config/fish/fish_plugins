@@ -1,7 +1,12 @@
 jomik/fish-fasd
-matchai/spacefish
 jorgebucaran/fisher
 oh-my-fish/plugin-aws
 evanlucas/fish-kubectl-completions
 halostatue/fish-direnv@v1.x
 jorgebucaran/nvm.fish
+laughedelic/pisces
+nickeb96/puffer-fish
+patrickf1/fzf.fish
+oakninja/makemefish
+meaningful-ooo/sponge
+ilancosman/tide@v5
