@@ -25,21 +25,30 @@ return {
           require("telescope").load_extension("fzf")
         end,
       },
-      {
-        "debugloop/telescope-undo.nvim",
-        config = function()
-          require("telescope").load_extension("undo")
-        end,
+    },
+    opts = {
+      defaults = {
+        layout_strategy = "horizontal",
+        layout_config = { prompt_position = "top" },
+        sorting_strategy = "ascending",
+        winblend = 0,
+      },
+    },
+  },
+  {
+    "debugloop/telescope-undo.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    config = function()
+      require("telescope").load_extension("undo")
+    end,
 
-        keys = {
-          {
-            "<leader>U",
-            function()
-              return require("telescope").extensions.undo.undo()
-            end,
-            desc = "Undo History",
-          },
-        },
+    keys = {
+      {
+        "<leader>U",
+        function()
+          return require("telescope").extensions.undo.undo()
+        end,
+        desc = "Undo History",
       },
     },
   },
