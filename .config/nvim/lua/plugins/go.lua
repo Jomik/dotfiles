@@ -13,7 +13,11 @@ return {
     "neovim/nvim-lspconfig",
     opts = {
       servers = {
-        gopls = {},
+        gopls = {
+          cmd_env = {
+            GOFLAGS = "-tags=integration",
+          },
+        },
       },
     },
   },
