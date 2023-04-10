@@ -58,4 +58,21 @@ return {
     keys = { { "<leader>cs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" } },
     config = true,
   },
+  {
+    "Fildo7525/pretty_hover",
+    opts = {},
+  },
+  {
+    "neovim/nvim-lspconfig",
+    init = function()
+      local keys = require("lazyvim.plugins.lsp.keymaps").get()
+      keys[#keys + 1] = {
+        "K",
+        function()
+          require("pretty_hover").hover()
+        end,
+        desc = "Hover",
+      }
+    end,
+  },
 }

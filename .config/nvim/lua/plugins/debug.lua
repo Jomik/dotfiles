@@ -1,31 +1,29 @@
 return {
-  "mfussenegger/nvim-dap",
-  dependencies = {
-    {
-      "jay-babu/mason-nvim-dap.nvim",
-      opts = {
-        ensure_installed = {
-          "node2",
-        },
-        automatic_setup = true,
+  {
+    "jay-babu/mason-nvim-dap.nvim",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
+    opts = {
+      ensure_installed = {
+        "node2",
       },
-      config = function(_, opts)
-        require("mason-nvim-dap").setup(opts)
-        require("mason-nvim-dap").setup_handlers()
+    },
+    {
+      "nvim-telescope/telescope-dap.nvim",
+      dependencies = {
+        "telescope.nvim",
+      },
+      config = function()
+        require("telescope").load_extension("dap")
       end,
     },
     {
-      "telescope.nvim",
-      dependencies = {
-        "nvim-telescope/telescope-dap.nvim",
-        config = function()
-          require("telescope").load_extension("dap")
-        end,
-      },
-    },
-    {
       "theHamsta/nvim-dap-virtual-text",
-      config = true,
+      dependencies = {
+        "mfussenegger/nvim-dap",
+      },
+      opts = {},
     },
   },
 }
