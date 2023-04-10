@@ -3,6 +3,8 @@
 [user]
   useconfigonly = true
   name = Jonas Holst Damtoft
+[url "ssh://git@github.com/"]
+  insteadOf = https://github.com/
 [core]
   hooksPath = ~/.config/git/hooks
 [pull]
@@ -30,3 +32,4 @@
 	defaultBranch = main
 [push]
 	autoSetupRemote = true
+
