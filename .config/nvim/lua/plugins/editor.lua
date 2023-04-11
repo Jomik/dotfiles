@@ -59,11 +59,12 @@ return {
     config = true,
   },
   {
-    "Fildo7525/pretty_hover",
-    opts = {},
-  },
-  {
     "neovim/nvim-lspconfig",
+    dependencies = {
+      "Fildo7525/pretty_hover",
+      event = "LspAttach",
+      opts = {},
+    },
     init = function()
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
       keys[#keys + 1] = {
