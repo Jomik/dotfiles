@@ -1,13 +1,10 @@
 return {
-  -- add json to treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
       vim.list_extend(opts.ensure_installed, { "yaml" })
     end,
   },
-
-  -- correctly setup lspconfig
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -16,6 +13,7 @@ return {
     },
     opts = {
       -- make sure mason installs the server
+      ---@type lspconfig.options
       servers = {
         yamlls = {
           -- lazy-load schemastore when needed
@@ -26,7 +24,8 @@ return {
           settings = {
             yaml = {
               format = { enable = true },
-              validate = { enable = true },
+              hover = true,
+              validate = true,
             },
           },
         },

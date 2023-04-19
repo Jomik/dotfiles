@@ -24,4 +24,5 @@ return {
       automatic_setup = false,
     },
   },
+  { import = "lazyvim.plugins.extras.dap.core" },
 }

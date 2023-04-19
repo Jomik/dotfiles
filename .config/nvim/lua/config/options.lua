@@ -6,7 +6,7 @@ local opt = vim.opt
 
 opt.wrap = true
 opt.linebreak = true
-opt.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldenable = true
-opt.foldcolumn = "0" -- '0' is not bad
+opt.foldcolumn = "0"
