@@ -11,17 +11,7 @@ return {
           },
         },
       },
-
-      -- TODO: Move this to the lang/go plugin
-      "nvim-neotest/neotest-go",
     },
-    opts = function(_, opts)
-      opts.adapters = {
-        require("neotest-go")({
-          args = { "-tags=integration" },
-        }),
-      }
-    end,
     config = function(_, opts)
       -- get neotest namespace (api call creates or returns namespace)
       local neotest_ns = vim.api.nvim_create_namespace("neotest")

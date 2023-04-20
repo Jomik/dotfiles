@@ -37,4 +37,17 @@ return {
       ensure_installed = { "delve" },
     },
   },
+  {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-neotest/neotest-go",
+    },
+    opts = function(_, opts)
+      opts.adapters = vim.list_extend(opts.adapters or {}, {
+        require("neotest-go")({
+          args = { "-tags=integration" },
+        }),
+      })
+    end,
+  },
 }
