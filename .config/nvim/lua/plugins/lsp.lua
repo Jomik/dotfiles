@@ -7,4 +7,5 @@ return {
       automatic_setup = false,
     },
   },
+  { import = "plugins.lang" },
 }
