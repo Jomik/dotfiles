@@ -4,16 +4,6 @@ return {
     "NMAC427/guess-indent.nvim",
     config = true,
   },
-
-  -- Add projects
-  {
-    "ahmedkhalf/project.nvim",
-    name = "projects",
-    config = function(_, opts)
-      require("project_nvim").setup(opts)
-      require("telescope").load_extension("projects")
-    end,
-  },
   {
     "telescope.nvim",
     ---@type LazySpec[]

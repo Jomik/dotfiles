@@ -16,6 +16,14 @@ return {
       ---@type lspconfig.options
       servers = {
         yamlls = {
+          capabilities = {
+            textDocument = {
+              foldingRange = {
+                dynamicRegistration = false,
+                lineFoldingOnly = true,
+              },
+            },
+          },
           -- lazy-load schemastore when needed
           on_new_config = function(new_config)
             new_config.settings.yaml.schemas = new_config.settings.yaml.schemas or {}
@@ -26,6 +34,7 @@ return {
               format = { enable = true },
               hover = true,
               validate = true,
+              keyOrdering = false,
             },
           },
         },
