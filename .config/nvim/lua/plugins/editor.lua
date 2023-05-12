@@ -1,4 +1,5 @@
 return {
+  { "folke/noice.nvim", cond = not (vim.g.neovide or false) },
   "gpanders/editorconfig.nvim",
   {
     "NMAC427/guess-indent.nvim",
