@@ -14,8 +14,18 @@ return {
     opts = {
       servers = {
         gopls = {
-          cmd_env = {
-            GOFLAGS = "-tags=integration",
+          settings = {
+            gopls = {
+              buildFlags = { "-tags=integration" },
+              expandWorkspaceToModule = true,
+              semanticTokens = true,
+              analyses = {
+                nilness = true,
+                unusedparams = true,
+                unusedwrite = true,
+                unusedvariable = true,
+              },
+            },
           },
         },
       },
@@ -32,9 +42,15 @@ return {
     end,
   },
   {
-    "mason.nvim",
-    opts = {
-      ensure_installed = { "delve" },
+    "mfussenegger/nvim-dap",
+    optional = true,
+    dependencies = {
+      {
+        "mason.nvim",
+        opts = {
+          ensure_installed = { "delve" },
+        },
+      },
     },
   },
   {
@@ -42,11 +58,10 @@ return {
     dependencies = {
       "nvim-neotest/neotest-go",
     },
+    optional = true,
     opts = function(_, opts)
       opts.adapters = vim.list_extend(opts.adapters or {}, {
-        require("neotest-go")({
-          args = { "-tags=integration" },
-        }),
+        require("neotest-go")({ args = { "-tags=integration" } }),
       })
     end,
   },
