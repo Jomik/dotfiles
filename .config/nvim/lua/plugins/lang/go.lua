@@ -1,14 +1,5 @@
 return {
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
-        "go",
-        "gomod",
-        "gowork",
-      })
-    end,
-  },
+  { import = "lazyvim.plugins.extras.lang.go" },
   {
     "neovim/nvim-lspconfig",
     opts = {
@@ -42,27 +33,14 @@ return {
     end,
   },
   {
-    "mfussenegger/nvim-dap",
+    "nvim-neotest/neotest",
     optional = true,
-    dependencies = {
-      {
-        "mason.nvim",
-        opts = {
-          ensure_installed = { "delve" },
+    opts = {
+      adapters = {
+        ["neotest-go"] = {
+          args = { "-tags=integration" },
         },
       },
     },
-  },
-  {
-    "nvim-neotest/neotest",
-    dependencies = {
-      "nvim-neotest/neotest-go",
-    },
-    optional = true,
-    opts = function(_, opts)
-      opts.adapters = vim.list_extend(opts.adapters or {}, {
-        require("neotest-go")({ args = { "-tags=integration" } }),
-      })
-    end,
   },
 }
