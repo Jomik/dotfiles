@@ -1,5 +1,3 @@
-[include]
-  path = local.conf
 [user]
   useconfigonly = true
   name = Jonas Holst Damtoft
@@ -32,4 +30,10 @@
 	defaultBranch = main
 [push]
 	autoSetupRemote = true
+[includeIf "hasconfig:remote.*.url:https://github.com/**/*"]
+  path = github.conf
+[includeIf "hasconfig:remote.*.url:https://gitlab.com/**/*"]
+  path = gitlab.conf
+[include]
+  path = local.conf
 
