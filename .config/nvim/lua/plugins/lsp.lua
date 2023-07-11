@@ -2,8 +2,8 @@ return {
   {
     "jay-babu/mason-null-ls.nvim",
     opts = {
-      ensure_installed = nil,
-      automatic_installation = true,
+      ensure_installed = {},
+      automatic_installation = false,
       automatic_setup = false,
     },
   },

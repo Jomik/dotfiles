@@ -15,5 +15,13 @@ return {
         nls.builtins.formatting.clang_format,
       })
     end,
+    dependencies = {
+      "jay-babu/mason-null-ls.nvim",
+      opts = function(_, opts)
+        vim.list_extend(opts.ensure_installed, {
+          "clang_format",
+        })
+      end,
+    },
   },
 }

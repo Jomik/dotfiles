@@ -7,7 +7,7 @@ return {
         gopls = {
           settings = {
             gopls = {
-              buildFlags = { "-tags=integration" },
+              buildFlags = { "-tags=integration,unittest" },
               expandWorkspaceToModule = true,
               semanticTokens = true,
               analyses = {
@@ -31,6 +31,15 @@ return {
         nls.builtins.diagnostics.golangci_lint,
       })
     end,
+    dependencies = {
+      "jay-babu/mason-null-ls.nvim",
+      opts = function(_, opts)
+        vim.list_extend(opts.ensure_installed, {
+          "gofumpt",
+          "golangci_lint",
+        })
+      end,
+    },
   },
   {
     "nvim-neotest/neotest",
