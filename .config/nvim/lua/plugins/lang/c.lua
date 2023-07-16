@@ -16,10 +16,10 @@ return {
       })
     end,
     dependencies = {
-      "jay-babu/mason-null-ls.nvim",
+      "mason.nvim",
       opts = function(_, opts)
         vim.list_extend(opts.ensure_installed, {
-          "clang_format",
+          "clang-format",
         })
       end,
     },
