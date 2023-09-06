@@ -36,7 +36,7 @@ require("lazy").setup({
   dev = {
     path = "~/projects/private/neovim",
   },
-  install = {},
+  install = { colorscheme = { "kanagawa", "habamax" } },
   checker = { enabled = true }, -- automatically check for plugin updates
   performance = {
     rtp = {
@@ -46,10 +46,10 @@ require("lazy").setup({
         -- "matchit",
         -- "matchparen",
         -- "netrwPlugin",
-        "tarPlugin",
+        -- "tarPlugin",
         "tohtml",
         "tutor",
-        "zipPlugin",
+        -- "zipPlugin",
       },
     },
   },

@@ -1,10 +1,5 @@
 return {
-  { "folke/noice.nvim", cond = not (vim.g.neovide or false) },
   "gpanders/editorconfig.nvim",
-  {
-    "NMAC427/guess-indent.nvim",
-    config = true,
-  },
   {
     "telescope.nvim",
     ---@type LazySpec[]
@@ -49,7 +44,7 @@ return {
     keys = {
       { "<leader>cs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" },
     },
-    config = true,
+    opts = {},
   },
   {
     "neovim/nvim-lspconfig",
@@ -78,6 +73,23 @@ return {
     },
     opts = {
       mappings = { "golang" },
+    },
+  },
+  {
+    "RaafatTurki/corn.nvim",
+    dependencies = {
+      -- Depends on lspconfig, as it enables virtual_text
+      -- This allows us to disable it again in our config.
+      "neovim/nvim-lspconfig",
+    },
+    config = function(_, opts)
+      vim.diagnostic.config({ virtual_text = false })
+      require("corn").setup(opts)
+    end,
+    opts = {
+      on_toggle = function(is_hidden)
+        vim.diagnostic.config({ virtual_text = is_hidden })
+      end,
     },
   },
 }
