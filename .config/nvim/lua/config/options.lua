@@ -15,6 +15,7 @@ opt.foldenable = true
 opt.foldcolumn = "0"
 
 if vim.g.neovide then
-  vim.o.guifont = "VictorMono Nerd Font Mono-SemiBold:h14"
+  opt.guifont = "VictorMono Nerd Font Mono-SemiBold:h14"
+  opt.shell = "/usr/local/bin/fish"
   vim.g.neovide_cursor_vfx_mode = "railgun"
 end
