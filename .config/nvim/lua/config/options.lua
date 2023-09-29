@@ -15,6 +15,6 @@ opt.foldenable = true
 opt.foldcolumn = "0"
 
 if vim.g.neovide then
-  vim.o.guifont = "Victor Mono:h14"
+  vim.o.guifont = "VictorMono Nerd Font Mono-SemiBold:h14"
   vim.g.neovide_cursor_vfx_mode = "railgun"
 end
