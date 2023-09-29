@@ -75,21 +75,4 @@ return {
       mappings = { "golang" },
     },
   },
-  {
-    "RaafatTurki/corn.nvim",
-    dependencies = {
-      -- Depends on lspconfig, as it enables virtual_text
-      -- This allows us to disable it again in our config.
-      "neovim/nvim-lspconfig",
-    },
-    config = function(_, opts)
-      vim.diagnostic.config({ virtual_text = false })
-      require("corn").setup(opts)
-    end,
-    opts = {
-      on_toggle = function(is_hidden)
-        vim.diagnostic.config({ virtual_text = is_hidden })
-      end,
-    },
-  },
 }
