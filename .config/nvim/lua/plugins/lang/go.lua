@@ -23,13 +23,14 @@ return {
     },
   },
   {
-    "nvimtools/none-ls.nvim",
-    opts = function(_, opts)
-      local nls = require("null-ls")
-      vim.list_extend(opts.sources, {
-        nls.builtins.diagnostics.golangci_lint,
-      })
-    end,
+    "mfussenegger/nvim-lint",
+    opts = {
+      linters_by_ft = {
+        go = { "golangcilint" },
+        gomod = { "golangcilint" },
+        gowork = { "golangcilint" },
+      },
+    },
   },
   {
     "nvim-neotest/neotest",

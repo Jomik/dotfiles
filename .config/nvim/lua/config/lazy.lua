@@ -20,6 +20,13 @@ require("lazy").setup({
     -- { import = "lazyvim.plugins.extras.coding.copilot" },
     { import = "lazyvim.plugins.extras.dap.core" },
     { import = "lazyvim.plugins.extras.test.core" },
+    -- Disable `none-ls` as we use conform and nvim-lint
+    {
+      "nvimtools/none-ls.nvim",
+      enabled = false,
+    },
+    { import = "lazyvim.plugins.extras.formatting.conform" },
+    { import = "lazyvim.plugins.extras.linting.nvim-lint" },
     -- import/override with your plugins
     { import = "plugins" },
   },
