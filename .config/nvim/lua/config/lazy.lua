@@ -12,7 +12,7 @@ require("lazy").setup({
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     -- import extras
     { import = "lazyvim.plugins.extras.ui.mini-animate" },
-    { import = "lazyvim.plugins.extras.ui.mini-starter" },
+    { import = "lazyvim.plugins.extras.ui.dashboard" },
     { import = "lazyvim.plugins.extras.ui.edgy" },
     { import = "lazyvim.plugins.extras.editor.mini-files" },
     { import = "lazyvim.plugins.extras.util.project" },
