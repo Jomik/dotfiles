@@ -11,7 +11,7 @@ opt.wrap = true
 opt.linebreak = true
 
 if vim.g.neovide then
-  opt.guifont = "VictorMono_Nerd_Font_Mono:h14"
+  opt.guifont = "VictorMono_Nerd_Font:h14"
   opt.shell = "/usr/local/bin/fish"
   vim.g.neovide_cursor_vfx_mode = "railgun"
 end

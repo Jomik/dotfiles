@@ -39,14 +39,6 @@ return {
     },
   },
   {
-    "simrat39/symbols-outline.nvim",
-    cmd = "SymbolsOutline",
-    keys = {
-      { "<leader>cs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" },
-    },
-    opts = {},
-  },
-  {
     "neovim/nvim-lspconfig",
     dependencies = {
       "Fildo7525/pretty_hover",

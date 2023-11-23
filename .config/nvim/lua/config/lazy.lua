@@ -11,22 +11,9 @@ require("lazy").setup({
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     -- import extras
-    { import = "lazyvim.plugins.extras.ui.mini-animate" },
-    { import = "lazyvim.plugins.extras.ui.dashboard" },
     { import = "lazyvim.plugins.extras.ui.edgy" },
-    { import = "lazyvim.plugins.extras.editor.mini-files" },
-    { import = "lazyvim.plugins.extras.util.project" },
+    { import = "lazyvim.plugins.extras.editor.aerial" },
     { import = "lazyvim.plugins.extras.coding.yanky" },
-    -- { import = "lazyvim.plugins.extras.coding.copilot" },
-    { import = "lazyvim.plugins.extras.dap.core" },
-    { import = "lazyvim.plugins.extras.test.core" },
-    -- Disable `none-ls` as we use conform and nvim-lint
-    {
-      "nvimtools/none-ls.nvim",
-      enabled = false,
-    },
-    { import = "lazyvim.plugins.extras.formatting.conform" },
-    { import = "lazyvim.plugins.extras.linting.nvim-lint" },
     -- import/override with your plugins
     { import = "plugins" },
   },
