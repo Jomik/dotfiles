@@ -47,9 +47,5 @@
 	defaultBranch = main
 [push]
 	autoSetupRemote = true
-[includeIf "hasconfig:remote.*.url:git@github.com:**/*"]
-  path = github.conf
-[includeIf "hasconfig:remote.*.url:https://gitlab.com/**/*"]
-  path = gitlab.conf
 [include]
   path = local.conf
