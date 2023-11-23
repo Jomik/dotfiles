@@ -1,12 +1,23 @@
-set -q XDG_CACHE_HOME; or set -x XDG_CACHE_HOME ~/.cache
-set -q XDG_CONFIG_HOME; or set -x XDG_CONFIG_HOME ~/.config
-source $XDG_CONFIG_HOME/fish/(hostname).fish
+set -q XDG_CACHE_HOME; or set -x XDG_CACHE_HOME $HOME/.cache
+set -q XDG_CONFIG_HOME; or set -x XDG_CONFIG_HOME $HOME/.config
+set -q XDG_STATE_HOME; or set -x XDG_STATE_HOME $HOME/.local/state
+set -q XDG_DATA_HOME; or set -x XDG_DATA_HOME $HOME/.local/share
+
+set --local local_conf $XDG_CONFIG_HOME/fish/(hostname).fish
+if test -e $local_conf
+    builtin source $local_conf
+end
+
+fish_add_path -g $XDG_CONFIG_HOME/git/scripts
+
+if type -q bob
+    fish_add_path -g $XDG_DATA_HOME/bob/nvim-bin
+    set -x BOB_CONFIG $XDG_CONFIG_HOME/bob/config.json
+end
 
 if type -q nvim
     set -x EDITOR (which nvim)
 end
-
-fish_add_path $XDG_CONFIG_HOME/git/scripts $PATH
 
 if ! status is-interactive
     exit
