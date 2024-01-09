@@ -10,11 +10,6 @@ end
 
 fish_add_path -g $XDG_CONFIG_HOME/git/scripts
 
-if type -q bob
-    fish_add_path -g $XDG_DATA_HOME/bob/nvim-bin
-    set -x BOB_CONFIG $XDG_CONFIG_HOME/bob/config.json
-end
-
 if type -q nvim
     set -x EDITOR (which nvim)
 end
@@ -29,10 +24,6 @@ end
 
 if type -q thefuck
     thefuck --alias | source
-end
-
-if type -q rtx
-    rtx activate fish | source
 end
 
 builtin source $XDG_CONFIG_HOME/fish/abbreviations.fish
