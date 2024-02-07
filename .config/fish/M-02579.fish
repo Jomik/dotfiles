@@ -1,4 +1,4 @@
-fish_add_path -g /opt/homebrew/bin $HOME/.cargo/bin $HOME/.local/bin
+fish_add_path -g $HOME/.cargo/bin $HOME/.local/bin
 
 set -x RUBY_CONFIGURE_OPTS --with-openssl-dir=(brew --prefix openssl@1.1)
 
