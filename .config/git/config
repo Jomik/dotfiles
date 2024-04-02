@@ -10,11 +10,28 @@
 [rebase]
   autostash = true
   autosquash = true
+  updateRefs = true
+[tag]
+	sort = -version:refname
+[advice]
+	detachedHead = false
+[rerere]
+	enabled = true
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
+[include]
+  path = local.conf
+[merge "gomod"]
+	name = go.mod merge driver
+	driver = git gomod-mergetool %O %A %B
 [alias]
   unstage = reset HEAD --
   pop = reset HEAD^
   oops = commit --amend --no-edit
   please = push --force-with-lease
+  staash = stash --all
   l = log --graph --topo-order --date=short --abbrev-commit --decorate --all --boundary --pretty=format:'%Cblue%ad %C(auto)%h%Creset -%C(auto)%d%Creset %s %Cblue[%aN]%Creset %Cblue%G?%Creset'
   last = l -3 HEAD --oneline
   unpushed = log @{u}..
@@ -37,15 +54,3 @@
     awk 'NF{a[$0]++}END{for(i in a){print a[i], i}}' | \
     sort -rn; \
   };f"
-[tag]
-	sort = -version:refname
-[advice]
-	detachedHead = false
-[rerere]
-	enabled = true
-[init]
-	defaultBranch = main
-[push]
-	autoSetupRemote = true
-[include]
-  path = local.conf

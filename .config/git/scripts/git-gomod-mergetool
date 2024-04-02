@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+fileMerge=$3 ## The file containing the conflict markers
+
+awk '!/======/' $fileMerge | awk '!/>>>>>>/' | awk '!/<<<<<<</' > ${fileMerge}_union
+mv ${fileMerge}_union ${fileMerge}
+go mod tidy
+exit 0
