@@ -21,8 +21,15 @@ return {
       },
     },
   },
+
   {
     "mfussenegger/nvim-lint",
+    dependencies = {
+      "williamboman/mason.nvim",
+      opts = function(_, opts)
+        table.insert(opts.ensure_installed, "golangci-lint")
+      end,
+    },
     opts = {
       linters_by_ft = {
         go = { "golangcilint" },

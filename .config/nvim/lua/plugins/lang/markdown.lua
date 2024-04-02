@@ -1,17 +1,20 @@
 return {
+  { import = "lazyvim.plugins.extras.lang.markdown" },
   {
-    "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
-        "markdown",
-      })
-    end,
+    "lukas-reineke/headlines.nvim",
+    optional = true,
+    opts = {
+      markdown = {
+        fat_headline_lower_string = "▔",
+      },
+    },
   },
   {
-    "neovim/nvim-lspconfig",
+    "stevearc/conform.nvim",
+    optional = true,
     opts = {
-      servers = {
-        marksman = {},
+      formatters_by_ft = {
+        markdown = { { "prettierd", "prettier" }, "markdownlint", "markdown-toc" },
       },
     },
   },
