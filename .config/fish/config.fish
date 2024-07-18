@@ -26,4 +26,8 @@ if type -q thefuck
     thefuck --alias | source
 end
 
+if type -q zoxide
+    zoxide init fish | source
+end
+
 builtin source $XDG_CONFIG_HOME/fish/abbreviations.fish
