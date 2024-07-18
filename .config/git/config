@@ -23,6 +23,10 @@
 	autoSetupRemote = true
 [include]
   path = local.conf
+[diff]
+  colorMoved = default
+[merge]
+  conflictstyle = diff3
 [merge "gomod"]
 	name = go.mod merge driver
 	driver = git gomod-mergetool %O %A %B
