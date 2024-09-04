@@ -38,15 +38,4 @@ return {
       },
     },
   },
-  {
-    "nvim-neotest/neotest",
-    optional = true,
-    opts = {
-      adapters = {
-        ["neotest-go"] = {
-          args = { "-tags=integration" },
-        },
-      },
-    },
-  },
 }
