@@ -1,10 +1,12 @@
 [user]
   useconfigonly = true
-  name = Jonas Holst Damtoft
+  name = Jonas Damtoft
 [url "ssh://git@github.com/"]
   insteadOf = https://github.com/
 [core]
   hooksPath = ~/.config/git/hooks
+[commit]
+	gpgsign = true
 [pull]
   rebase = true
 [rebase]
