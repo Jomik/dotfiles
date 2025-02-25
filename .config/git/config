@@ -5,33 +5,52 @@
   insteadOf = https://github.com/
 [core]
   hooksPath = ~/.config/git/hooks
+[include]
+  path = local.conf
 [commit]
-	gpgsign = true
+  gpgsign = true
+  verbose = true
 [pull]
   rebase = true
 [rebase]
-  autostash = true
-  autosquash = true
+  autoSquash = true
+  autoStash = true
   updateRefs = true
 [tag]
-	sort = -version:refname
+  sort = -version:refname
 [advice]
-	detachedHead = false
+  detachedHead = false
 [rerere]
-	enabled = true
+  enabled = true
+  autoupdate = true
 [init]
-	defaultBranch = main
-[push]
-	autoSetupRemote = true
-[include]
-  path = local.conf
-[diff]
-  colorMoved = default
+  defaultBranch = main
 [merge]
-  conflictstyle = diff3
-[merge "gomod"]
-	name = go.mod merge driver
-	driver = git gomod-mergetool %O %A %B
+  conflictstyle = zdiff3
+
+# https://blog.gitbutler.com/how-git-core-devs-configure-git/
+[column]
+  ui = auto
+[branch]
+  sort = -committerdate
+[tag]
+  sort = version:refname
+[diff]
+  algorithm = histogram
+  colorMoved = plain
+  mnemonicPrefix = true
+  renames = true
+[push]
+  default = simple
+  autoSetupRemote = true
+  followTags = true
+[fetch]
+  prune = true
+  pruneTags = true
+  all = true
+[help]
+  autocorrect = prompt
+
 [alias]
   unstage = reset HEAD --
   pop = reset HEAD^
@@ -43,12 +62,12 @@
   unpushed = log @{u}..
   ignore = !"f() { \
     echo \"$1\" >> .gitignore; \
-  }; f"
+    }; f"
   ignored = ls-files --others --i --exclude-standard
   init-empty = !"f() { \
     git init && \
     git commit --allow-empty --allow-empty-message --message ''; \
-  }; f"
+    }; f"
   churn = !"f() { \
     git log \
     --all \
@@ -59,4 +78,4 @@
     \"$@\" | \
     awk 'NF{a[$0]++}END{for(i in a){print a[i], i}}' | \
     sort -rn; \
-  };f"
+    };f"
