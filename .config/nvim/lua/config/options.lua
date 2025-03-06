@@ -4,6 +4,7 @@
 --
 
 vim.g.maplocalleader = " "
+vim.g.lazyvim_check_order = false
 
 local opt = vim.opt
 
