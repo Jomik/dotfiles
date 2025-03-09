@@ -18,15 +18,4 @@ return {
   --     end,
   --   },
   -- },
-  {
-    "rgroli/other.nvim",
-    main = "other-nvim",
-    keys = {
-      { "<leader>tf", "<cmd>Other test<cr>", desc = "Open test" },
-      { "<leader>ti", "<cmd>Other implementation<cr>", desc = "Open implementation" },
-    },
-    opts = {
-      mappings = { "golang" },
-    },
-  },
 }
