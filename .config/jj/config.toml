@@ -1,0 +1,97 @@
+"$schema" = "https://jj-vcs.github.io/jj/latest/config-schema.json"
+
+# Inspired by
+# https://gist.github.com/thoughtpolice/8f2fd36ae17cd11b8e7bd93a70e31ad6
+
+[user]
+name = "Jonas Damtoft"
+
+[signing]
+backend = "ssh"
+behavior = "own"
+
+[ui]
+editor = ["nvim"]
+default-command = "log"
+graph.style = "square"
+
+[snapshot]
+auto-update-stale = true
+
+[git]
+private-commits = "blacklist()"
+push-bookmark-prefix = "jomik/push-"
+
+[fix.tools.ruff]
+enabled = false
+command = ["ruff", "check", "--quiet", "--fix", "--stdin-filename=$path"]
+patterns = ["glob:'**/*.py'"]
+
+[colors]
+"node wip" = { fg = "yellow" }
+"node private" = { fg = "red" }
+
+[revsets]
+# By default, show the current stack of work.
+log = "stack()"
+
+[aliases]
+# Take content from any change, and move it into @.
+# - jj consume xyz path/to/file`
+consume = ["squash", "--into", "@", "--from"]
+# Eject content from @ into any other change.
+# - jj eject xyz --interactive
+eject = ["squash", "--from", "@", "--into"]
+
+[revset-aliases]
+'user(x)' = 'author(x) | committer(x)'
+
+# By default, show the repo trunk, the remote bookmarks, and all remote tags. We
+# don't want to change these in most cases, but in some repos it's useful.
+'immutable_heads()' = 'present(trunk()) | remote_bookmarks() | tags()'
+
+# Private and WIP commits that should never be pushed anywhere. Often part of
+# work-in-progress merge stacks.
+'wip()' = 'description(glob:"wip:*")'
+'private()' = 'description(glob:"private:*")'
+'blacklist()' = 'wip() | private()'
+
+# stack(x, n) is the set of mutable commits reachable from 'x', with 'n'
+# parents. 'n' is often useful to customize the display and return set for
+# certain operations. 'x' can be used to target the set of 'roots' to traverse,
+# e.g. @ is the current stack.
+'stack()' = 'ancestors(reachable(@, mutable()), 2)'
+'stack(x)' = 'ancestors(reachable(x, mutable()), 2)'
+'stack(x, n)' = 'ancestors(reachable(x, mutable()), n)'
+
+# The current set of "open" works. It is defined as:
+#
+# - given the set of commits not in trunk, that are written by me,
+# - calculate the given stack() for each of those commits
+#
+# n = 1, meaning that nothing from `trunk()` is included, so all resulting
+# commits are mutable by definition.
+'open()' = 'stack(trunk().. & mine(), 1)'
+
+# the set of 'ready()' commits. defined as the set of open commits, but nothing
+# that is blacklisted or any of their children.
+'ready()' = 'open() ~ blacklist()::'
+
+[template-aliases]
+'format_timestamp(timestamp)' = 'timestamp.ago()'
+'format_short_signature(signature)' = '''
+  coalesce(signature.name(), name_placeholder)'''
+
+[templates]
+op_log_node = 'if(current_operation, "@", "◉")'
+log_node = '''
+coalesce(
+  if(!self, label("elided", "⇋")),
+  if(current_working_copy, label("working_copy", "◉")),
+  if(conflict, label("conflict", "×")),
+  if(immutable, label("immutable", "◆")),
+  if(description.starts_with("wip: "), label("wip", "")),
+  if(description.starts_with("private: "), label("private", "󰗹")),
+  label("normal", "○")
+)
+'''
