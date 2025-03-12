@@ -8,7 +8,7 @@ name = "Jonas Damtoft"
 
 [signing]
 backend = "ssh"
-behavior = "own"
+behavior = "drop"
 
 [ui]
 editor = ["nvim"]
@@ -19,6 +19,7 @@ graph.style = "square"
 auto-update-stale = true
 
 [git]
+sign-on-push = true
 private-commits = "blacklist()"
 push-bookmark-prefix = "jomik/push-"
 
@@ -36,6 +37,13 @@ patterns = ["glob:'**/*.py'"]
 log = "stack()"
 
 [aliases]
+# Retrunk a series. Typically used as `jj retrunk -s ...`, and notably can be
+# used with open:
+# - jj retrunk -s 'all:roots(open())'
+retrunk = ["rebase", "-d", "trunk()"]
+
+# Retrunk the current stack of work.
+reheat = ["rebase", "-d", "trunk()", "-s", "all:roots(trunk()..stack(@))"]
 # Take content from any change, and move it into @.
 # - jj consume xyz path/to/file`
 consume = ["squash", "--into", "@", "--from"]
@@ -48,7 +56,7 @@ eject = ["squash", "--from", "@", "--into"]
 
 # By default, show the repo trunk, the remote bookmarks, and all remote tags. We
 # don't want to change these in most cases, but in some repos it's useful.
-'immutable_heads()' = 'present(trunk()) | remote_bookmarks() | tags()'
+'immutable_heads()' = 'builtin_immutable_heads() | (trunk().. & ~mine())'
 
 # Private and WIP commits that should never be pushed anywhere. Often part of
 # work-in-progress merge stacks.
