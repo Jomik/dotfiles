@@ -1,15 +1,21 @@
 [user]
   useconfigonly = true
   name = Jonas Damtoft
+  email = Jomik@users.noreply.github.com
+	signingkey = ~/.ssh/id_ed25519_private.pub
 [url "ssh://git@github.com/"]
   insteadOf = https://github.com/
 [core]
   hooksPath = ~/.config/git/hooks
-[include]
-  path = local.conf
+[includeIf "hasconfig:remote.*.url:git@github.com:LEGO/**"]
+  path = lego.conf
+[includeIf "hasconfig:remote.*.url:https://gitlab.com/**/*"]
+  path = gitlab.conf
 [commit]
   gpgsign = true
   verbose = true
+[gpg]
+	format = ssh
 [pull]
   rebase = true
 [rebase]
