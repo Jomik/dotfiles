@@ -31,12 +31,11 @@ if type -q zoxide
 end
 
 if type -q jj
-    set -x JJ_CONFIG $XDG_CONFIG_HOME/jj/config.toml
     COMPLETE=fish jj | source
 end
 
-if type -q starship
-    starship init fish | source
-end
+# if type -q starship
+#     starship init fish | source
+# end
 
 builtin source $XDG_CONFIG_HOME/fish/abbreviations.fish
