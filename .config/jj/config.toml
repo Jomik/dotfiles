@@ -5,14 +5,16 @@
 
 [user]
 name = "Jonas Damtoft"
+email = "Jomik@users.noreply.github.com"
 
 [signing]
 backend = "ssh"
 behavior = "drop"
+key = "~/.ssh/id_ed25519_private.pub"
 
 [ui]
-editor = ["nvim"]
 default-command = "log"
+editor = "nvim"
 graph.style = "square"
 
 [snapshot]
@@ -21,7 +23,6 @@ auto-update-stale = true
 [git]
 sign-on-push = true
 private-commits = "blacklist()"
-push-bookmark-prefix = "jomik/push-"
 
 [fix.tools.ruff]
 enabled = false
@@ -37,19 +38,24 @@ patterns = ["glob:'**/*.py'"]
 log = "stack()"
 
 [aliases]
+# Get all open stacks of work.
+open = ["log", "-r", "open()"]
 # Retrunk a series. Typically used as `jj retrunk -s ...`, and notably can be
 # used with open:
-# - jj retrunk -s 'all:roots(open())'
+# - jj retrunk -s 'roots(open())'
 retrunk = ["rebase", "-d", "trunk()"]
 
 # Retrunk the current stack of work.
-reheat = ["rebase", "-d", "trunk()", "-s", "all:roots(trunk()..stack(@))"]
+reheat = ["rebase", "-d", "trunk()", "-s", "roots(trunk()..stack(@))"]
 # Take content from any change, and move it into @.
 # - jj consume xyz path/to/file`
 consume = ["squash", "--into", "@", "--from"]
 # Eject content from @ into any other change.
 # - jj eject xyz --interactive
 eject = ["squash", "--from", "@", "--into"]
+
+# Move closest bookmark to @-
+tug = ["bookmark", "move", "--from", "closest_bookmark(@-)", "--to", "@-"]
 
 [revset-aliases]
 'user(x)' = 'author(x) | committer(x)'
@@ -85,12 +91,16 @@ eject = ["squash", "--from", "@", "--into"]
 # that is blacklisted or any of their children.
 'ready()' = 'open() ~ blacklist()::'
 
+'closest_bookmark(to)' = 'heads(::to & bookmarks())'
+
 [template-aliases]
 'format_timestamp(timestamp)' = 'timestamp.ago()'
 'format_short_signature(signature)' = '''
   coalesce(signature.name(), name_placeholder)'''
+"in_bookmark(change)" = 'change.contained_in("immutable_heads()..bookmarks()")'
 
 [templates]
+git_push_bookmark = '"jomik/push-" ++ change_id.short()'
 op_log_node = 'if(current_operation, "@", "◉")'
 log_node = '''
 coalesce(
@@ -100,6 +110,7 @@ coalesce(
   if(immutable, label("immutable", "◆")),
   if(description.starts_with("wip: "), label("wip", "")),
   if(description.starts_with("private: "), label("private", "󰗹")),
-  label("normal", "○")
+  if(in_bookmark(self), label("in_bookmark", "◇")),
+  label("normal", "○"),
 )
 '''

@@ -7,6 +7,7 @@
   insteadOf = https://github.com/
 [core]
   hooksPath = ~/.config/git/hooks
+	autocrlf = input
 [includeIf "hasconfig:remote.*.url:git@github.com:LEGO/**"]
   path = lego.conf
 [includeIf "hasconfig:remote.*.url:https://gitlab.com/**/*"]
