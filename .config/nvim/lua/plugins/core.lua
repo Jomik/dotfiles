@@ -7,4 +7,10 @@ return {
       colorscheme = "catppuccin-macchiato",
     },
   },
+  {
+    "stevearc/conform.nvim",
+    opts = {
+      log_level = vim.log.levels.DEBUG,
+    },
+  },
 }

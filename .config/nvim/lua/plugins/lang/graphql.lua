@@ -13,7 +13,7 @@ return {
     opts = {
       servers = {
         graphql = {},
-        relay_lsp = {},
+        -- relay_lsp = {},
       },
     },
   },
