@@ -34,8 +34,4 @@ if type -q jj
     COMPLETE=fish jj | source
 end
 
-# if type -q starship
-#     starship init fish | source
-# end
-
 builtin source $XDG_CONFIG_HOME/fish/abbreviations.fish

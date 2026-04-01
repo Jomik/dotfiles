@@ -7,3 +7,5 @@ if status --is-interactive; and type -q rbenv
 end
 
 abbr -a lg lazygit
+
+source ~/export-esp.sh
