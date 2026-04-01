@@ -1,0 +1,7 @@
+.claude/*
+!.claude/.gitignore
+!.claude/CLAUDE.md
+!.claude/settings.json
+!.claude/agents/
+!.claude/skills/
+!.claude/hooks/

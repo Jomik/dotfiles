@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(jj:*)",
+      "Bash(git:*)",
+      "Bash(just:*)",
+      "Bash(cargo:*)",
+      "Bash(mise run:*)",
+      "Bash(pnpm run:*)",
+      "Bash(npm run:*)",
+      "Bash(uv run:*)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "LSP"
+    ],
+    "ask": [
+      "Bash(cargo install:*)",
+      "Bash(cargo publish:*)",
+      "Bash(git push:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -f:*)",
+      "Bash(git checkout -- .:*)",
+      "Bash(git branch -D:*)"
+    ]
+  },
+  "model": "opus[1m]",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/check-jj.sh",
+            "timeout": 5,
+            "statusMessage": "Checking VCS..."
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"IMPORTANT: You MUST check if any available skill applies to the user request BEFORE responding or taking any action. If a skill applies, invoke it with the Skill tool first. This is not optional. brainstorming: Use before any creative work, new features, or design tasks. writing-plans: Use when you have a spec and need to plan implementation. implementing: Use when executing implementation plans. code-review: Use when reviewing code before merge.\"}}'",
+            "async": false
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "csharp-lsp@claude-plugins-official": true
+  },
+  "autoDreamEnabled": false
+}
