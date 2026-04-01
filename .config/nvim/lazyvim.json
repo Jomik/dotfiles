@@ -1,6 +1,5 @@
 {
   "extras": [
-    "lazyvim.plugins.extras.ai.sidekick",
     "lazyvim.plugins.extras.coding.blink",
     "lazyvim.plugins.extras.coding.mini-surround",
     "lazyvim.plugins.extras.coding.yanky",
@@ -12,8 +11,8 @@
     "lazyvim.plugins.extras.editor.snacks_explorer",
     "lazyvim.plugins.extras.editor.snacks_picker",
     "lazyvim.plugins.extras.editor.telescope",
-    "lazyvim.plugins.extras.lang.git",
     "lazyvim.plugins.extras.lang.dotnet",
+    "lazyvim.plugins.extras.lang.git",
     "lazyvim.plugins.extras.lang.sql",
     "lazyvim.plugins.extras.lang.svelte",
     "lazyvim.plugins.extras.lang.toml",
