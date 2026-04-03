@@ -50,7 +50,7 @@ Use the `AskUserQuestion` tool with exactly these 3 options:
 
 ### Step 5: Clean Up Ephemeral Artifacts
 
-Delete any plan files in `.claude/plans/` that were created during this session (plans are ephemeral — only specs are permanent).
+Delete any plan files in `.plans/` that were created during this session (plans are ephemeral — only specs are permanent).
 
 ### Step 6: Cleanup Worktree
 

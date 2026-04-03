@@ -82,7 +82,7 @@ Code style, optimization opportunities.
 Improvements for code quality, architecture, or process.
 
 ### Assessment
-**Ready to merge?** Yes / No / With fixes
+**Ready to merge?** Yes / No
 
 **Reasoning:** Technical assessment in 1-2 sentences.
 

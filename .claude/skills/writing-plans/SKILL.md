@@ -13,8 +13,8 @@ Assume they are a skilled developer, but know almost nothing about the toolset o
 
 **Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
 
-**Save plans to:** `.claude/plans/YYYY-MM-DD-<feature-name>.md`
-Plans are ephemeral session artifacts — do NOT commit them to VCS. Delete after implementation is complete.
+**Save plans to:** `.plans/YYYY-MM-DD-<feature-name>.md` (project root)
+Plans are ephemeral session artifacts — do NOT commit them to VCS. `.plans/` is globally gitignored. Delete after implementation is complete.
 
 ## Scope Check
 
@@ -118,6 +118,6 @@ After writing the complete plan:
 
 After saving the plan:
 
-> "Plan complete and saved to `.claude/plans/<filename>.md`. Ready to execute using the `implementing` skill — this dispatches a fresh agent per task with two-stage review (spec compliance + code quality) between tasks. Shall I proceed?"
+> "Plan complete and saved to `.plans/<filename>.md`. Ready to execute using the `implementing` skill — this dispatches a fresh agent per task with two-stage review (spec compliance + code quality) between tasks. Shall I proceed?"
 
 When user confirms, invoke the `implementing` skill.

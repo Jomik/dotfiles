@@ -23,7 +23,7 @@ For each task in the plan, complete ALL of the following steps in order. Do not 
 4. **Dispatch `code-reviewer` agent** — production readiness check. Do not proceed to step 5 until this passes. If issues found → implementer fixes → re-run code-reviewer. Repeat until pass.
 5. **Mark task complete** — only reachable after steps 3 and 4 both pass.
 
-Steps 3 and 4 are not optional. Every task requires both reviews regardless of size or complexity. Do not skip them. Do not defer them. Do not batch them for later.
+Steps 3 and 4 are not optional and are **strictly sequential** — spec compliance MUST pass before code review begins. Never run them in parallel. Every task requires both reviews regardless of size or complexity. Do not skip them. Do not defer them. Do not batch them for later.
 
 After all tasks:
 
@@ -110,7 +110,7 @@ After the final code-review passes, check whether user-facing documentation is s
    - The diff summary (what changed and where)
    - The list of doc files to review
    - Instruction: "Flag any documentation that is stale, inaccurate, or missing coverage of the changes in this diff."
-4. If issues found → dispatch an `implementer` to fix them → re-run `document-reviewer`. Repeat until approved.
+4. If issues found → fix them directly → re-run `document-reviewer`. Repeat until approved.
 5. If no doc files exist, skip this step.
 
 ## Red Flags

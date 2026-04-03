@@ -40,7 +40,7 @@ Follow the project's commit message convention — PRs are squash merged, so the
 
 - Use **persistent links** — link to files at a specific commit SHA, not a branch (branch links go stale after merge). For GitHub: `https://github.com/org/repo/blob/<sha>/path/to/file`
 - GitHub issues and PRs are already persistent — use `owner/repo#123` format (renders as a clickable link) or full URL
-- Link to specs, plans, and issues by their full URL or GitHub shorthand, not just a bare number or path
+- Link to specs and issues by their full URL or GitHub shorthand, not just a bare number or path
 - **Verify every link works** before creating the PR — use `gh api` or `curl -s -o /dev/null -w '%{http_code}'` to confirm each returns 200
 - If a link is broken or inaccessible, fix it or remove it — a dead link is worse than no link
 
