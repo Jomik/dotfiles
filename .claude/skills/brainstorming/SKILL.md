@@ -44,17 +44,18 @@ Check files, docs, and recent commits to understand the current state.
 - Save to `docs/specs/YYYY-MM-DD-<topic>-design.md` (user preferences for spec location override this default)
 - Commit via project's VCS
 
-### 6. Spec review loop
+### 6. Spec review panel
 
-Dispatch the `document-reviewer` agent with the path to the spec document and this checklist in the prompt:
+Use the `multi-perspective-review` skill. Dispatch 2-3 `document-reviewer` agents in parallel, each with a different lens chosen by the orchestrator based on what matters most for this spec.
+
+All reviewers receive the path to the spec document and this shared checklist addendum:
 
 > **Additional checks for spec review:**
 > - **External claims:** Verify any claims about 3rd party APIs/libraries against actual documentation using Context7 (preferred) or WebFetch
 > - **Architecture:** Do units have clear boundaries and well-defined interfaces? Can each be understood and tested independently?
 > - **No ephemeral metadata:** Flag any fields that will rot (e.g. Status, Date, Version, Author). The date is in the filename; status is derivable from whether a plan/implementation exists.
 
-- If issues found: fix, re-dispatch, repeat until approved
-- If loop exceeds 3 iterations: stop and ask the user for guidance on the unresolved issues (show what the reviewer flagged and what you've tried)
+Follow the `multi-perspective-review` skill for synthesis and re-review loop. If loop exceeds 3 iterations: stop and ask the user for guidance on the unresolved issues (show what the reviewer flagged and what you've tried).
 
 ### 7. User reviews written spec
 

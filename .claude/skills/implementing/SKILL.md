@@ -7,7 +7,7 @@ description: Use when executing a single implementation plan with independent ta
 
 **You are an orchestrator. You MUST NOT write implementation code yourself.** Every task is dispatched to a fresh `implementer` agent — no exceptions, regardless of complexity or how many tasks are in the plan. Complex tasks get a higher-tier model, not your direct involvement.
 
-Execute one plan at a time by dispatching a fresh `implementer` agent per task, with two-stage review after each: spec compliance first, then code quality. If you have multiple plans, run this skill once per plan sequentially.
+Execute one plan at a time by dispatching a fresh `implementer` agent per task, with two-stage multi-perspective review after each: spec gate first, then code quality gate. If you have multiple plans, run this skill once per plan sequentially.
 
 **Why fresh agents:** Each agent gets isolated context. You precisely craft their instructions so they stay focused. They never inherit your session history — you construct exactly what they need.
 
@@ -19,15 +19,22 @@ For each task in the plan, complete ALL of the following steps in order. Do not 
 
 1. **Dispatch `implementer` agent** — with full task text, context, and tier-specific instructions.
 2. **Handle implementer status** — DONE proceeds to step 3. BLOCKED triggers escalation (see below). Do not proceed to step 3 until status is DONE or DONE_WITH_CONCERNS.
-3. **Dispatch `spec-compliance` agent** — adversarial check that code matches spec. Do not proceed to step 4 until this passes. If issues found → implementer fixes → re-run spec-compliance. Repeat until pass.
-4. **Dispatch `code-reviewer` agent** — production readiness check. Do not proceed to step 5 until this passes. If issues found → implementer fixes → re-run code-reviewer. Repeat until pass.
+3. **Stage 1 — Spec Gate (parallel)** — dispatch in parallel via Agent tool:
+   - `spec-compliance` agent — adversarial check that code matches spec
+   - `code-reviewer` agent with a **scope lens** — checks for unrequested work, over-engineering, gold plating, scope misinterpretation
+   - Use the `multi-perspective-review` skill for synthesis and re-review loop
+   - Do not proceed to step 4 until this stage passes
+4. **Stage 2 — Code Quality Gate (parallel)** — dispatch 2-3 `code-reviewer` agents in parallel, each with a different lens:
+   - Pick complementary, non-overlapping lenses most relevant to this change (use the `multi-perspective-review` skill for lens selection)
+   - Use the `multi-perspective-review` skill for synthesis and re-review loop
+   - Do not proceed to step 5 until this stage passes
 5. **Mark task complete** — only reachable after steps 3 and 4 both pass.
 
-Steps 3 and 4 are not optional and are **strictly sequential** — spec compliance MUST pass before code review begins. Never run them in parallel. Every task requires both reviews regardless of size or complexity. Do not skip them. Do not defer them. Do not batch them for later.
+Stages are **strictly sequential** — Stage 1 (spec gate) MUST pass before Stage 2 (code quality gate) begins. Within each stage, reviewers run in **parallel**. Every task requires both stages regardless of size or complexity. Do not skip them. Do not defer them. Do not batch them for later.
 
 After all tasks:
 
-1. Dispatch final `code-reviewer` across entire implementation
+1. Dispatch final multi-perspective code review across entire implementation (2-3 `code-reviewer` agents with complementary lenses in parallel — use `multi-perspective-review` skill)
 2. Dispatch `document-reviewer` to check documentation staleness (see below)
 3. Use `finishing-branch` skill
 
@@ -95,10 +102,11 @@ When dispatching the implementer, append tier-specific instructions to the promp
 - Implementer's report (what they claim they built)
 
 **Code-reviewer dispatch prompt should include:**
+- The lens criteria (what to focus on, what to ignore)
 - What was implemented (from implementer's report)
 - Plan or requirements reference
 - VCS revision range for diff
-- Brief description
+- Model override where appropriate (opus for the lens needing deepest reasoning, sonnet for others)
 
 ## Documentation Review (After Final Code Review)
 
@@ -119,8 +127,9 @@ Never:
 - Implement tasks yourself — always dispatch an `implementer` agent, even for "simple" or "obvious" tasks
 - Combine multiple plans into a single implementation pass — run one plan at a time
 - Start implementation on main/master branch without explicit user consent
-- Skip reviews — both spec-compliance and code-reviewer are required for every task
-- Proceed to the next task before both reviews pass for the current task
+- Skip reviews — both stages (spec gate and code quality gate) are required for every task
+- Proceed to the next task before both stages pass for the current task
+- Run reviewers within a stage sequentially — within a stage, reviewers MUST run in parallel
 - Proceed with unfixed issues
 - Dispatch multiple implementation agents in parallel (conflicts)
 - Make agents read plan files (provide full text instead)
@@ -128,8 +137,8 @@ Never:
 - Ignore agent questions (answer before letting them proceed)
 - Accept "close enough" on spec compliance
 - Skip review loops (issues found = fix = review again)
-- Start code quality review before spec compliance passes
-- Move to next task while either review has open issues
+- Start code quality gate before spec gate passes
+- Move to next task while either stage has open issues
 
 The following are not valid reasons to skip a review step: "reviews can wait", "let me keep moving", "this is simple enough", "I'll review later", time pressure, task simplicity, or similarity to a previous task.
 
@@ -145,6 +154,7 @@ The following are not valid reasons to skip a review step: "reviews can wait", "
 ## Integration
 
 **Required skills:**
+- **multi-perspective-review** — parallel review panels with synthesis
 - **finishing-branch** — complete development after all tasks
-- **code-review** — code review template for reviewer agents
+- **code-review** — standalone code review dispatch
 - **test-driven-development** — agents follow TDD for each task

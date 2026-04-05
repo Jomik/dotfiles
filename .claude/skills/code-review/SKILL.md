@@ -34,10 +34,16 @@ Determine the project's VCS by checking for `.jj/` directory. Use the appropriat
 
 Dispatch the `code-reviewer` agent with `model: opus` and the following context in the prompt:
 
+- **Review criteria** (the agent is prompt-driven — include the full checklist):
+  - Code Quality: separation of concerns, error handling, type safety, DRY, edge cases
+  - Architecture: design decisions, scalability, performance, security
+  - Testing: tests test logic (not mocks), edge cases covered, integration tests where needed, all passing
+  - Requirements: all plan requirements met, matches spec, no scope creep, breaking changes documented
+  - Production Readiness: migration strategy, backward compatibility, documentation, no obvious bugs
+  - File Organization: single responsibility per file, independent testability, follows plan structure, file size
 - What was implemented (brief description)
 - Plan or requirements reference (task from plan, or ad-hoc requirements)
 - VCS diff range (revision identifiers)
-- Description (brief summary)
 - Lint and format commands to verify (from project config)
 
 **3. Act on feedback:**

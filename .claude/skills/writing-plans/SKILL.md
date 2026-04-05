@@ -92,23 +92,19 @@ Expected: FAIL with "function not defined"
 - Exact commands with expected output
 - DRY, YAGNI, TDD, frequent commits
 
-## Plan Review Loop
+## Plan Review Panel
 
-After writing the complete plan:
+After writing the complete plan, use the `multi-perspective-review` skill. Dispatch 2-3 `document-reviewer` agents in parallel, each with a different lens chosen by the orchestrator based on what matters most for this plan.
 
-1. Dispatch the `document-reviewer` agent with:
-   - Path to the plan document
-   - Path to the spec document
-   - The following plan-mode checklist addendum in the prompt:
+All reviewers receive the path to the plan document, the path to the spec document, and this shared checklist addendum:
 
-   > **Additional checks for plan review:**
-   > - **Spec alignment:** Does the plan cover all spec requirements? Any scope creep?
-   > - **Task decomposition:** Are tasks atomic with clear boundaries? Are steps actionable?
-   > - **Buildability:** Could an implementer follow this without getting stuck?
-   > - **File structure:** Do files have clear single responsibilities?
+> **Additional checks for plan review:**
+> - **Spec alignment:** Does the plan cover all spec requirements? Any scope creep?
+> - **Task decomposition:** Are tasks atomic with clear boundaries? Are steps actionable?
+> - **Buildability:** Could an implementer follow this without getting stuck?
+> - **File structure:** Do files have clear single responsibilities?
 
-2. If Issues Found: fix the issues, re-dispatch reviewer for the whole plan
-3. If Approved: proceed to execution handoff
+Follow the `multi-perspective-review` skill for synthesis and re-review loop.
 
 **Review loop guidance:**
 - Same agent that wrote the plan fixes it (preserves context)
