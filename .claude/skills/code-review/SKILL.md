@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: Use when completing tasks, implementing major features, or before merging to verify work meets requirements
+description: Use after any implementer agent reports DONE, after completing tasks, or before merging. No change is too small to skip review.
 ---
 
 # Requesting Code Review
@@ -23,12 +23,9 @@ Dispatch the `code-reviewer` agent to catch issues before they cascade. The revi
 
 ## How to Request
 
-**1. Get VCS revision range:**
+**1. Get VCS diff:**
 
-Determine the project's VCS by checking for `.jj/` directory. Use the appropriate command:
-
-- **git:** `BASE_SHA=$(git rev-parse HEAD~1)` and `HEAD_SHA=$(git rev-parse HEAD)`
-- **jj:** Use appropriate revision range for the change set
+Get the diff for the changes to review. Use the project's VCS to identify the base and tip revisions.
 
 **2. Dispatch code-reviewer agent:**
 

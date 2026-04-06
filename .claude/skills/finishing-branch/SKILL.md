@@ -1,5 +1,5 @@
 ---
-name: finishing-a-development-branch
+name: finishing-branch
 description: Use when implementation is complete, all tests pass, and you need to decide how to integrate the work — merge, PR, keep, or discard.
 ---
 
@@ -11,7 +11,7 @@ Guide completion of development work by presenting clear options and handling ch
 
 **Core principle:** Verify tests → Present options → Execute choice → Clean up.
 
-**Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
+**Announce at start:** "I'm using the finishing-branch skill to complete this work."
 
 ## The Process
 
@@ -81,7 +81,7 @@ For Option 3: keep worktree.
 ## Integration
 
 **Called by:**
-- **implementing** - After all tasks complete
+- **implementing** - after final spec-compliance review
 
 **Pairs with:**
-- Claude Code's built-in EnterWorktree / using-jj skill for workspace cleanup
+- Claude Code's built-in EnterWorktree / ExitWorktree for workspace cleanup

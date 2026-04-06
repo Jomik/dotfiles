@@ -1,13 +1,13 @@
 ---
 name: implementing
-description: Use when executing a single implementation plan with independent tasks in the current session
+description: Use when an implementation plan exists in .plans/ and is ready to execute. Dispatches fresh agents per task with two-stage review.
 ---
 
 # Implementing a Plan
 
 **You are an orchestrator. You MUST NOT write implementation code yourself.** Every task is dispatched to a fresh `implementer` agent — no exceptions, regardless of complexity or how many tasks are in the plan. Complex tasks get a higher-tier model, not your direct involvement.
 
-Execute one plan at a time by dispatching a fresh `implementer` agent per task, with two-stage multi-perspective review after each: spec gate first, then code quality gate. If you have multiple plans, run this skill once per plan sequentially.
+Execute one plan at a time by dispatching a fresh `implementer` agent per task, with two lightweight review gates after each: spec gate first, then code quality gate. The real depth comes in the final review after all tasks complete. If you have multiple plans, run this skill once per plan sequentially.
 
 **Why fresh agents:** Each agent gets isolated context. You precisely craft their instructions so they stay focused. They never inherit your session history — you construct exactly what they need.
 
@@ -15,38 +15,61 @@ Execute one plan at a time by dispatching a fresh `implementer` agent per task, 
 
 ## The Process
 
+**On entry:**
+
+1. **Pre-flight checks:**
+   - Verify VCS working tree is clean (no uncommitted changes). If dirty, ask the user to commit or stash before proceeding.
+   - Verify the current branch/bookmark is not main/master. If it is, ask the user to create a feature branch first.
+   - Verify the plan file exists and contains at least one task with checkbox steps. If malformed, report and stop.
+   - If the plan references a spec, check whether the spec has been modified more recently than the plan. If so, warn the user the plan may be stale and ask whether to proceed. If the user wants to re-plan, stop and let them update the plan before re-invoking this skill.
+2. **Create tasks:** Read the plan file. Create a `TaskCreate` entry for each plan task (subject = task name, description = brief summary).
+3. **Report scope:** Tell the user: "Plan has N tasks. Each goes through implementation + two review gates (~3 agent dispatches per task), then a comprehensive final review."
+4. **Resume handling:** If resuming a partially-complete plan, check VCS history for commits related to unchecked tasks before re-dispatching. If implementation commits exist for an unchecked task, skip re-implementation and proceed to the review stage. Create tasks only for remaining work.
+
 For each task in the plan, complete ALL of the following steps in order. Do not proceed to the next step until the current step succeeds. Do not proceed to the next task until step 5 is reached.
 
-1. **Dispatch `implementer` agent** — with full task text, context, and tier-specific instructions.
-2. **Handle implementer status** — DONE proceeds to step 3. BLOCKED triggers escalation (see below). Do not proceed to step 3 until status is DONE or DONE_WITH_CONCERNS.
-3. **Stage 1 — Spec Gate (parallel)** — dispatch in parallel via Agent tool:
-   - `spec-compliance` agent — adversarial check that code matches spec
-   - `code-reviewer` agent with a **scope lens** — checks for unrequested work, over-engineering, gold plating, scope misinterpretation
-   - Use the `multi-perspective-review` skill for synthesis and re-review loop
-   - Do not proceed to step 4 until this stage passes
-4. **Stage 2 — Code Quality Gate (parallel)** — dispatch 2-3 `code-reviewer` agents in parallel, each with a different lens:
-   - Pick complementary, non-overlapping lenses most relevant to this change (use the `multi-perspective-review` skill for lens selection)
-   - Use the `multi-perspective-review` skill for synthesis and re-review loop
+**Report progress before each step:** Tell the user what's happening (e.g., "Task 3/8: Dispatching implementer as sonnet — multi-file coordination across 4 files", "Task 3/8: Spec gate — iteration 1").
+
+1. **Dispatch `implementer` agent** — with full task text, context, tier-specific instructions, and TDD methodology (reference the `test-driven-development` skill).
+2. **Handle implementer status** — DONE proceeds to Stage 1. BLOCKED triggers escalation (see below). Do not proceed to Stage 1 until status is DONE or DONE_WITH_CONCERNS.
+3. **Stage 1 — Spec Compliance Gate** — dispatch a single `code-reviewer` agent with a **combined spec + scope lens**:
+   - Checks: (a) Does the implementation cover every requirement in the task spec? (b) Are there any unrequested changes, over-engineering, or scope misinterpretation?
+   - Include the full task requirements, implementer's report, and the VCS diff
+   - If issues found: dispatch a new `implementer` at the same tier with the original task text + prior report + specific issues to fix. Re-review after the fix.
+   - Do not proceed to Stage 2 until this stage passes
+4. **Stage 2 — Code Quality Gate** — dispatch a single `code-reviewer` agent with a **code quality lens**:
+   - Checks: correctness, obvious bugs, error handling, lint/format passing, consistency with surrounding code patterns
+   - Include the implementer's report and VCS diff
+   - If issues found: dispatch a new `implementer` at the same tier with the original task text + prior report + specific issues to fix. Then restart from Stage 1 — a Stage 2 fix may break spec compliance.
    - Do not proceed to step 5 until this stage passes
-5. **Mark task complete** — only reachable after steps 3 and 4 both pass.
 
-Stages are **strictly sequential** — Stage 1 (spec gate) MUST pass before Stage 2 (code quality gate) begins. Within each stage, reviewers run in **parallel**. Every task requires both stages regardless of size or complexity. Do not skip them. Do not defer them. Do not batch them for later.
+**Iteration limits:** Each stage has one counter per task, incremented on every run regardless of cause, never reset. Max 3 attempts per stage. Example: Stage 1 passes (attempt 1), Stage 2 fails (attempt 1), fix applied, Stage 1 re-runs (attempt 2), Stage 2 re-runs (attempt 2). If either stage hits 3 attempts, escalate to the user.
+5. **Mark task complete** — only reachable after Stages 1 and 2 both pass. Update the plan file: change all `- [ ]` checkboxes for this task to `- [x]`. Update the task status via `TaskUpdate`.
 
-After all tasks:
+Stages are **strictly sequential** — Stage 1 MUST pass before Stage 2 begins. Every task requires both stages regardless of size or complexity. Do not skip, defer, or batch them. Per-task gates are single-agent, single-lens — the comprehensive multi-perspective review happens after all tasks complete. No review step may be skipped for any reason: not time pressure, task simplicity, or similarity to a previous task.
 
-1. Dispatch final multi-perspective code review across entire implementation (2-3 `code-reviewer` agents with complementary lenses in parallel — use `multi-perspective-review` skill)
-2. Dispatch `document-reviewer` to check documentation staleness (see below)
-3. Use `finishing-branch` skill
+After all tasks are complete:
+
+1. **Final spec-compliance review** (if a spec exists) — verify the complete implementation satisfies the spec. This checks the whole, not individual tasks. The per-task spec gate catches drift early; this final review checks cross-task integration and completeness — requirements that span multiple tasks.
+   - Dispatch 2-3 `code-reviewer` agents using the `multi-perspective-review` skill, with the spec as reference
+   - One reviewer MUST have a **spec-compliance** lens: "Does the implementation cover every requirement in the spec? Flag anything missing, divergent, or partially implemented."
+   - Choose remaining lenses based on what matters most (architecture, security, performance, etc.)
+   - If issues found → fix → re-review. The `multi-perspective-review` skill manages the re-review loop (max 3 iterations, then escalate to user).
+   - If no spec exists (micro-plan from inline fix), skip this step.
+2. **Documentation staleness check** — gather the full diff (branch vs base), identify doc files in the repo (CLAUDE.md, README.md, `docs/` directory — skip CHANGELOG.md). If any exist, dispatch the `document-reviewer` agent with the diff summary and the list of doc files. Fix any stale documentation, re-review until approved. Max 3 iterations, then escalate to user.
+3. **Finish** — use the `finishing-branch` skill to decide how to integrate the work.
 
 ## Model Tiering for Implementer
 
-The `implementer` agent defaults to `model: haiku`. Override based on task complexity:
+Default haiku. Evaluate these criteria in order — first match wins:
 
-| Complexity | Model | Signals |
-|-----------|-------|---------|
-| Simple | haiku (default) | 1-2 files, complete spec, isolated function |
-| Medium | sonnet (override) | Multi-file coordination, integration concerns, pattern matching |
-| Complex | opus (override) | Architectural judgment, broad codebase understanding, design decisions |
+| Model | Criteria (any one triggers) |
+|-------|---------------------------|
+| **opus** | Task requires choosing between architectural alternatives not in the plan, OR requires understanding patterns across 5+ files, OR involves design decisions with cross-cutting impact |
+| **sonnet** | Task touches 3+ files, OR requires coordinating changes across module boundaries, OR involves non-trivial error handling or concurrency |
+| **haiku** | Default — 1-2 files, complete spec, isolated changes |
+
+**Report the tier and reason to the user** when dispatching each implementer (e.g., "Task 3: Dispatching as sonnet — touches 4 files across two modules"). Similarly report tier escalations.
 
 ## Tier-Specific Prompt Injection
 
@@ -71,7 +94,7 @@ When dispatching the implementer, append tier-specific instructions to the promp
 
 ## Handling Implementer Status
 
-**DONE:** Proceed to spec compliance review.
+**DONE:** Proceed to Stage 1 (per-task spec gate).
 
 **DONE_WITH_CONCERNS:** Read concerns before proceeding. If about correctness or scope, address before review. If observations ("this file is getting large"), note and proceed.
 
@@ -86,75 +109,48 @@ When dispatching the implementer, append tier-specific instructions to the promp
 
 **Never** ignore an escalation or force the same model to retry without changes.
 
-## Dispatching Agents
+## Dispatch Prompt Checklists
 
-**Implementer dispatch prompt should include:**
+Reviewers dispatched by this skill do not invoke the `verification` skill — CI verification is deferred to `finishing-branch`.
+
+**Implementer** — include in prompt:
 - Full task text (copy-pasted from plan, never a file reference)
 - Scene-setting context (what exists, what this task builds on)
-- Project rules and conventions relevant to the task
-- Verification commands to run (tests, linting, formatting — see below)
-- Tier-specific escalation instructions (see above)
+- Project conventions relevant to the task
+- Lint/format commands (from package.json / pyproject.toml / Makefile / etc.)
+- Tier-specific instructions (see above)
+- TDD methodology (reference `test-driven-development` skill)
+- Instruction: "Run lint/format and fix issues before reporting DONE."
 
-**Linting & formatting requirement:** Before reporting DONE, the implementer MUST run the project's lint and format checks (e.g., `npm run lint`, `cargo clippy`, `ruff check`, `prettier --check`, etc.) and fix any issues. Identify the correct commands from the project's config files (package.json, Makefile, pyproject.toml, etc.). Include these commands in the dispatch prompt so the implementer knows what to run.
+**Stage 1 (spec) reviewer** — include in prompt:
+- Full task requirements
+- Implementer's report
+- VCS diff
+- Instruction: "Combined spec + scope check. Does the implementation cover every requirement? Are there unrequested changes or scope misinterpretation?"
 
-**Spec-compliance dispatch prompt should include:**
-- Full task requirements (what was requested)
-- Implementer's report (what they claim they built)
+**Stage 2 (quality) reviewer** — include in prompt:
+- Implementer's report
+- VCS diff
+- Instruction: "Focus on correctness, bugs, lint/format, consistency with surrounding code."
 
-**Code-reviewer dispatch prompt should include:**
-- The lens criteria (what to focus on, what to ignore)
-- What was implemented (from implementer's report)
-- Plan or requirements reference
-- VCS revision range for diff
-- Model override where appropriate (opus for the lens needing deepest reasoning, sonnet for others)
+**Documentation staleness reviewer** — include in prompt:
+- Diff summary (what changed and where)
+- List of doc files to check
+- Instruction: "Flag any documentation that is stale, inaccurate, or missing coverage of the changes in this diff."
 
-## Documentation Review (After Final Code Review)
+**Final review reviewers** — include in prompt:
+- Lens criteria (focus + ignore)
+- Plan/spec reference
+- Full branch diff
 
-After the final code-review passes, check whether user-facing documentation is still accurate.
-
-1. Gather the full diff (branch vs base)
-2. Identify which doc files exist in the repo: **CLAUDE.md**, **README.md**, **`docs/` directory**. Skip CHANGELOG.md (pipeline-generated).
-3. If any exist, dispatch the `document-reviewer` agent with:
-   - The diff summary (what changed and where)
-   - The list of doc files to review
-   - Instruction: "Flag any documentation that is stale, inaccurate, or missing coverage of the changes in this diff."
-4. If issues found → fix them directly → re-run `document-reviewer`. Repeat until approved.
-5. If no doc files exist, skip this step.
-
-## Red Flags
-
-Never:
-- Implement tasks yourself — always dispatch an `implementer` agent, even for "simple" or "obvious" tasks
-- Combine multiple plans into a single implementation pass — run one plan at a time
-- Start implementation on main/master branch without explicit user consent
-- Skip reviews — both stages (spec gate and code quality gate) are required for every task
-- Proceed to the next task before both stages pass for the current task
-- Run reviewers within a stage sequentially — within a stage, reviewers MUST run in parallel
-- Proceed with unfixed issues
-- Dispatch multiple implementation agents in parallel (conflicts)
-- Make agents read plan files (provide full text instead)
-- Skip scene-setting context
-- Ignore agent questions (answer before letting them proceed)
-- Accept "close enough" on spec compliance
-- Skip review loops (issues found = fix = review again)
-- Start code quality gate before spec gate passes
-- Move to next task while either stage has open issues
-
-The following are not valid reasons to skip a review step: "reviews can wait", "let me keep moving", "this is simple enough", "I'll review later", time pressure, task simplicity, or similarity to a previous task.
-
-**If agent asks questions:**
-- Answer clearly and completely
-- Provide additional context if needed
-
-**If reviewer finds issues:**
-- Implementer (same agent) fixes them
-- Reviewer reviews again
-- Repeat until approved
+Model selection for the final review is handled by the `multi-perspective-review` skill.
 
 ## Integration
 
-**Required skills:**
-- **multi-perspective-review** — parallel review panels with synthesis
-- **finishing-branch** — complete development after all tasks
-- **code-review** — standalone code review dispatch
-- **test-driven-development** — agents follow TDD for each task
+**Required skills (invoked directly):**
+- **multi-perspective-review** — parallel review panels with synthesis (final review only — per-task gates use single reviewers)
+- **finishing-branch** — integrate the work after all reviews pass (also requires: `verification`, `create-pr`)
+- **test-driven-development** — TDD methodology included in implementer dispatch prompts
+
+**Referenced but not invoked as skills:**
+- **code-review** — for standalone/ad-hoc use; the implementing skill dispatches `code-reviewer` agents directly with its own protocol. Note: `code-review` mandates the `verification` skill during review; this implementing skill defers full CI verification to `finishing-branch`.

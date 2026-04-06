@@ -62,7 +62,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"IMPORTANT: You MUST check if any available skill applies to the user request BEFORE responding or taking any action. If a skill applies, invoke it with the Skill tool first. This is not optional. brainstorming: Use before any creative work, new features, or design tasks. writing-plans: Use when you have a spec and need to plan implementation. implementing: Use when executing implementation plans. code-review: Use when reviewing code before merge.\"}}'",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"IMPORTANT: You MUST check if any available skill applies to the user request BEFORE responding or taking any action. If a skill applies, invoke it with the Skill tool first. This is not optional. design: Use when the user wants to build, add, fix, or change something in the codebase. Single entry point — detects what exists and produces specs and plans. implementing: Use when executing implementation plans. code-review: Use when reviewing code before merge.\"}}'",
             "async": false
           }
         ]
@@ -73,8 +73,9 @@
     "context7@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
-    "csharp-lsp@claude-plugins-official": true
+    "csharp-lsp@claude-plugins-official": true,
+    "swift-lsp@claude-plugins-official": true
   },
-  "autoDreamEnabled": false,
-  "autoUpdatesChannel": "stable"
+  "autoUpdatesChannel": "stable",
+  "autoDreamEnabled": false
 }
