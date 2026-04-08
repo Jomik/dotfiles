@@ -6,3 +6,5 @@
 !.claude/skills/
 !.claude/hooks/
 .plans/
+.opencode/
+opencode.json
