@@ -187,7 +187,7 @@ Fix and re-review (max 3 iterations, then ask the user). If reviewers give contr
 
 ### Completion
 
-Say:
-> "Plan saved to `.opencode/plans/<filename>.md`."
+Save the plan and inform the user:
+> "Plan saved to `.opencode/plans/<filename>.md`. Please review and let me know if you'd like any changes."
 
-Then assess context pressure: if the session is still short and focused (few tool calls, low back-and-forth), offer to proceed with implementation now by loading the implementing skill. If the session has been long or heavily exploratory, recommend starting a fresh session: *"Start a fresh session and say: Implement the plan at `.opencode/plans/<filename>.md`."*
+If the user requests changes, apply them and re-dispatch the relevant reviewers (max 3 iterations, then ask the user). On approval, assess context pressure: if the session is still short and focused, offer to proceed with implementation. If the session has been long or heavily exploratory, recommend starting a fresh session: *"Start a fresh session and say: Implement the plan at `.opencode/plans/<filename>.md`."*
