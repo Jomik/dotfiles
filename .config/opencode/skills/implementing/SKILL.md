@@ -93,4 +93,6 @@ Each task's implementation must satisfy both spec compliance and code quality. D
 
 3. **Report completion:**
 
-> "Implementation complete. N/N tasks done. [Summary of any concerns raised]. Final review: PASS/FAIL. Suggested next steps: review the changes, run CI, create a PR."
+> "Implementation complete. N/N tasks done. [Summary of any concerns raised]. Final review: PASS/FAIL."
+
+If PASS, ask the user whether they'd like to create a PR now. If FAIL (escalated after max iterations), summarize the outstanding issues and wait for user direction.
