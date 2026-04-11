@@ -13,8 +13,11 @@ If the user provides a GitHub issue or PR URL, fetch it with `gh` and follow any
 
 On entry, check what exists in the current project:
 
-1. Scan `docs/specs/` for specs covering the requested work.
-2. Scan `.opencode/plans/` for plans related to this work.
+1. Scan `docs/adrs/` for ADRs related to the requested work.
+2. Scan `docs/specs/` for specs covering the requested work.
+3. Scan `.opencode/plans/` for plans related to this work.
+
+**ADR handling:** If relevant ADRs exist, read them and carry them forward as architectural constraints. An ADR's "Decision" section defines the chosen direction -- treat it as a constraint, not a suggestion. Where an ADR's patterns differ from the current codebase, **follow the ADR**. Note which ADRs are active and summarize how they constrain the current work when presenting your assessment.
 
 Determine the appropriate entry phase based on this table:
 
@@ -22,16 +25,19 @@ Determine the appropriate entry phase based on this table:
 |-----------|--------|
 | No spec, design unclear | Brainstorm (Phase 1) then write spec (Phase 2) |
 | No spec, design direction clear | Write spec (Phase 2) |
+| ADR exists, no spec | Write spec (Phase 2) |
 | Spec exists, needs changes | Amend spec (Phase 2, amendment mode) |
 | Spec exists, no plan | Write plan (Phase 3) |
 | Spec + plan exist | Tell user: "Plan ready at `.opencode/plans/<filename>.md`." Assess context pressure and either offer to proceed or recommend a fresh session. |
 | Bug fix or small improvement | Write plan directly (Phase 3) |
 
-**"Design direction clear" criteria:** The user's request specifies the approach (not just the goal), names the components or areas involved, and leaves no open design trade-offs. If the request is only a goal or problem statement (e.g., "make it faster", "add auth"), direction is unclear -- brainstorm first.
+**"Design direction clear" criteria:** The user's request specifies the approach (not just the goal), names the components or areas involved, and leaves no open design trade-offs. A relevant ADR counts as a clear direction for the areas it covers. If the request is only a goal or problem statement (e.g., "make it faster", "add auth") and no ADR applies, direction is unclear -- brainstorm first.
 
 **When is a spec needed?** Specs capture design decisions for new functionality -- new features, new subsystems, significant behavioral changes. Bug fixes and small improvements don't introduce new functionality and don't need a spec -- go straight to a plan.
 
 **If multiple specs cover overlapping areas:** Identify all relevant specs and flag conflicts. Get user resolution before proceeding.
+
+**If an ADR conflicts with an existing spec:** The ADR takes precedence -- it represents a more recent architectural decision. Flag the conflict to the user and propose amending the spec.
 
 Present your assessment: what you found, what phase you're entering, and why. Wait for confirmation before proceeding.
 
@@ -47,7 +53,7 @@ Collaborative dialogue to converge on a design direction. No documents yet -- ju
 - Propose 2-3 approaches with trade-offs, leading with the recommended option and explaining why.
 - Present the design in sections scaled to complexity: architecture, components, data flow, error handling, testing. For smaller designs, combine sections and reduce checkpoints.
 - Design for isolation: units with one clear purpose, well-defined interfaces, independently testable.
-- In existing codebases: follow existing patterns.
+- In existing codebases: follow existing patterns -- unless a relevant ADR establishes new patterns for the affected areas, in which case follow the ADR.
 
 Summarize the agreed design direction in 2-3 sentences. Ask: "Does this capture the design direction? Ready to move to spec writing?" Proceed to Phase 2 on confirmation.
 
@@ -60,7 +66,7 @@ Summarize the agreed design direction in 2-3 sentences. Ask: "Does this capture 
 - Specs describe the complete target system -- no phasing, no build order. That belongs in plans.
 - If something isn't ready to design, it's a non-goal -- not a "future phase".
 - YAGNI ruthlessly -- remove anything not needed for stated goals.
-- In existing codebases -- follow existing patterns.
+- In existing codebases -- follow existing patterns, unless a relevant ADR establishes new patterns for the affected areas.
 - No ephemeral metadata (no Status, Date, Version, Author fields).
 
 Save to `docs/specs/YYYY-MM-DD-<topic>-design.md`.
@@ -96,14 +102,14 @@ Reference material (include only when needed).
 
 ### Spec Review
 
-Dispatch 2-3 `doc-reviewer` subagents in parallel via the Task tool, each with a different, non-overlapping lens chosen for this spec's content. The panel must cover:
+Dispatch `doc-reviewer` subagents in parallel via the Task tool. Scale the number of reviewers to the spec's complexity. Assign each reviewer a single, non-overlapping lens. The panel as a whole must cover at minimum:
 
-- **Design quality:** Are components well-isolated with clean interfaces? Is the design maintainable long-term? Are there simpler alternatives that achieve the same goals?
-- **Accuracy:** If the spec references external APIs or services, verify claims against actual docs (via webfetch).
+- Are components well-isolated with clean interfaces? Are there simpler alternatives that achieve the same goals?
+- If the spec references external APIs or services, verify claims against actual documentation.
 - No ephemeral metadata that will rot.
 - No build-order or phasing language.
 
-Choose remaining lenses based on the spec's content.
+Add lenses relevant to the specific spec's content.
 
 Synthesize results: deduplicate, take higher severity on conflicts, produce unified verdict. PASS only if all reviewers pass. If reviewers give contradictory advice (e.g., one says extract, another says inline), use your own judgment to resolve the conflict rather than mechanically applying both. Fix issues identified by the review panel and re-dispatch affected reviewers (max 3 iterations, then ask the user).
 
@@ -138,6 +144,7 @@ Save to `.opencode/plans/YYYY-MM-DD-<feature-name>.md`. Plans are working docume
 **Goal:** [One sentence]
 **Architecture:** [2-3 sentences]
 **Spec:** `docs/specs/<filename>.md` (omit if no spec -- e.g., bug fixes)
+**ADR:** `docs/adrs/<filename>.md` (omit if no ADR applies)
 ```
 
 ### Task Structure
@@ -145,43 +152,41 @@ Save to `.opencode/plans/YYYY-MM-DD-<feature-name>.md`. Plans are working docume
 Each task is bite-sized (2-5 minutes per step):
 
 ````markdown
-### Task N: [Component Name]
+- [ ] Task N: [Component Name]
 
 **Files:**
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py`
-- Test: `tests/exact/path/to/test.py`
+- Create: `exact/path/to/new-file`
+- Modify: `exact/path/to/existing-file`
+- Test: `exact/path/to/test-file`
 
-- [ ] **Step 1: Write the failing test**
+1. **Write the failing test**
 
-```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
-```
+[Test code in the project's language -- include the actual test, not a placeholder.]
 
-- [ ] **Step 2: Run test to verify it fails**
+2. **Run test to verify it fails**
 
-Run: `pytest tests/path/test.py::test_name -v`
+Run: `[test command targeting the specific test]`
 Expected: FAIL
 
-- [ ] **Step 3: Write minimal implementation**
+3. **Write minimal implementation**
 
-- [ ] **Step 4: Run test to verify it passes**
+4. **Run test to verify it passes**
 
-- [ ] **Step 5: Commit**
+5. **Commit**
 ````
 
 The TDD structure above is the default for testable tasks. For non-testable tasks (config scaffolding, markdown, declarative files), write simpler steps: implement, verify if applicable, commit. The plan is the source of truth for what steps each task follows.
 
 ### Plan Review
 
-Dispatch 2-3 `doc-reviewer` subagents in parallel with non-overlapping lenses. All reviewers receive this shared checklist:
+Dispatch `doc-reviewer` subagents in parallel. Scale the number of reviewers to the plan's complexity. Assign each reviewer a single, non-overlapping lens. The panel as a whole must cover:
 
-- **Spec compliance:** Does the plan cover all spec requirements? Any scope creep?
-- **Task decomposition:** Are tasks atomic? Are steps actionable?
-- **Design fit across tasks:** Do abstractions chosen in earlier tasks compose well for later tasks? Would a different design in task N make tasks N+1 through end simpler or harder?
-- **Buildability:** Could an implementer with zero codebase context follow this without getting stuck?
+- Does the plan cover all spec requirements without scope creep?
+- Are tasks atomic and steps actionable?
+- Do abstractions chosen in earlier tasks compose well for later tasks?
+- Could an implementer with zero codebase context follow this without getting stuck?
+
+Add lenses relevant to the specific plan.
 
 Fix and re-review (max 3 iterations, then ask the user). If reviewers give contradictory advice, resolve the conflict using your own judgment.
 
