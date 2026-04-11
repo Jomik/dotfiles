@@ -36,6 +36,75 @@ ALWAYS run `jj st` or `jj log` before making any changes. The working copy IS a 
 
 **Describe before coding.** The message comes first, then the code. Not after.
 
+## Viewing Diffs: Critical Concepts
+
+Understanding diff commands is essential. Getting them wrong makes it look like
+separate changes have been "merged into one."
+
+### `-r` vs `--from/--to`: Two completely different things
+
+- **`jj diff -r <rev>`** shows what a single change *introduced* (the diff
+  between that revision and its parent). This is a **patch** view.
+- **`jj diff --from A --to B`** compares **file-tree snapshots** at A and B.
+  This is NOT "the changes introduced by A through B." If A and B have
+  different parents or are on different branches, the result includes everything
+  that differs between the two trees -- not just what any particular set of
+  commits introduced. **This is the #1 source of confusion.**
+
+### Viewing a single change's diff
+
+```bash
+jj diff --git                       # what @ introduced (vs its parent)
+jj diff --git -r <change-id>        # what <change-id> introduced (vs its parent)
+jj show --git <change-id>           # same as above, but also shows description/metadata
+```
+
+### Viewing each change in a range individually
+
+To see what each change in a range introduced **separately** (one diff per
+change, not combined):
+
+```bash
+jj log -p --git -r <revset>         # shows each change's own diff, one by one
+jj log -p --git -r @---::@          # example: last 3 changes, each shown individually
+jj log -p --git -r 'trunk()..@'     # all changes since trunk, each shown individually
+```
+
+`jj log -p` is the correct way to review a series of changes. Each change is
+displayed with its description and its own diff (what it introduced vs its
+parent). Changes are NOT merged together.
+
+### Viewing the combined diff of a range
+
+If you genuinely want a single combined diff for everything a range of changes
+introduced (like `git diff A..B`):
+
+```bash
+jj diff --git -r A::B               # combined diff of all changes from A to B inclusive
+```
+
+This passes a multi-revision revset to `-r`, and jj computes the total diff.
+It is equivalent to `jj diff --git --from A- --to B` (note: `A-` is A's
+parent, so A's changes are included).
+
+**When to use which:**
+- Reviewing work: `jj log -p --git -r <revset>` (see each change separately)
+- Checking what you changed overall: `jj diff --git -r trunk()..@` (combined)
+- Comparing two snapshots: `jj diff --git --from A --to B` (tree comparison)
+
+### Comparing how a change evolved (interdiff)
+
+To see how a change has been modified (e.g. after amending or rebasing):
+
+```bash
+jj interdiff --git --from <old-rev> --to <new-rev>
+jj evolog -p --git -r <change-id>   # full evolution history of a change
+```
+
+`jj interdiff` compares *patches* (what two revisions each introduced),
+rebasing the `--from` revision onto `--to`'s parents first. This is different
+from `jj diff --from/--to` which compares file-tree snapshots.
+
 ## Command Reference
 
 | Task                    | Command                              |
@@ -43,7 +112,9 @@ ALWAYS run `jj st` or `jj log` before making any changes. The working copy IS a 
 | Status                  | `jj st`                              |
 | Diff (current change)   | `jj diff --git`                      |
 | Diff (specific rev)     | `jj diff --git -r <change-id>`       |
-| Diff between revisions  | `jj diff --git --from <rev> --to <rev>` |
+| Each diff in a range    | `jj log -p --git -r <revset>`        |
+| Combined diff of range  | `jj diff --git -r A::B`              |
+| Snapshot comparison      | `jj diff --git --from <rev> --to <rev>` |
 | Log                     | `jj log`                             |
 | Show a revision         | `jj show --git <change-id>`          |
 | Describe current change | `jj describe -m "msg"`               |
@@ -54,7 +125,7 @@ ALWAYS run `jj st` or `jj log` before making any changes. The working copy IS a 
 | Restore files           | `jj restore [paths]`                 |
 | Rebase                  | `jj rebase -r <rev> -d <dest>`       |
 
-**Always use `--git` with `jj diff` and `jj show`** -- the default color-words output is not machine-readable. `--git` gives standard unified diff format.
+**Always use `--git` with `jj diff`, `jj show`, and `jj log -p`** -- the default color-words output is not machine-readable. `--git` gives standard unified diff format.
 
 **Verify after mutations** -- run `jj st` after `squash`, `abandon`, `rebase`, `restore`.
 
