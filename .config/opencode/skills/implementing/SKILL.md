@@ -94,9 +94,11 @@ Each task's implementation must satisfy both spec compliance and code quality. D
    - Remaining lenses must be **tailored to the diff's risks**, not generic defaults. Use the spec, plan, and diff to identify what could go wrong -- the plan's callouts, decision rationale, and error-handling notes are strong signals for where review attention belongs.
    - If spec-compliance finds intentional divergence from the spec, warn in the completion report: *"Spec at `docs/specs/<file>` may have drifted from the implementation. Consider amending it through the design skill."* This is a warning, not a failure -- do not modify specs.
 
-2. **Documentation staleness check:** Gather the full diff (branch vs base), identify doc files in the repo (README, agent/skill docs, `docs/` -- skip CHANGELOG.md and `docs/specs/`). Dispatch `doc-reviewer` with the diff and doc file list to flag anything stale or missing. Fix if needed, max 3 iterations.
+2. **Full CI check:** Run the project's full lint/format/test command (e.g. `just check` or equivalent). If fixes are needed, apply them, commit, and dispatch a single `code-reviewer` on the fix diff before proceeding.
 
-3. **Report completion:**
+3. **Documentation staleness check:** Gather the full diff (branch vs base), identify doc files in the repo (README, agent/skill docs, `docs/` -- skip CHANGELOG.md and `docs/specs/`). Dispatch `doc-reviewer` with the diff and doc file list to flag anything stale or missing. Fix if needed, max 3 iterations.
+
+4. **Report completion:**
 
 > "Implementation complete. N/N tasks done. [Summary of any concerns raised]. Final review: PASS/FAIL."
 
