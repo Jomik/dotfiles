@@ -83,5 +83,5 @@ jj git fetch                           # fetch from remote
 
 ## GitHub Interop
 
-- The `gh` CLI works normally for PRs and issues (it talks to the GitHub API directly).
-- To push a branch for a PR: `jj bookmark set <name> -r @-` then `jj git push -b <name>`.
+- The `gh` CLI works normally for PRs and issues.
+- **Always pass `--head <bookmark-name>` to `gh pr create`** — without it `gh` cannot determine the branch in a jj repo.
