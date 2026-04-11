@@ -46,7 +46,7 @@ Match the pattern you see (conventional commits, imperative mood, ticket prefixe
 <1-3 sentences: what changed and why>
 
 ## References
-<Links to spec, plan, or issue — omit section if none>
+<Links to spec or issue — omit section if none>
 
 ## Decisions & callouts
 <Non-obvious choices, trade-offs, or areas needing reviewer attention — omit section if none>
@@ -66,6 +66,7 @@ Match the pattern you see (conventional commits, imperative mood, ticket prefixe
 
 - Use **persistent links** — link to files at a specific commit SHA, not a branch (branch links go stale after merge). For GitHub: `https://github.com/org/repo/blob/<sha>/path/to/file`
 - GitHub issues and PRs are already persistent — use `owner/repo#123` format or full URL.
+- **Never reference local-only paths** (e.g., `.opencode/plans/`) — these are not committed and meaningless to reviewers.
 - **Verify every link** before creating the PR — use `gh api` or `curl -s -o /dev/null -w '%{http_code}'` to confirm each returns 200.
 - If a link is broken, fix it or remove it — a dead link is worse than no link.
 
