@@ -87,7 +87,12 @@ Each task's implementation must satisfy both spec compliance and code quality. D
 
 ## After All Tasks
 
-1. **Final review** (if a spec exists): Dispatch 2-3 `code-reviewer` subagents in parallel with different, non-overlapping lenses. One MUST have a **spec-compliance** lens checking the complete implementation against the spec -- requirements that span multiple tasks, cross-task integration, anything missed by per-task reviews. Choose remaining lenses based on what matters most for this work (architecture, security, performance, etc.). Max 3 review iterations, then escalate to user. If the spec-compliance reviewer identifies areas where the implementation intentionally diverged from the spec, include a warning in the completion report: *"Spec at `docs/specs/<file>` may have drifted from the implementation. Consider amending it through the design skill."* This is a warning, not a failure -- do not modify specs. Specs are design records owned by the design skill.
+1. **Final review** (if a spec exists): Dispatch 3-5 `code-reviewer` subagents in parallel with different, non-overlapping lenses. Before dispatching, **announce each lens** with a one-sentence justification of why it targets a real risk in this diff (no approval needed -- proceed unless user objects). Max 3 review iterations total, then escalate to user.
+
+   **Lens rules:**
+   - One lens MUST be **spec-compliance**: full implementation vs spec -- cross-task integration, missed requirements, scope drift.
+   - Remaining lenses must be **tailored to the diff's risks**, not generic defaults. Use the spec, plan, and diff to identify what could go wrong -- the plan's callouts, decision rationale, and error-handling notes are strong signals for where review attention belongs.
+   - If spec-compliance finds intentional divergence from the spec, warn in the completion report: *"Spec at `docs/specs/<file>` may have drifted from the implementation. Consider amending it through the design skill."* This is a warning, not a failure -- do not modify specs.
 
 2. **Documentation staleness check:** Gather the full diff (branch vs base), identify doc files in the repo (README, agent/skill docs, `docs/` -- skip CHANGELOG.md and `docs/specs/`). Dispatch `doc-reviewer` with the diff and doc file list to flag anything stale or missing. Fix if needed, max 3 iterations.
 
