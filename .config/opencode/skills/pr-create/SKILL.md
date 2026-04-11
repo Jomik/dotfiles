@@ -32,9 +32,10 @@ Suggest `--draft` when tests aren't passing, there are known TODOs, or the user 
 
 ## PR Title
 
-Follow the project's commit message convention — PRs are squash-merged, so the title becomes the final commit message.
+Discover the project's title convention before writing one. Check recently merged PR titles and recent commit messages on the default branch.
 
-- Use imperative mood
+Match the pattern you see (conventional commits, imperative mood, ticket prefixes, casing, etc.). If the repo is new or inconsistent, fall back to capitalized imperative mood with no prefix.
+
 - Keep under 72 characters
 - Do NOT include issue/PR numbers — GitHub appends the PR number on merge
 
