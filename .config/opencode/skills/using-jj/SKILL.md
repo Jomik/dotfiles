@@ -9,15 +9,13 @@ Do not use deprecated aliases: `jj checkout` (use `jj edit`), `jj commit` (use `
 
 ## Critical: Avoid Interactive Prompts
 
-ALWAYS pass `-m "message"` to any command that accepts it. Without `-m`, jj opens `$EDITOR` and the agent will hang indefinitely. This applies to:
+ALWAYS pass `-m "message"` to `jj describe` and `jj squash`. Without `-m`, these commands open `$EDITOR` and the agent will hang indefinitely.
 
-- `jj describe -m "msg"`
-- `jj new -m "msg"`
-- `jj squash -m "msg"`
+- `jj describe -m "msg"` -- ALWAYS use `-m`
+- `jj squash -m "msg"` -- ALWAYS use `-m`
+- `jj new` -- do NOT pass `-m`. It does not open an editor. Passing `-m` sets a description on the new empty change, which is almost never what you want. If the new change needs a description, use `jj describe -m "msg"` after `jj new`.
 
 Never use interactive commands: `jj split`, `jj squash -i`, and `jj resolve` will hang.
-
-Rule of thumb: if a jj subcommand has a `-m` flag, always use it.
 
 ## Key Concepts
 
@@ -30,7 +28,7 @@ Rule of thumb: if a jj subcommand has a `-m` flag, always use it.
 
 ALWAYS run `jj st` or `jj log` before making any changes. The working copy IS a commit -- if `@` already contains completed work and you start coding, you silently accumulate unrelated changes into it.
 
-- If `@` has completed work: `jj new -m "..."` first
+- If `@` has completed work: `jj new` first, then `jj describe -m "..."`
 - If `@` is empty: `jj describe -m "..."` then code
 - If `@` is your in-progress work: continue
 
@@ -118,7 +116,7 @@ from `jj diff --from/--to` which compares file-tree snapshots.
 | Log                     | `jj log`                             |
 | Show a revision         | `jj show --git <change-id>`          |
 | Describe current change | `jj describe -m "msg"`               |
-| Start new change        | `jj new -m "msg"`                    |
+| Start new change        | `jj new`                             |
 | Squash into parent      | `jj squash -m "msg"`                 |
 | Abandon change          | `jj abandon <change-id>`             |
 | Undo last operation     | `jj undo`                            |
@@ -136,7 +134,7 @@ from `jj diff --from/--to` which compares file-tree snapshots.
 1. `jj st` -- check what `@` contains
 2. `jj describe -m "what I'm about to do"` -- describe first
 3. Edit files (changes are auto-tracked, no `add`/`stage` step)
-4. `jj new -m "next change"` -- finalize and start the next change
+4. `jj new` -- finalize and start the next change
 
 ## Bookmarks & Pushing
 
