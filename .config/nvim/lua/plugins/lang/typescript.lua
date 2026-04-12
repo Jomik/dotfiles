@@ -5,21 +5,6 @@ return {
   { import = "lazyvim.plugins.extras.linting.eslint" },
   { import = "lazyvim.plugins.extras.formatting.prettier" },
   {
-    "neovim/nvim-lspconfig",
-    opts = {
-      servers = {
-        ts_ls = {
-          enabled = false,
-        },
-      },
-      setup = {
-        ts_ls = function()
-          return true
-        end,
-      },
-    },
-  },
-  {
     "nvim-neotest/neotest",
     optional = true,
     dependencies = {
