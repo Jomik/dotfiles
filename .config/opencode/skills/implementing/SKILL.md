@@ -3,9 +3,9 @@ name: implementing
 description: Use when a plan exists (in `.opencode/plans/` or approved in the current conversation) and is ready to execute. Dispatches subagents per task with review gates.
 ---
 
-You are executing the implementing skill. Your role is strictly that of an orchestrator. You MUST NOT write implementation code yourself. Every task in the plan is dispatched to an impl-* subagent -- no exceptions, regardless of how simple the task appears.
+You are executing the implementing skill. Your role is strictly that of an orchestrator: you read the plan, dispatch subagents per task, and manage the review loop. You MUST NOT write implementation code or explore the codebase yourself. Every task in the plan is dispatched to an impl-* subagent -- no exceptions, regardless of how simple the task appears.
 
-**Why fresh agents per task:** Each agent gets isolated context. You craft precise instructions so each agent stays focused. They never inherit session history -- you construct exactly what they need.
+**Core principle:** Dispatch quickly from the plan. Subagents have full tool access and will read files they need during implementation.
 
 ---
 
@@ -18,6 +18,8 @@ You are executing the implementing skill. Your role is strictly that of an orche
    - If the plan references a spec, check whether the spec has been modified more recently than the plan. If so, warn the plan may be stale and ask whether to proceed.
 
 2. **Report scope:** "Plan has N tasks. Each goes through implementation + review."
+
+   After pre-flight, proceed directly to the per-task loop. Do not explore the codebase. The plan and project conventions (AGENTS.md) are your only inputs. Subagents read source files themselves.
 
 3. **Resume handling:** If resuming a partially-complete plan, check VCS history for commits related to unchecked tasks before re-dispatching. If implementation commits exist for an unchecked task, skip re-implementation and proceed to review.
 
@@ -39,40 +41,23 @@ Report the tier and reason to the user when dispatching (e.g., "Task 3/8: Dispat
 
 ---
 
-## Dispatch Checklists
-
-### Implementer dispatch
-
-Include in the Task tool prompt:
-- Full task text (copy-pasted from plan, not a file reference)
-- Scene-setting context (what exists, what this task builds on)
-- Project conventions relevant to the task
-- Lint/format commands
-- TDD methodology where the plan calls for it: write the failing test first, verify it fails, implement minimally, verify it passes. Follow the plan's steps as written.
-- Instruction: "Run lint/format and fix issues before reporting DONE. Commit your changes -- the review depends on a clean VCS diff for this task."
-
-### Review dispatch
-
-Include in the Task tool prompt:
-- Task requirements (from the plan)
-- Implementer's status report
-- VCS diff for this task's changes
-- Review criteria: spec compliance (does the implementation cover every requirement in the task? any unrequested changes or scope misinterpretation?) and code quality (correctness, bugs, error handling, lint/format, consistency with surrounding code)
-
----
-
 ## Per-Task Loop
 
 For each task in the plan:
 
 1. **Assess tier** and report to user.
-2. **Dispatch impl-* subagent** per the implementer dispatch checklist.
+2. **Dispatch impl-* subagent** with the Task tool. Include in the prompt:
+   - Full task text (copy-pasted from plan, not a file reference)
+   - Project conventions relevant to the task
+   - Lint/format commands
+   - TDD methodology where the plan calls for it: write the failing test first, verify it fails, implement minimally, verify it passes. Follow the plan's steps as written.
+   - Instruction: "Run lint/format and fix issues before reporting DONE. Commit your changes -- the review depends on a clean VCS diff for this task."
 3. **Handle status:**
    - `DONE` -> proceed to review
    - `DONE_WITH_CONCERNS` -> assess concerns; if about correctness or scope, address before review; if observations ("this file is getting large"), note and proceed
    - `BLOCKED` -> assess the blocker: missing context (re-dispatch with more context), too complex for current tier (escalate: impl-quick -> impl-standard -> impl-deep), still blocked after impl-deep (escalate to user)
    - `NEEDS_CONTEXT` -> provide missing context and re-dispatch
-4. **Review** per the review dispatch checklist. If issues found, dispatch a *new* impl-* subagent at the same tier with the original task text, prior report, and specific issues to fix. Then dispatch a *new* `code-reviewer` with the updated diff. Any fix may compromise previous review passes -- re-review both concerns, not just the one that triggered the fix. Each fix-then-review cycle counts as one iteration. Max 3 iterations per task; if still failing, escalate to the user.
+4. **Review:** Dispatch a `code-reviewer` subagent with the task requirements (from the plan), implementer's status report, VCS diff for this task's changes, and review criteria: spec compliance (does the implementation cover every requirement in the task? any unrequested changes or scope misinterpretation?) and code quality (correctness, bugs, error handling, lint/format, consistency with surrounding code). If issues found, dispatch a *new* impl-* subagent at the same tier with the original task text, prior report, and specific issues to fix. Then dispatch a *new* `code-reviewer` with the updated diff. Any fix may compromise previous review passes -- re-review both concerns, not just the one that triggered the fix. Each fix-then-review cycle counts as one iteration. Max 3 iterations per task; if still failing, escalate to the user.
 5. **Mark task complete:** If the plan is a file, update its checkboxes for this task to `[x]`. For in-context plans, report task completion to the user.
 
 ---
