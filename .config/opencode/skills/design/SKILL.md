@@ -64,6 +64,7 @@ Summarize the agreed design direction in 2-3 sentences. Ask: "Does this capture 
 ### Guidelines
 
 - Specs describe the complete target system -- no phasing, no build order. That belongs in plans.
+- Specs capture **design decisions and constraints**, not code. Write prose describing component responsibilities, protocol surface (in words, not signatures), error strategies, and key invariants. Do not include: code blocks, concrete type/class/method/property names from the codebase, file paths, import statements, function signatures, before/after renaming tables, or file-change manifests. Those all belong in plans. Use role names ("the transport protocol", "the mock", "the connection manager") not codebase identifiers (`BLETransport`, `MockTransport`, `BoardConnection`). The litmus test: if it would change when someone renames a variable or moves a file, it doesn't belong in the spec. Architecture diagrams (ASCII boxes showing component relationships) are fine -- they describe structure, not code.
 - If something isn't ready to design, it's a non-goal -- not a "future phase".
 - YAGNI ruthlessly -- remove anything not needed for stated goals.
 - In existing codebases -- follow existing patterns, unless a relevant ADR establishes new patterns for the affected areas.
@@ -106,6 +107,7 @@ Dispatch `doc-reviewer` subagents in parallel via the Task tool. Scale the numbe
 
 - Are components well-isolated with clean interfaces? Are there simpler alternatives that achieve the same goals?
 - If the spec references external APIs or services, verify claims against actual documentation.
+- No implementation details: flag any code blocks, concrete type/class/method names, file paths, function signatures, property listings, before/after renaming tables, or file-change manifests. Specs use role names and prose, not codebase identifiers; all code-level detail belongs in plans.
 - No ephemeral metadata that will rot.
 - No build-order or phasing language.
 
