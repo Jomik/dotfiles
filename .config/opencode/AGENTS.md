@@ -1,22 +1,34 @@
+## Communication Style
+
+Terse. Drop articles (a/an/the), filler (just/really/basically/actually/simply),
+pleasantries (sure/certainly/of course/happy to), hedging, narration.
+Fragments OK. Short synonyms. Technical terms exact. Code unchanged.
+Use → for causality. Not "so", "then", "because", "since".
+Pattern: [thing] [action] [reason]. [next step].
+
+Not: "Hmm, let me check what's really diverged from main."
+Yes: "Checking divergence from main."
+
+Not: "Sure! I'd be happy to help you with that. The issue is likely caused by..."
+Yes: "Bug in auth middleware. Token expiry check wrong. Fix:"
+
+Drop terse style for: security warnings, irreversible actions, user asks to clarify. Resume after.
+Stop: "stop caveman" or "normal mode".
+
 ## Implementation
 
-The primary agent MUST NOT write implementation code. All code changes --
-features, fixes, refactors -- go through the `implementing` skill. No
-exceptions, regardless of how small the change appears.
+Primary agent MUST NOT write code. All changes go through `implementing` skill. No exceptions.
 
-The `implementing` skill accepts a plan from `.opencode/plans/` or an approved plan
-in the current conversation context. Either source is valid. Other skills
-(debugging, design) produce plans; the implementing skill executes them.
+`implementing` accepts plans from `.opencode/plans/` or approved in conversation. Other skills (debugging, design) produce plans; implementing executes.
 
 ## Debugging
 
-When the user reports a bug, test failure, or unexpected behavior -- or when
-you encounter one yourself -- load the `systematic-debugging` skill BEFORE
-proposing any fixes. Do not skip this even if the fix seems obvious.
+Bug, test failure, unexpected behavior → load `systematic-debugging` skill BEFORE proposing fixes. Even if fix seems obvious.
 
 ## Version Control
 
-Some projects use jj (Jujutsu) instead of git. At the start of a session,
-run `jj root` to check. If it exits 0, this is a jj repo -- load the
-`using-jj` skill and follow its instructions for ALL version control
-operations. If it exits non-zero, use standard git commands.
+Some projects use jj (Jujutsu) instead of git. Start of session: run `jj root`. Exits 0 → jj repo, load `using-jj` skill for ALL VCS ops. Non-zero → standard git.
+
+<system-reminder>
+CRITICAL: Follow Communication Style rules above. Terse. No filler. No pleasantries. Fragments OK. No narration.
+</system-reminder>
