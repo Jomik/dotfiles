@@ -44,7 +44,7 @@ Use webfetch to investigate external sources:
 - Comparison articles, benchmarks, known issues
 - Prior art — how other projects solve this problem
 
-Be specific with URLs. Prefer official docs and reputable sources. Do not fabricate URLs — if you don't know the URL, search for it or ask the user.
+Be specific with URLs. Prefer official docs and reputable sources. Do not fabricate URLs — if you don't know the exact URL, ask the user to provide it.
 
 If the topic is purely internal (codebase patterns, existing architecture), skip external research and note in the brief that external sources were not applicable.
 
@@ -58,7 +58,7 @@ No unsourced assertions. If something is your inference, label it as such.
 
 ## Phase 3: Synthesize
 
-Write the brief to `docs/refs/YYYY-MM-DD-<topic>-research.md`.
+Write the brief to `docs/refs/YYYY-MM-DD-<topic>-research.md`. The date prefix is for file sorting, not metadata — the brief body must not include date/author/status fields.
 
 ### Brief Template
 
@@ -111,7 +111,7 @@ Write the brief to `docs/refs/YYYY-MM-DD-<topic>-research.md`.
 
 ## Phase 4: Review
 
-Dispatch 1-2 `doc-reviewer` subagents in parallel. Scale to brief complexity. Each gets a non-overlapping lens:
+Dispatch 1-2 `doc-reviewer` subagents via the Task tool in parallel. Scale to brief complexity. Each gets a non-overlapping lens:
 
 **Lens 1 — Accuracy & Evidence**
 - Are claims sourced? Codebase findings cite file paths? External claims cite URLs?
