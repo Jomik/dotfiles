@@ -111,7 +111,7 @@ Write the brief to `docs/refs/YYYY-MM-DD-<topic>-research.md`. The date prefix i
 
 ## Phase 4: Review
 
-Dispatch 1-2 `doc-reviewer` subagents via the Task tool in parallel. Scale to brief complexity. Each gets a non-overlapping lens:
+Dispatch 1-2 `doc-reviewer` subagents in parallel. Scale to brief complexity. Each gets a non-overlapping lens:
 
 **Lens 1 — Accuracy & Evidence**
 - Are claims sourced? Codebase findings cite file paths? External claims cite URLs?
