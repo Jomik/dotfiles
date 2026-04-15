@@ -1,0 +1,12 @@
+{
+  "lastChangelogVersion": "0.67.1",
+  "quietStartup": true,
+  "defaultProvider": "github-copilot",
+  "defaultModel": "claude-opus-4.6",
+  "defaultThinkingLevel": "high",
+  "packages": [
+    "npm:pi-jujutsu",
+    "npm:pi-tmux-window-name",
+    "npm:pi-web-access"
+  ]
+}
