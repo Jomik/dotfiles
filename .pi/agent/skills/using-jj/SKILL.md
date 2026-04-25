@@ -5,15 +5,16 @@ description: Use whenever `jj root` succeeds. Use `jj` for all version-control o
 
 This is a jj (Jujutsu) repository. Use `jj` for ALL version control operations. NEVER run `git` commands. If you don't know the jj equivalent of a git command, run `jj help` -- do not guess or fall back to git.
 
-Do not use deprecated aliases: `jj checkout` (use `jj edit`), `jj commit` (use `jj new`), `jj branch` (use `jj bookmark`).
+Do not use deprecated aliases: `jj branch` (use `jj bookmark`).
 
 ## Critical: Avoid Interactive Prompts
 
-ALWAYS pass `-m "message"` to `jj describe` and `jj squash`. Without `-m`, these commands open `$EDITOR` and the agent will hang indefinitely.
+ALWAYS pass `-m "message"` to `jj describe`, `jj commit`, and `jj squash`. Without `-m`, these commands open `$EDITOR` and the agent will hang indefinitely.
 
 - `jj describe -m "msg"` -- ALWAYS use `-m`
-- `jj squash -m "msg"` -- ALWAYS use `-m`
-- `jj new` -- do NOT pass `-m`. It does not open an editor. Passing `-m` sets a description on the new empty change, which is almost never what you want. If the new change needs a description, use `jj describe -m "msg"` after `jj new`.
+- `jj commit -m "msg"` -- ALWAYS use `-m` (equivalent to `jj describe -m` + `jj new`)
+- `jj squash -m "msg"` or `jj squash -u` -- use `-m` to set a new message, `-u` to keep the destination's message
+- `jj new` -- do NOT pass `-m`. It does not open an editor. Passing `-m` sets a description on the new empty change, which is almost never what you want.
 
 Never use interactive commands: `jj split`, `jj squash -i`, and `jj resolve` will hang.
 
@@ -21,136 +22,101 @@ Never use interactive commands: `jj split`, `jj squash -i`, and `jj resolve` wil
 
 - **The working copy IS a commit (`@`).** No staging area, no index. File changes are tracked automatically. There is no `git add`.
 - **`jj new` finalizes the current change** and starts a new empty one on top. After `jj new`, `@` is the new empty change and `@-` is the one you just finished.
-- **Bookmarks** are jj's equivalent of git branches.
 - **Prefer change IDs over commit IDs** -- they are stable across rewrites.
+- **`trunk()`** resolves to the latest trunk/main commit from the remote.
 
-## Before You Touch Any Code: Check `@`
+## Workflow
 
-ALWAYS run `jj st` or `jj log` before making any changes. The working copy IS a commit -- if `@` already contains completed work and you start coding, you silently accumulate unrelated changes into it.
+**Before touching any code**, run `jj st` to check what `@` contains:
 
-- If `@` has completed work: `jj new` first, then `jj describe -m "..."`
-- If `@` is empty: `jj describe -m "..."` then code
-- If `@` is your in-progress work: continue
+- `@` has completed work → `jj new` first
+- `@` is empty → proceed
+- `@` is your in-progress work → continue
 
-**Describe before coding.** The message comes first, then the code. Not after.
+Then describe before coding: `jj describe -m "what I'm about to do"`. Message first, then code.
 
-## Viewing Diffs: Critical Concepts
+**When done**, always finalize with `jj new` (or `jj commit -m "msg"` to describe and finalize in one step). Do not leave the user on a dirty `@` — the user needs a clean `@` to review your work, squash follow-up fixes, and start new tasks.
 
-Understanding diff commands is essential. Getting them wrong makes it look like
-separate changes have been "merged into one."
+**Rule: every task ends with `jj new`.** The only exception is if the user explicitly asks you not to.
 
-### `-r` vs `--from/--to`: Two completely different things
+## Viewing Diffs
 
-- **`jj diff -r <rev>`** shows what a single change *introduced* (the diff
-  between that revision and its parent). This is a **patch** view.
-- **`jj diff --from A --to B`** compares **file-tree snapshots** at A and B.
-  This is NOT "the changes introduced by A through B." If A and B have
-  different parents or are on different branches, the result includes everything
-  that differs between the two trees -- not just what any particular set of
-  commits introduced. **This is the #1 source of confusion.**
+### `-r` vs `--from/--to`
 
-### Viewing a single change's diff
+- **`jj diff -r <rev>`** — what a single change *introduced* (diff against its parent).
+- **`jj diff --from A --to B`** — compares **file-tree snapshots**. Not "changes introduced by A through B." Includes everything that differs between the two trees.
+
+### Common operations
 
 ```bash
-jj diff --git                       # what @ introduced (vs its parent)
-jj diff --git -r <change-id>        # what <change-id> introduced (vs its parent)
-jj show --git <change-id>           # same as above, but also shows description/metadata
+# Single change
+jj diff --git                       # what @ introduced
+jj diff --git -r <change-id>        # what <change-id> introduced
+jj show --git <change-id>           # same + description/metadata
+
+# Each change in a range, individually
+jj log -p --git -r <revset>         # one diff per change, not combined
+jj log -p --git -r 'trunk()..@'     # all changes since trunk
+
+# Combined diff of a range
+jj diff --git -r A::B               # total diff from A through B
+
+# Snapshot comparison
+jj diff --git --from A --to B       # tree-to-tree comparison
+
+# How a change evolved
+jj interdiff --git --from <old> --to <new>
+jj evolog -p --git -r <change-id>   # full evolution history
 ```
-
-### Viewing each change in a range individually
-
-To see what each change in a range introduced **separately** (one diff per
-change, not combined):
-
-```bash
-jj log -p --git -r <revset>         # shows each change's own diff, one by one
-jj log -p --git -r @---::@          # example: last 3 changes, each shown individually
-jj log -p --git -r 'trunk()..@'     # all changes since trunk, each shown individually
-```
-
-`jj log -p` is the correct way to review a series of changes. Each change is
-displayed with its description and its own diff (what it introduced vs its
-parent). Changes are NOT merged together.
-
-### Viewing the combined diff of a range
-
-If you genuinely want a single combined diff for everything a range of changes
-introduced (like `git diff A..B`):
-
-```bash
-jj diff --git -r A::B               # combined diff of all changes from A to B inclusive
-```
-
-This passes a multi-revision revset to `-r`, and jj computes the total diff.
-It is equivalent to `jj diff --git --from A- --to B` (note: `A-` is A's
-parent, so A's changes are included).
-
-**When to use which:**
-- Reviewing work: `jj log -p --git -r <revset>` (see each change separately)
-- Checking what you changed overall: `jj diff --git -r trunk()..@` (combined)
-- Comparing two snapshots: `jj diff --git --from A --to B` (tree comparison)
-
-### Comparing how a change evolved (interdiff)
-
-To see how a change has been modified (e.g. after amending or rebasing):
-
-```bash
-jj interdiff --git --from <old-rev> --to <new-rev>
-jj evolog -p --git -r <change-id>   # full evolution history of a change
-```
-
-`jj interdiff` compares *patches* (what two revisions each introduced),
-rebasing the `--from` revision onto `--to`'s parents first. This is different
-from `jj diff --from/--to` which compares file-tree snapshots.
 
 ## Command Reference
 
-| Task                    | Command                              |
-|-------------------------|--------------------------------------|
-| Status                  | `jj st`                              |
-| Diff (current change)   | `jj diff --git`                      |
-| Diff (specific rev)     | `jj diff --git -r <change-id>`       |
-| Each diff in a range    | `jj log -p --git -r <revset>`        |
-| Combined diff of range  | `jj diff --git -r A::B`              |
-| Snapshot comparison      | `jj diff --git --from <rev> --to <rev>` |
-| Log                     | `jj log`                             |
-| Show a revision         | `jj show --git <change-id>`          |
-| Describe current change | `jj describe -m "msg"`               |
-| Start new change        | `jj new`                             |
-| Squash into parent      | `jj squash -m "msg"`                 |
-| Abandon change          | `jj abandon <change-id>`             |
-| Undo last operation     | `jj undo`                            |
-| Restore files           | `jj restore [paths]`                 |
-| Rebase                  | `jj rebase -r <rev> -d <dest>`       |
+| Task                     | Command                                  |
+|--------------------------|------------------------------------------|
+| Status                   | `jj st`                                  |
+| Diff (current change)    | `jj diff --git`                          |
+| Diff (specific rev)      | `jj diff --git -r <change-id>`           |
+| Each diff in a range     | `jj log -p --git -r <revset>`            |
+| Combined diff of range   | `jj diff --git -r A::B`                  |
+| Snapshot comparison       | `jj diff --git --from <rev> --to <rev>`  |
+| Log                      | `jj log`                                 |
+| Show a revision          | `jj show --git <change-id>`              |
+| Describe current change  | `jj describe -m "msg"`                   |
+| Describe + finalize      | `jj commit -m "msg"`                     |
+| Start new change         | `jj new`                                 |
+| New change on a revision | `jj new <rev>`                            |
+| Edit existing change     | `jj edit <change-id>`                    |
+| Squash into parent       | `jj squash -m "msg"` or `jj squash -u`   |
+| Abandon change           | `jj abandon <change-id>`                |
+| Undo last operation      | `jj undo`                                |
+| Restore from parent      | `jj restore [paths]`                     |
+| Restore from revision    | `jj restore --from <rev> [paths]`        |
+| List bookmarks           | `jj bookmark list`                       |
+| Rebase single revision   | `jj rebase -r <rev> -d <dest>`           |
+| Rebase with descendants  | `jj rebase -s <rev> -d <dest>`           |
 
-**Always use `--git` with `jj diff`, `jj show`, and `jj log -p`** -- the default color-words output is not machine-readable. `--git` gives standard unified diff format.
+**Always use `--git`** with `jj diff`, `jj show`, and `jj log -p` -- the default color-words output is not machine-readable.
 
 **Verify after mutations** -- run `jj st` after `squash`, `abandon`, `rebase`, `restore`.
 
-**Resolve conflicts** by editing files directly, then `jj st` to verify. Do not use interactive resolution tools.
-
-## Workflow: Making a Commit
-
-1. `jj st` -- check what `@` contains
-2. `jj describe -m "what I'm about to do"` -- describe first
-3. Edit files (changes are auto-tracked, no `add`/`stage` step)
-4. `jj new` -- finalize and start the next change
+**Resolve conflicts** by editing the conflict markers in the files directly, then `jj st` to verify. Run `jj help conflicts` for marker format details. Do not use interactive resolution tools.
 
 ## Bookmarks & Pushing
 
 Bookmarks are jj's equivalent of git branches. They do NOT auto-advance on `jj new`.
 
-**Which revision to bookmark:** After `jj new`, `@` is the new empty change. Point bookmarks at `@-` (the completed change), not `@`. If you haven't run `jj new` yet, use `@`.
+**Which revision to bookmark:** After `jj new`, point bookmarks at `@-` (the completed change), not `@` (the new empty change).
 
 ```bash
 jj bookmark set <name> -r @-           # create or move bookmark to completed change
 jj git push -b <name>                  # push bookmark to remote
 jj git fetch                           # fetch from remote
+jj rebase -d trunk()                   # rebase current work onto latest trunk
 ```
 
-**Always push via bookmark (`-b`).** Never use `jj git push -c`. The `-c` flag creates auto-named bookmarks and pushes changes as separate branches instead of a single chain.
+**Always push via bookmark (`-b`).** Never use `jj git push -c` — it creates auto-named bookmarks instead of pushing a single chain.
 
 ## GitHub Interop
 
-- The `gh` CLI works normally for PRs and issues.
+- **Prefix `gh` commands with `GIT_DIR="$(jj git root)"`** — in non-colocated repos there is no `.git/` at the repo root, so `gh` cannot find the Git directory. The prefix is harmless in colocated repos.
 - **Always pass `--head <bookmark-name>` to `gh pr create`** — without it `gh` cannot determine the branch in a jj repo.

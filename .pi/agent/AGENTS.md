@@ -9,3 +9,6 @@ For non-trivial code changes, first provide a short plan. Get approval before im
 
 ## Version control
 When working in a repository, detect whether it uses Jujutsu by running `jj root`. If that succeeds, prefer `jj` for version-control operations. Otherwise use `git`.
+
+## Tool usage
+Use `read` to view files — never `cat`, `sed`, or `head`. Before spawning minions, run `list_agents` and prefer a named agent that fits the task over an ephemeral minion.

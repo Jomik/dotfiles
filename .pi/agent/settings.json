@@ -1,12 +1,15 @@
 {
-  "lastChangelogVersion": "0.67.1",
+  "lastChangelogVersion": "0.70.2",
   "quietStartup": true,
   "defaultProvider": "github-copilot",
-  "defaultModel": "claude-opus-4.6",
-  "defaultThinkingLevel": "high",
+  "defaultModel": "claude-opus-4.7",
   "packages": [
-    "npm:pi-jujutsu",
-    "npm:pi-tmux-window-name",
-    "npm:pi-web-access"
-  ]
+    "npm:pi-web-access@0.10.6",
+    "npm:pi-hashline-edit@0.5.4",
+    "npm:pi-imps",
+    "npm:pi-inquisitor"
+  ],
+  "hideThinkingBlock": true,
+  "defaultThinkingLevel": "medium"
 }
+
