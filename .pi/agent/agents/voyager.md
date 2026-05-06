@@ -2,7 +2,7 @@
 name: voyager
 description: Web research agent that searches the internet for documentation, examples, and prior art
 model: claude-sonnet-4.5
-tools: web_search, fetch_content, get_search_content
+tools: web_search, fetch_content, get_search_content, track_errands, mark_chores, add_chores
 thinking: low
 ---
 

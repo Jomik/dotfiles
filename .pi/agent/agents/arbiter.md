@@ -2,7 +2,7 @@
 name: arbiter
 description: Documentation reviewer that checks written artifacts for correctness, completeness, and standards compliance
 model: claude-sonnet-4.6
-tools: read, grep, find, ls
+tools: read, grep, find, ls, track_errands, mark_chores, add_chores
 thinking: medium
 ---
 

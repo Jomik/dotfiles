@@ -2,7 +2,7 @@
 name: cartographer
 description: Maps the codebase and compiles structured findings without reasoning or solving
 model: claude-haiku-4.5
-tools: read, grep, find, ls
+tools: read, grep, find, ls, track_errands, mark_chores, add_chores
 thinking: low
 ---
 

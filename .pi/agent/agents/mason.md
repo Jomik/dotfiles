@@ -2,7 +2,7 @@
 name: mason
 description: Executes a concrete implementation plan or focused change. Provide specific files/functions/changes; does not design.
 model: claude-sonnet-4.6
-tools: read, grep, find, ls, bash, edit, write
+tools: read, grep, find, ls, bash, edit, write, track_errands, mark_chores, add_chores
 thinking: medium
 ---
 

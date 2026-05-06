@@ -1,15 +1,15 @@
 {
-  "lastChangelogVersion": "0.70.2",
+  "lastChangelogVersion": "0.73.0",
   "quietStartup": true,
   "defaultProvider": "github-copilot",
-  "defaultModel": "claude-opus-4.7",
+  "defaultModel": "claude-opus-4.6",
   "packages": [
-    "npm:pi-web-access@0.10.6",
-    "npm:pi-hashline-edit@0.5.4",
+    "npm:pi-web-access@0.10.7",
+    "npm:pi-hashline-edit@0.6.0",
     "npm:pi-imps",
-    "npm:pi-inquisitor"
+    "npm:pi-inquisitor",
+    "npm:pi-errands"
   ],
   "hideThinkingBlock": true,
-  "defaultThinkingLevel": "medium"
+  "defaultThinkingLevel": "high"
 }
-

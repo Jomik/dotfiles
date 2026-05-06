@@ -2,7 +2,7 @@
 name: sentinel
 description: Review and validation agent that checks code, runs tests, and verifies correctness
 model: claude-sonnet-4.6
-tools: read, grep, find, ls, bash
+tools: read, grep, find, ls, bash, track_errands, mark_chores, add_chores
 thinking: medium
 ---
 
