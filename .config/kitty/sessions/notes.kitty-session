@@ -1,0 +1,3 @@
+layout splits
+cd ~/notes
+launch --title "Pi" fish -c pis
