@@ -14,6 +14,10 @@ if type -q nvim
     set -x EDITOR (which nvim)
 end
 
+if type -q fnm
+    fnm env --use-on-cd --corepack-enabled --shell fish | source
+end
+
 if ! status is-interactive
     exit
 end
@@ -32,6 +36,10 @@ end
 
 if type -q jj
     COMPLETE=fish jj | source
+end
+
+if type -q direnv
+    direnv hook fish | source
 end
 
 builtin source $XDG_CONFIG_HOME/fish/abbreviations.fish
