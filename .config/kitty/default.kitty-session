@@ -1,4 +1,0 @@
-layout splits
-cd @@session-path@@
-launch --title "Pi" fish -c pis
-launch --location=vsplit --title "Shell"

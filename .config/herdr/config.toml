@@ -1,0 +1,13 @@
+onboarding = false
+
+[ui]
+agent_panel_sort = "priority"
+mouse_capture = true
+copy_on_select = false
+pane_scrollbars = true
+right_click_passthrough_modifier = "ctrl"
+
+show_agent_labels_on_pane_borders = false
+
+[ui.sound]
+enabled = false
