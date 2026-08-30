@@ -1,0 +1,419 @@
+{
+  "tools": [
+    {
+      "name": "commit",
+      "command": "if jj root >/dev/null 2>&1; then jj commit -m {{message}}; else git commit -m {{message}}; fi",
+      "description": "Commit the current working copy in repository with a specified message.",
+      "guidelines": [
+        "Use when work is done, before starting new work."
+      ],
+      "env": {
+        "SSH_AUTH_SOCK": "$SSH_AUTH_SOCK"
+      }
+    },
+    {
+      "name": "project_status",
+      "command": "if jj root >/dev/null 2>&1; then jj status; else git status; fi",
+      "description": "Shows the current working copy status in the project.",
+      "guidelines": [
+        "Use to check what files are modified before committing or to orient in the current state."
+      ]
+    },
+    {
+      "name": "jj_log",
+      "command": "jj log -r {{revsets}} --limit {{limit}}",
+      "description": "View commits in the jj log for the project.",
+      "guidelines": [
+        "Use to orient in version control state or verify recent commits.",
+        "Default shows mutable revisions. Use revisions param for other sets (e.g., 'all()', 'open()')."
+      ]
+    },
+    {
+      "name": "jj_describe",
+      "command": "jj describe -m {{message}}",
+      "description": "Set or update the commit description on the current working copy in a jj repository.",
+      "guidelines": [
+        "Use to describe upcoming changes before or after making them",
+        "Message should follow conventional commit format when appropriate"
+      ]
+    },
+    {
+      "name": "jj_new",
+      "command": "jj new {{--insert-before?}} {{revision}}",
+      "description": "Create a new empty change"
+    },
+    {
+      "name": "create_pull_request",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh pr create --title {{title}} --head {{head}} {{--draft?}} --assignee @me --body {{body}}",
+      "description": "Creates a GitHub pull request from the current branch, assigning it to yourself.",
+      "requires_approval": true,
+      "guidelines": [
+        "For jj repos, pass the bookmark name as the --head parameter",
+        "For regular git repos, pass the current branch name as --head"
+      ]
+    },
+    {
+      "name": "create_bookmark",
+      "command": "jj bookmark set {{name}} -r {{revision}}",
+      "description": "Creates or moves a jj bookmark pointing at a specified revision, typically in preparation for pushing a PR."
+    },
+    {
+      "name": "push_bookmark",
+      "command": "jj git push --bookmark {{name}}",
+      "description": "Pushes a jj bookmark to the remote Git repository.",
+      "requires_approval": true
+    },
+    {
+      "name": "create_github_issue",
+      "command": "gh issue create --repo {{repo}} --title {{title}} --body {{body}}",
+      "description": "Creates a GitHub issue in the current repository.",
+      "requires_approval": true
+    },
+    {
+      "name": "reply_to_pr_review_comment",
+      "command": "gh api repos/{{owner}}/{{repo}}/pulls/{{pr_number}}/comments/{{comment_id}}/replies --method POST -f body={{body}} -q '{id: .id, body: .body, created_at: .created_at, html_url: .html_url}'",
+      "description": "Replies to a PR review comment on GitHub. Returns the reply's id, body, creation time, and URL.",
+      "requires_approval": true
+    },
+    {
+      "name": "fetch_pr_review_comments",
+      "command": "gh api repos/{{owner}}/{{repo}}/pulls/{{pr_number}}/comments --jq '.[] | {id, path, body, line, side, author: .user.login, created_at}'",
+      "description": "Fetches inline code review comments on a pull request to see reviewer feedback."
+    },
+    {
+      "name": "edit_pull_request",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh pr edit {{pr_number}} --title {{title}} --body {{body}}",
+      "description": "Updates an existing GitHub pull request's title and body.",
+      "requires_approval": true
+    },
+    {
+      "name": "edit_revision",
+      "command": "jj edit {{revision}}",
+      "description": "Switch the working copy to an existing revision for editing."
+    },
+    {
+      "name": "view_jira_issue",
+      "command": "bash ~/.pi/agent/skills/using-jira/jira-view.sh {{key}} {{...fields?}}",
+      "description": "View a Jira issue's details, optionally filtering to specific fields.",
+      "env": {
+        "JIRA_SERVER": "legogroup.atlassian.net"
+      },
+      "secrets": {
+        "ATLASSIAN_TOKEN": "atlassian-token"
+      }
+    },
+    {
+      "name": "search_jira_issues",
+      "command": "bash ~/.pi/agent/skills/using-jira/jira-list.sh {{jql}} {{max_results?}}",
+      "description": "Search Jira issues using JQL and return key, summary, status, type, and assignee for matching issues.",
+      "guidelines": [
+        "max_results defaults to 50 if empty",
+        "Quote JQL with spaces via placeholder"
+      ],
+      "env": {
+        "JIRA_SERVER": "legogroup.atlassian.net"
+      },
+      "secrets": {
+        "ATLASSIAN_TOKEN": "atlassian-token"
+      }
+    },
+    {
+      "name": "create_branch",
+      "command": "git checkout -b {{branch}}",
+      "description": "Creates a new git branch and switches to it."
+    },
+    {
+      "name": "stage_files",
+      "command": "git add {{...files}}",
+      "description": "Stages specified files for commit. Use '.' or '-A' to stage all changes."
+    },
+    {
+      "name": "push_branch",
+      "command": "git push -u origin {{branch}}",
+      "description": "Pushes a local branch to the origin remote and sets it as the upstream tracking branch.",
+      "requires_approval": true
+    },
+    {
+      "name": "create_jira_issue",
+      "command": "bash ~/.pi/agent/skills/using-jira/jira-create.sh {{json_body}}",
+      "description": "Creates a new Jira issue via REST API and returns the issue key and browse URL.",
+      "requires_approval": true,
+      "guidelines": [
+        "json_body is raw JSON for POST /rest/api/3/issue"
+      ],
+      "env": {
+        "JIRA_SERVER": "legogroup.atlassian.net"
+      },
+      "secrets": {
+        "ATLASSIAN_TOKEN": "atlassian-token"
+      }
+    },
+    {
+      "name": "edit_jira_issue",
+      "command": "bash ~/.pi/agent/skills/using-jira/jira-edit.sh {{key}} {{raw_json_body}}",
+      "description": "Updates an existing Jira issue's fields via the REST API.",
+      "requires_approval": true,
+      "env": {
+        "JIRA_SERVER": "legogroup.atlassian.net"
+      },
+      "secrets": {
+        "ATLASSIAN_TOKEN": "atlassian-token"
+      }
+    },
+    {
+      "name": "list_jira_comments",
+      "command": "bash ~/.pi/agent/skills/using-jira/jira-comments.sh {{key}}",
+      "description": "Lists comments on a Jira issue ordered oldest-first, showing author, timestamp, and plain-text body.",
+      "env": {
+        "JIRA_SERVER": "legogroup.atlassian.net"
+      },
+      "secrets": {
+        "ATLASSIAN_TOKEN": "atlassian-token"
+      }
+    },
+    {
+      "name": "list_jira_issue_links",
+      "command": "bash ~/.pi/agent/skills/using-jira/jira-link.sh --list {{key}}",
+      "description": "Lists all issue links on a Jira issue with link type, direction, and linked issue details.",
+      "env": {
+        "JIRA_SERVER": "legogroup.atlassian.net"
+      },
+      "secrets": {
+        "ATLASSIAN_TOKEN": "atlassian-token"
+      }
+    },
+    {
+      "name": "create_jira_blocks_link",
+      "command": "bash ~/.pi/agent/skills/using-jira/jira-link.sh {{key_a}} {{key_b}}",
+      "description": "Creates a 'Blocks' link between two Jira issues where A blocks B.",
+      "requires_approval": true,
+      "env": {
+        "JIRA_SERVER": "legogroup.atlassian.net"
+      },
+      "secrets": {
+        "ATLASSIAN_TOKEN": "atlassian-token"
+      }
+    },
+    {
+      "name": "create_jira_split_link",
+      "command": "bash ~/.pi/agent/skills/using-jira/jira-link.sh --split {{key_a}} {{key_b}}",
+      "description": "Creates a 'Work item split' link between two Jira issues (A split to B).",
+      "requires_approval": true,
+      "env": {
+        "JIRA_SERVER": "legogroup.atlassian.net"
+      },
+      "secrets": {
+        "ATLASSIAN_TOKEN": "atlassian-token"
+      }
+    },
+    {
+      "name": "delete_jira_blocks_link",
+      "command": "bash ~/.pi/agent/skills/using-jira/jira-link.sh --delete {{key_a}} {{key_b}}",
+      "description": "Deletes a 'Blocks' link between two Jira issues.",
+      "requires_approval": true,
+      "env": {
+        "JIRA_SERVER": "legogroup.atlassian.net"
+      },
+      "secrets": {
+        "ATLASSIAN_TOKEN": "atlassian-token"
+      }
+    },
+    {
+      "name": "delete_jira_split_link",
+      "command": "bash ~/.pi/agent/skills/using-jira/jira-link.sh --delete --split {{key_a}} {{key_b}}",
+      "description": "Deletes a 'Work item split' link between two Jira issues.",
+      "requires_approval": true,
+      "env": {
+        "JIRA_SERVER": "legogroup.atlassian.net"
+      },
+      "secrets": {
+        "ATLASSIAN_TOKEN": "atlassian-token"
+      }
+    },
+    {
+      "name": "view_failed_run_logs",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh run view {{run_id}} --log-failed",
+      "description": "Fetches and displays logs from failed jobs in a GitHub Actions run."
+    },
+    {
+      "name": "squash_into_destination",
+      "command": "jj squash --from {{source}} --into {{destination}} --use-destination-message {{...filesets?}}",
+      "description": "Move changes from a source jj revision or revset into a destination change while preserving the destination change's commit message.",
+      "guidelines": [
+        "Use optional filesets to limit the squash to specific files or paths; omit them to squash all changes.",
+        "Inspect the result with jj log or jj status before running another history-editing command."
+      ]
+    },
+    {
+      "name": "view_pr_comments",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh pr view {{pr_number}} --comments --json comments --jq '.comments[] | {author: .author.login, body: .body, createdAt: .createdAt}'",
+      "description": "Fetches top-level (non-inline) comments on a GitHub pull request."
+    },
+    {
+      "name": "fetch_pr_reviews",
+      "command": "gh api repos/{{owner}}/{{repo}}/pulls/{{pr_number}}/reviews --jq '.[] | {id, author: .user.login, state, body, submitted_at: .submitted_at}'",
+      "description": "Fetches PR review submissions (approvals, change requests, comments) for a given pull request."
+    },
+    {
+      "name": "show_diff",
+      "command": "jj diff --git -r {{...revsets}} {{...filesets?}}",
+      "description": "Show the diff of pending changes using jj."
+    },
+    {
+      "name": "jj_undo",
+      "command": "jj undo",
+      "description": "Undoes the last jj operation, restoring the previous repo state."
+    },
+    {
+      "name": "list_ci_runs",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh run list --limit {{limit}} --json databaseId,status,conclusion,headBranch,name,event --jq '.[] | {id: .databaseId, status, conclusion, branch: .headBranch, name, event}'",
+      "description": "Lists recent GitHub Actions CI runs with their status, conclusion, branch, and ID."
+    },
+    {
+      "name": "comment_on_pr",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh pr comment {{pr_number}} --body {{body}}",
+      "description": "Posts a top-level comment on a GitHub pull request.",
+      "requires_approval": true
+    },
+    {
+      "name": "download_jira_attachments",
+      "command": "bash ~/.pi/agent/skills/using-jira/jira-attachments.sh {{key}} {{filename?}}",
+      "description": "Downloads attachments from a Jira issue into /tmp/jira-attachments/{{key}}",
+      "guidelines": [
+        "list via view_jira_issue attachment field"
+      ],
+      "env": {
+        "JIRA_SERVER": "legogroup.atlassian.net"
+      },
+      "secrets": {
+        "ATLASSIAN_TOKEN": "atlassian-token"
+      }
+    },
+    {
+      "name": "restore_files",
+      "command": "jj restore {{...paths}}",
+      "description": "Restores the given paths in the working copy from the parent revision, discarding their local changes.",
+      "guidelines": [
+        "Discards working-copy changes to listed paths"
+      ]
+    },
+    {
+      "name": "amend_commit_message",
+      "command": "git commit --amend -m {{message}}",
+      "description": "Rewrites the most recent commit's message in place.",
+      "guidelines": [
+        "Force-push after amending a pushed commit"
+      ],
+      "env": {
+        "SSH_AUTH_SOCK": "$SSH_AUTH_SOCK"
+      }
+    },
+    {
+      "name": "force_push_branch",
+      "command": "git push --force-with-lease origin {{branch}}",
+      "description": "Force-pushes a branch to origin only if the remote hasn't changed since the last fetch.",
+      "requires_approval": true,
+      "guidelines": [
+        "Fetch first for accurate lease check"
+      ],
+      "env": {
+        "SSH_AUTH_SOCK": "$SSH_AUTH_SOCK"
+      }
+    },
+    {
+      "name": "get_pr_content",
+      "command": "gh pr view {{pr_number}} --json title,body",
+      "description": "Fetches the title and body of a pull request as JSON."
+    },
+    {
+      "name": "git_diff",
+      "command": "git diff",
+      "description": "Shows unstaged changes in the git working copy."
+    },
+    {
+      "name": "obsidian_daily_append",
+      "command": "obsidian vault=notes daily:append content={{content}}",
+      "description": "Append content to today's daily note."
+    },
+    {
+      "name": "view_github_issue",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh issue view {{issue}} --json title,body,labels,state,assignees",
+      "description": "Views a GitHub issue with key metadata and body."
+    },
+    {
+      "name": "abandon_jj_change",
+      "command": "jj abandon {{change_id}}",
+      "description": "Abandons a specified Jujutsu change from the repository history.",
+      "guidelines": [
+        "Use only for obsolete changes"
+      ]
+    },
+    {
+      "name": "check_github_auth_and_default_branch",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh auth status && GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh repo view --json defaultBranchRef --jq .defaultBranchRef.name",
+      "description": "Verifies GitHub CLI authentication and prints the repository default branch name."
+    },
+    {
+      "name": "view_ci_run_jobs",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh run view {{run_id}} --json status,conclusion,createdAt,updatedAt,url,jobs --jq '{status, conclusion, createdAt, updatedAt, url, jobs: [.jobs[] | {name, status, conclusion, startedAt, completedAt, url, steps: [.steps[]? | {name, status, conclusion, number, startedAt, completedAt}]}]}'",
+      "description": "Shows job and step status details for a GitHub Actions workflow run without dumping logs.",
+      "guidelines": [
+        "Use numeric run id"
+      ]
+    },
+    {
+      "name": "view_full_ci_run_logs",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh run view {{run_id}} --log",
+      "description": "Fetches the full plain-text logs for all jobs in a GitHub Actions workflow run."
+    },
+    {
+      "name": "view_current_branch_pr",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh pr view --json url,number,title --jq '{url, number, title}'",
+      "description": "Shows the open GitHub pull request associated with the current branch, including URL, number, and title."
+    },
+    {
+      "name": "fetch_pr_diff",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh pr diff {{pr_ref}} --color=never",
+      "description": "Fetches the final GitHub pull request diff against its base using authenticated gh access."
+    },
+    {
+      "name": "switch_branch",
+      "command": "git switch {{branch}}",
+      "description": "Switches the current Git worktree to an existing branch.",
+      "guidelines": [
+        "Ensure worktree is clean"
+      ]
+    },
+    {
+      "name": "list_github_issues",
+      "command": "GIT_DIR=$(jj git root 2>/dev/null || echo .git) gh issue list {{--state state?}} {{--limit limit?}} --json number,title,state,labels,assignees --jq '.[] | {number, title, state, labels: [.labels[].name], assignees: [.assignees[].login]}'",
+      "description": "Lists GitHub issues in the current repository with summary fields for selecting an issue to inspect.",
+      "guidelines": [
+        "State: open, closed, all"
+      ]
+    },
+    {
+      "name": "inspect_git_history",
+      "command": "git log --oneline --decorate --graph --max-count {{limit}}",
+      "description": "Shows a compact decorated commit graph for recent Git history."
+    },
+    {
+      "name": "continue_rebase",
+      "command": "GIT_EDITOR=true git rebase --continue",
+      "description": "Continues an in-progress Git rebase without opening an editor, preserving the existing commit message.",
+      "guidelines": [
+        "Resolve and stage conflicts first"
+      ]
+    },
+    {
+      "name": "rebase_revision",
+      "command": "jj rebase --revisions {{revision}} --destination {{destination}}",
+      "description": "Reorganizes local Jujutsu history by moving a selected revision onto a new base.",
+      "requires_approval": true,
+      "guidelines": [
+        "Use unambiguous revision IDs or revsets.",
+        "Inspect history before and after rebasing."
+      ]
+    }
+  ]
+}

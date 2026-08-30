@@ -1,0 +1,4 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Jomik/pi-imps/refs/heads/main/imps.schema.json",
+  "additionalExtensions": ["pi-armory", "pi-ward"]
+}

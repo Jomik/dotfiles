@@ -1,15 +1,19 @@
 {
-  "lastChangelogVersion": "0.73.0",
+  "lastChangelogVersion": "0.84.1",
   "quietStartup": true,
-  "defaultProvider": "github-copilot",
-  "defaultModel": "claude-opus-4.6",
   "packages": [
     "npm:pi-web-access@0.10.7",
-    "npm:pi-hashline-edit@0.6.0",
-    "npm:pi-imps",
-    "npm:pi-inquisitor",
-    "npm:pi-errands"
+    "~/projects/private/pi-imps",
+    "~/projects/private/pi-inquisitor",
+    "~/projects/private/pi-ward",
+    "~/projects/private/pi-armory",
+    "~/projects/private/pi-taskmaster",
+    "~/projects/private/pi-xcode",
+    "git:github.com/DietrichGebert/ponytail"
   ],
   "hideThinkingBlock": true,
-  "defaultThinkingLevel": "high"
+  "defaultThinkingLevel": "high",
+  "defaultProvider": "github-copilot",
+  "defaultModel": "gpt-5.6-sol",
+  "theme": "dark"
 }

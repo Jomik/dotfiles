@@ -74,6 +74,20 @@ Use one of: `#decision`, `#learning`, `#observation`, `#question`, `#todo`
 Work-specific tags (add when relevant):
 `#graphql` `#sap-bridge` `#ticket-service` `#equipment-service` `#spareparts` `#image-service` `#push-notifications` `#gateway` `#framework` `#maintainit-web` `#maintainit-mobile` `#aws` `#api-management` `#deployment` `#jira` `#sprint` `#team`
 
+## CLI Usage
+
+Quote each argument individually. Use a heredoc for content:
+```bash
+obsidian "vault=notes" "create" "name=My Note" "path=Personal/my-note.md" "content=$(cat <<'EOF'
+# My Note
+
+Some `code` and "quotes" and $variables work fine here.
+EOF
+)"
+```
+
+The single-quoted `'EOF'` prevents shell expansion inside the content.
+
 ## Rules
 
 - Don't polish. Raw is fine.
