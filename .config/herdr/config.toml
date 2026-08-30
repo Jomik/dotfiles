@@ -11,3 +11,11 @@ show_agent_labels_on_pane_borders = false
 
 [ui.sound]
 enabled = false
+
+[[keys.command]]
+key = "prefix+shift+o"
+type = "popup"
+command = "/opt/homebrew/bin/bash /Users/dkjohoda/.config/herdr/scripts/project-picker.sh"
+description = "open project"
+width = "80%"
+height = "80%"
